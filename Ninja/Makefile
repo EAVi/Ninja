@@ -1,5 +1,6 @@
 #Makefile for Ninja project for Linux
-
+#for the libraries on debian, do "sudo apt-get install libsdl2-dev libsdl2-image-dev"
+#on some others it's "sudo yum install SDL2-devel SDL2-image-devel"
 EXEC=Ninja
 SRCS=Algorithms.cpp Block.cpp Enemy.cpp Level.cpp LTexture.cpp main.cpp Player.cpp TextWriter.cpp UIDrawer.cpp
 OBJS=$(SRCS:.cpp=.o)
