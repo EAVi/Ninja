@@ -1,5 +1,6 @@
+//making a random comment to to test github stuff
 #ifdef _WIN32
-#include <vld.h>//visual leak detector, it's pretty good
+#include <vld.h>//visual leak detector comment this out if you do not have, it's pretty good
 #include <SDL.h>
 #include <SDL_image.h>
 /*

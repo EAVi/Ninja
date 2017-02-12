@@ -33,6 +33,9 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="TextWriter.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Desktop\Ninja\Makefile" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DAE75D72-BBE3-4070-A1A0-0B8EB5AB4B59}</ProjectGuid>
     <RootNamespace>Ninja</RootNamespace>
