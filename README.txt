@@ -8,7 +8,7 @@ Begin Dumb legal stuff:
       of it, so long as your repo has a readme with a link to "https://github.com/EAVi/Ninja"
       I mean, If you have illegal intentions, this 
                 document is probably not gonna stop you anyways
-End Dumb legal stuf
+End Dumb legal stuff
     
     If you look at the files, you'll probably notice a directory "data" with a file "debug.txt"
     the file contains a bunch of 8-bit numbers. This file is actually the map file that is loaded in order to construct the map. 
