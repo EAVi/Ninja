@@ -17,3 +17,7 @@ End Dumb legal stuf
     
     This project was begun on 25 Aug, 2016 and has been worked on on/off since. 
     As of 2 Feb, 2017, this project is ~2000 lines of code (with like 99% blank lines)
+    
+    I've tested the files in both Windows, Debian. You'll need to download the 
+        SDL2 and SDL2-image libraries in order to compile. This game will eventually use SDL2-mixer, 
+        so you might be interested in that as well. 
