@@ -1,7 +1,7 @@
 #ifndef ALGORITHMS_H
 #define ALGORITHMS_H
 
-#ifdef _WIN32 || _WIN64
+#if defined _WIN32 || _WIN64
 #include <SDL.h>
 #include <SDL_image.h>
 #elif defined __APPLE__ && __MACH__ || defined Macintosh || defined macintosh || defined __linux__

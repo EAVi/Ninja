@@ -1,7 +1,7 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#ifdef _WIN32 || _WIN64
+#if defined _WIN32 || _WIN64
 #include <SDL.h>
 #elif defined __APPLE__ && __MACH__ || defined Macintosh || defined macintosh || defined __linux__
 #include <SDL2/SDL.h>
@@ -24,7 +24,7 @@ public:
 	static std::vector<SDL_Rect> kDefault_AnimationClips;//vector containing the sprite animation rectangles
 	static SDL_Rect kDefault_OffsetCollisionBox;//collisionBox to be added with mX, mY in order to check optimal position
 	static const int kDefault_ClipW = 32, kDefault_ClipH = 32;
-	const enum DefaultAnimationFrames
+	enum DefaultAnimationFrames
 	{
 		kRunStart = 0,
 		kRunEnd = 7,

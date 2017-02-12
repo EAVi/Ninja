@@ -1,7 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-#ifdef _WIN32 || _WIN64
+#if defined _WIN32 || _WIN64
 #include <SDL.h>
 #elif defined __APPLE__ && __MACH__ || defined Macintosh || defined macintosh || defined __linux__
 #include <SDL2/SDL.h>
