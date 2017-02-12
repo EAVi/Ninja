@@ -1,10 +1,13 @@
 Begin Dumb legal stuff:
-        All files provided are 100% made by Eric "Magnar" Villanueva. Yes, even the textures; are all mine.
-        You're allowed to do whatever you want with these files except sell them or pass them off as your own.
-      (This games isn't impressive at all so nobody would buy it anyways).
-        You are absolutely allowed to clone this project and make your own repository 
-       of it, so long as your repo has a readme with a link to "https://github.com/EAVi/Ninja"
-        I mean, I'm not the police, but at least don't make it obvious.
+                All files provided are 100% made by Eric "Magnar" Villanueva. 
+      Yes, even the textures; they're all mine.
+                You're allowed to do whatever you want with these files except sell them or pass them 
+      off as your own.
+                (This games isn't impressive at all so nobody would buy it anyways).
+                You are absolutely allowed to clone this project and make your own repository 
+      of it, so long as your repo has a readme with a link to "https://github.com/EAVi/Ninja"
+      I mean, If you have illegal intentions, this 
+                document is probably not gonna stop you anyways
 End Dumb legal stuf
     
     If you look at the files, you'll probably notice a directory "data" with a file "debug.txt"
