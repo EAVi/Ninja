@@ -232,7 +232,7 @@ int main(int argc, char* args[])
 	gFontTexture.colorMod(0xFF, 0, 0);
 	SDL_Rect camera = { 0, 0, kScreenWidth, kScreenHeight };
 	SDL_Color red = { 0xFF, 0, 0, 0xFF };
-	Enemy Yuki(50, 6);
+	Enemy Blinky(50, 6);//the default enemy is a ghost texture, hence Blinky
 
 
 	//build the debug level
@@ -260,14 +260,14 @@ int main(int argc, char* args[])
 
 		//ninja.move(debugLevel.getRects());
 		ninja.step();
-		Yuki.step(debugLevel.getRects());
+		Blinky.step(debugLevel.getRects());
 
 		camera.x = ninja.getX() - kScreenWidth/2 + ninja.kClipWidth/2;
 		camera.y = ninja.getY() - kScreenHeight/2 + ninja.kClipHeight/2;
 		debugLevel.step();//bounds camera and renders
 
 		ninja.render(camera.x, camera.y);
-		Yuki.render(camera.x, camera.y);
+		Blinky.render(camera.x, camera.y);
 		gUIDrawer.drawHealthbar(health, maxhealth, health);
 		/*
 		gWriter.RenderString("the quick brown fox jumps over lazy dog", 8, 8, &red);
