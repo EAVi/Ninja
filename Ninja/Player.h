@@ -62,6 +62,7 @@ private:
 	int mY;
 	int mXVelocity;
 	int mYVelocity;//reminder that negatives go upwards on screen
+	float mYVelocityF;//precise gravity, is truncated to mYVelocity so collision math can be done
 	int mHealth;
 	int mMaxHealth;
 	int lives;
@@ -87,7 +88,9 @@ private:
 	void mAddHurtbox();
 	void mAttack();//Attacks if currently attacking
 
+	static float kGravityF;//SOON TO REPLACE INTEGER GRAVITY
 	static const int kTerminalVelocity = 7;//player terminal velocity
+//NOTE THAT INTEGER GRAVITY WILL BE REMOVED SOON
 	static const int kGravity = 1;//player gravity
 	static const int kJumpVelocity = 15;//velocity gained during jump
 	static const int kMovementSpeed = 5;

@@ -3,6 +3,7 @@
 using namespace std;
 SDL_Rect Player::kStandardCollisionBox = { 10,0,12,32 };
 SDL_Rect Player::kJumpingCollisionBox = { 10,9,12,17 };
+float Player::kGravityF = 0.5;
 
 Player::Player() 
 {
@@ -12,7 +13,8 @@ Player::Player()
 	mX = 0;
 	mY = 0;
 	mXVelocity = 0;
-	mYVelocity = 0;
+	mYVelocityF = 0.0;
+	mYVelocity = mYVelocityF;
 	mFlipType = SDL_FLIP_NONE;
 	mAnimationFrame = 0;
 	mAttackCoolDown = 0;
@@ -54,7 +56,10 @@ void Player::step()
 {
 	//apply gravity if not already touching floor
 	if (!(mTouchIndex & kTouchingTop))
-		mYVelocity += kGravity;
+	{
+		mYVelocityF += kGravityF;
+		mYVelocity = mYVelocityF;	
+	}
 
 	mCheckClinging();
 	move(mLevel->getRects());
@@ -98,6 +103,15 @@ void Player::move(vector<SDL_Rect>& colliders)
 	SDL_Point optimalPoint = optimizedMove(player, colliders, mXVelocity, mYVelocity, mTouchIndex);
 	mX = optimalPoint.x - offsetX;
 	mY = optimalPoint.y - offsetY;
+
+	if ((mTouchIndex & (kTouchingBottom)) 
+		&& mYVelocityF <= -0.8)//if your head bops (or is bopping) the bottom of a tile
+	{
+	//note that this exponentially reduces the velocity rather than instantly reducing it to 0
+	//i think it's better and more fluid
+		mYVelocityF = .5 * mYVelocityF; //reduce speed to 0
+		mYVelocity = mYVelocityF;
+	}
 }
 
 
@@ -185,7 +199,7 @@ int Player::getY()
 
 void Player::mLeftPress()
 {
-	this->mXVelocity -= kMovementSpeed;
+	mXVelocity -= kMovementSpeed;
 }
 
 void Player::mJumpPress()
@@ -193,19 +207,24 @@ void Player::mJumpPress()
 	if (mJump && !(mTouchIndex & kTouchingBottom))//if you can jump, you will jump
 	{
 		mJump = false;
-		this->mYVelocity = -this->kJumpVelocity;
+		mYVelocityF = -kJumpVelocity;
+		mYVelocity = mYVelocityF;
 	}
 	//NO FUN ALLOWED MODE, FINITE JUMPS
 
-
+	/*
 	if (!(mTouchIndex & kTouchingBottom))
-		this->mYVelocity = -this->kJumpVelocity;
+	{
+		mYVelocityF = -kJumpVelocity;
+		mYVelocity = mYVelocityF;
+	}
+	*/
 	//LOTS AND LOTS OF FUN MODE
 }
 
 void Player::mRightPress()
 {
-	this->mXVelocity += kMovementSpeed;
+	mXVelocity += kMovementSpeed;
 }
 
 void Player::mAddHurtbox()
@@ -221,7 +240,8 @@ void Player::mCheckClinging()
 	{
 		mWallClinging = true;
 		mJump = true;
-		mYVelocity = 1; //friction agaist wall
+		mYVelocityF = 1; //friction agaist wall
+		mYVelocity = mYVelocityF;
 	}
 	else mWallClinging = false;
 }
@@ -241,6 +261,7 @@ void Player::mCollisionSquisher()
 		if (kJumpingCollisionBox.y + kJumpingCollisionBox.h < kStandardCollisionBox.y + kStandardCollisionBox.h)
 		{//dont need to have this check, since I'm probably not going to change the collision boxes
 			mY += (kJumpingCollisionBox.y +  kJumpingCollisionBox.h) - (kStandardCollisionBox.y + kStandardCollisionBox.h);
+			mYVelocityF = 0;
 			mYVelocity = 0;
 		}
 	}//end box squisher
@@ -250,7 +271,10 @@ void Player::mBoundPlayer()
 {
 	//make sure the player does not accelerate indefinitely
 	if (mYVelocity >= kTerminalVelocity)
-		mYVelocity = kTerminalVelocity;
+	{
+		mYVelocityF = kTerminalVelocity;
+		mYVelocity = mYVelocityF;
+	}
 
 	//level boundaries, so the ninja doesn't go out the map
 	if (mLevel != NULL)
