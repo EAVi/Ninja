@@ -16,12 +16,12 @@ SDLF=-lSDL2 -lSDL2_image
 #Macros are optional, you'd need to define as MCRO="-D LINUX" or whatever
 
 $(EXEC): $(OBJS)
-	g++ -std=c++11 $(SDLF) -o $@ $(OBJS) $(MCRO)
+	g++ -std=c++11 -o $@ $(OBJS) $(SDLF) $(MCRO)
 #$< evaluates to the target's dependencies,
 #$@ evaluates to the target
 
 $(OBJS):
-	g++ -std=c++11 -c $(SDLF)  $*.cpp $(MCRO)
+	g++ -std=c++11 -c  $*.cpp $(SDLF) $(MCRO)
 
 clean:
 	rm $(OBJS)
