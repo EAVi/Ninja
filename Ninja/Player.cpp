@@ -137,7 +137,7 @@ void Player::render(int x, int y)
 void Player::handleAnimation()
 {
 	if (mTouchIndex & kTouchingTop //if touching the ground
-		/*|| (mYVelocity <= 3 && mJump) && !mWallClinging*/) //or running off an edge for 3 frame (allows running through gaps seamlessly)
+		|| (mYVelocity <= 2  && mJump) && !mWallClinging && mXVelocity != 0) //or running off an edge (but not falling too fast) (allows running through gaps seamlessly)
 	{
 		if (mXVelocity != 0
 			&& !(mTouchIndex & kTouchingRight)
