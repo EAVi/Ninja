@@ -239,12 +239,14 @@ int main(int argc, char* args[])
 	Level debugLevel(1366,768,&camera);
 	debugLevel.setBGTextures(gBackgroundTextures);
 	debugLevel.Loadmap("data/debug.txt");
+
 	
 	SDL_Event mainevent;
 	int health = 5;
 	int maxhealth = 20;
 
 	ninja.setLevel(&debugLevel);
+	Blinky.setLevel(&debugLevel);
 
 	while (!quit)
 	{
@@ -260,7 +262,7 @@ int main(int argc, char* args[])
 
 		//ninja.move(debugLevel.getRects());
 		ninja.step();
-		Blinky.step(debugLevel.getRects());
+		Blinky.step();
 
 		camera.x = ninja.getX() - kScreenWidth/2 + ninja.kClipWidth/2;
 		camera.y = ninja.getY() - kScreenHeight/2 + ninja.kClipHeight/2;
@@ -276,7 +278,7 @@ int main(int argc, char* args[])
 		*/
 		gWriter.RenderString(ninja.getX(), 8, 32);
 		gWriter.RenderString(ninja.getY(), 40, 32);
-		//debugLevel.debugShowHitboxes(*gRenderer);
+		debugLevel.debugShowHitboxes(*gRenderer);
 
 		SDL_RenderPresent(gRenderer);
 	}

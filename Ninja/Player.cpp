@@ -196,6 +196,11 @@ int Player::getY()
 	return this->mY;
 }
 
+int Player::getHealth()
+{
+	return mHealth;
+}
+
 
 void Player::mLeftPress()
 {

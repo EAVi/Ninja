@@ -44,16 +44,28 @@ void Enemy::step(vector<SDL_Rect>& colliders)
 	mYV += kDefault_Gravity;
 	mXV = mDirectionRight ? kDefault_WalkSpeed : -kDefault_WalkSpeed;
 	
-	move(colliders, kDefault_OffsetCollisionBox);
-	handleAnimation();
+	attack();
+	checkHurt();
+	
+	if (mHitStun <= 0 && mHealth > 0)//cant move if you're stunned
+	{
+		move(colliders, kDefault_OffsetCollisionBox);
+		handleAnimation();
+	}
+	else mHitStun--;
 	
 	//Change direction when a wall is touched
 	if (mTouchIndex & (kTouchingLeft | kTouchingRight)) mDirectionRight = !mDirectionRight;
 }
 
+void Enemy::step()
+{
+	if (mLevel == NULL) return;//would have issues otherwise
+	step(mLevel->getRects());
+}
+
 void Enemy::move(vector<SDL_Rect>& colliders, SDL_Rect& offBox)
 {
-
 	int offsetX = offBox.x;//the offset of the collision box
 	int offsetY = offBox.y;//the offset of the collision box
 	SDL_Rect enemy = { mX + offsetX, mY + offsetY, offBox.w, offBox.h };
@@ -77,7 +89,14 @@ void Enemy::setLevel(Level * level)
 
 void Enemy::attack()
 {
-	//does nothing
+	if (mLevel == NULL) return; //Enemies aren't always bound to a level
+	//does nothing so far
+	Hitbox mHybridBox = { kDefault_OffsetCollisionBox , 4};
+	mHybridBox.hitbox.x += mX;
+	mHybridBox.hitbox.y += mY;
+	mHurtbox = mHybridBox.hitbox;
+
+	mLevel->addHitbox(mHybridBox, false, true, true);
 }
 
 
@@ -96,6 +115,19 @@ void Enemy::render(int xD, int yD)
 			0.0,
 			NULL,
 			ftype);
+	}
+}
+
+void Enemy::checkHurt()
+{
+	vector<Hitbox> temp = mLevel->getPlayerHitboxes();
+	for (int i = 0, j = temp.size(); i < j; ++i)
+	{
+		if (checkCollision(mHurtbox, temp[i].hitbox))
+		{
+			mHealth -= temp[i].damage;
+			mHitStun = kDefault_HitStunFrames;
+		}
 	}
 }
 

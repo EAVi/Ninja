@@ -48,9 +48,12 @@ public:
 	//set x,y position
 	void setposition(int x, int y);
 
+	//return x,y position
 	int getX();
-
 	int getY();
+
+	//returns player health
+	int getHealth();
 private:
 	LTexture* mTexture;
 	SDL_Point mRestorePoint;
@@ -96,6 +99,7 @@ private:
 	static const int kMovementSpeed = 5;
 	static const Uint8 kSwordLag = 24;
 	static const Uint8 kSwordFrames = 3;
+	static const Uint8 kHitStunFrames = 5;
 	static SDL_Rect kStandardCollisionBox;
 	static SDL_Rect kJumpingCollisionBox;
 };

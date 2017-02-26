@@ -111,6 +111,9 @@ public:
 	//returns the Enemy hitbox vector
 	std::vector<Hitbox>& getEnemyHitboxes();
 
+	//returns the Player hitbox vector
+	std::vector<Hitbox>& getPlayerHitboxes();
+
 	void step();
 
 private:
@@ -123,11 +126,11 @@ private:
 	int mLevelWidth;
 	int mLevelHeight;
 	bool mDeathBarrier;
-	std::vector<Enemy*> mEnemies;
+	std::vector<Enemy*> mEnemies;//pointer for polymorphism
 	std::vector<Hitbox> mPlayerHitboxes;
 	std::vector<Hitbox> mPlayerHurtboxes;
-	std::vector<Hitbox> mEnemyHitBoxes;
-	std::vector<Hitbox> mEnemyHurtBoxes;
+	std::vector<Hitbox> mEnemyHitboxes;
+	std::vector<Hitbox> mEnemyHurtboxes;
 
 };
 

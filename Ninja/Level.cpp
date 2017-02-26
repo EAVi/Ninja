@@ -15,6 +15,10 @@ Level::Level()
 	mBGTextures.clear();
 	mBackgrounds.clear();
 	mRects.clear();
+	mPlayerHitboxes.clear();
+	mPlayerHurtboxes.clear();
+	mEnemyHitboxes.clear();
+	mEnemyHurtboxes.clear();
 }
 
 Level::Level(int width, int height, SDL_Rect* camera)
@@ -27,6 +31,10 @@ Level::Level(int width, int height, SDL_Rect* camera)
 	mBGTextures.clear();
 	mBackgrounds.clear();
 	mRects.clear();
+	mPlayerHitboxes.clear();
+	mPlayerHurtboxes.clear();
+	mEnemyHitboxes.clear();
+	mEnemyHurtboxes.clear();
 }
 
 SDL_Rect Level::getLevelDimensions()
@@ -116,8 +124,8 @@ void Level::clearHitboxes()
 {
 	mPlayerHitboxes.clear();
 	mPlayerHurtboxes.clear();
-	mEnemyHitBoxes.clear();
-	mEnemyHurtBoxes.clear();
+	mEnemyHitboxes.clear();
+	mEnemyHurtboxes.clear();
 }
 
 void Level::addHitbox(Hitbox&  a, bool good, bool hitbox, bool hurtbox)
@@ -133,9 +141,9 @@ void Level::addHitbox(Hitbox&  a, bool good, bool hitbox, bool hurtbox)
 	if (!good)
 	{
 		if (hitbox)
-			mEnemyHitBoxes.push_back(a);
+			mEnemyHitboxes.push_back(a);
 		if (hurtbox)
-			mPlayerHurtboxes.push_back(a);
+			mEnemyHurtboxes.push_back(a);
 	}
 
 }
@@ -165,18 +173,18 @@ void Level::debugShowHitboxes(SDL_Renderer& renderer)
 	}
 
 	SDL_SetRenderDrawColor(&renderer, 255, 0, 0, 255);//Black
-	for (int i = 0, j = mEnemyHitBoxes.size(); i < j; ++i)//enemyhitboxes
+	for (int i = 0, j = mEnemyHitboxes.size(); i < j; ++i)//enemyhitboxes
 	{
-		temp = mEnemyHitBoxes[i].hitbox;
+		temp = mEnemyHitboxes[i].hitbox;
 		temp.x -= mCamera->x;
 		temp.y -= mCamera->y;
 		SDL_RenderDrawRect(&renderer, &temp);
 	}
 
 	SDL_SetRenderDrawColor(&renderer, 255, 255, 0, 255);//Black
-	for (int i = 0, j = mEnemyHurtBoxes.size(); i < j; ++i)//enemyhurtboxes
+	for (int i = 0, j = mEnemyHurtboxes.size(); i < j; ++i)//enemyhurtboxes
 	{
-		temp = mEnemyHurtBoxes[i].hitbox;
+		temp = mEnemyHurtboxes[i].hitbox;
 		temp.x -= mCamera->x;
 		temp.y -= mCamera->y;
 		SDL_RenderDrawRect(&renderer, &temp);
@@ -188,7 +196,12 @@ void Level::debugShowHitboxes(SDL_Renderer& renderer)
 
 vector<Hitbox>& Level::getEnemyHitboxes()
 {
-	return mEnemyHitBoxes;
+	return mEnemyHitboxes;
+}
+
+std::vector<Hitbox>& Level::getPlayerHitboxes()
+{
+	return mPlayerHitboxes;
 }
 
 void Level::step()

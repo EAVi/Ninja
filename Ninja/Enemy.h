@@ -24,6 +24,7 @@ public:
 	static std::vector<SDL_Rect> kDefault_AnimationClips;//vector containing the sprite animation rectangles
 	static SDL_Rect kDefault_OffsetCollisionBox;//collisionBox to be added with mX, mY in order to check optimal position
 	static const int kDefault_ClipW = 32, kDefault_ClipH = 32;
+	static const Uint8 kDefault_HitStunFrames = 5;
 	enum DefaultAnimationFrames
 	{
 		kRunStart = 0,
@@ -33,10 +34,12 @@ public:
 	};
 
 	virtual void step(std::vector<SDL_Rect>& colliders);//virtual function that will be called for every object for every frame
+	virtual void step();
 	void move(std::vector<SDL_Rect>& colliders, SDL_Rect& offBox);//movement function, the velocities should be changed beforehand in the step() function
 	void setLevel(Level* level);//sets the level for the enemy
 	virtual void attack();//virtual attack function
 	virtual void render(int xD, int yD);//render relative to camera
+	virtual void checkHurt();//checks for damage taken and hitstun
 	virtual void handleAnimation();
 	virtual void setTexture(LTexture* texture);//sets texture for all default enemy
 private:
@@ -47,12 +50,13 @@ private:
 	bool mRewindAnimation;
 	int mX, mY, mXV, mYV;
 	Uint8 mAttackFrame;
-	//SDL_Rect mCollisionBox;//collision box relative to position
+	SDL_Rect mCollisionBox;//collision box relative to position
 	SDL_Rect mHurtbox;//collision box
 	SDL_Rect mDangerZone;//passive hitbox if any
 	Uint8 mTouchIndex;//used to make collision checking faster
 	bool mDirectionRight;//begins false
 	Level* mLevel; //the level that will be referenced by the enemy
+	Uint8 mHitStun;
 };
 
 
