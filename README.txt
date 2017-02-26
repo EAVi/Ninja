@@ -10,6 +10,12 @@ Begin Dumb legal stuff:
                 document is probably not gonna stop you anyways
 End Dumb legal stuff
     
+    Controls:
+    A - move left
+    D - move right
+    Spacebar - jump
+    M - sword attack
+    
     If you look at the files, you'll probably notice a directory "data" with a file "debug.txt"
     the file contains a bunch of 8-bit numbers. This file is actually the map file that is loaded in order to construct the map. 
     In essence, it's just an array 8-bit numbers used to read in arguments of background objects and block tile objects.
