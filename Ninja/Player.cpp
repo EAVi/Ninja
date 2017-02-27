@@ -325,6 +325,7 @@ void Player::mAttack()
 
 void Player::mAttackPress()
 {
+	if (mWallClinging) return;
 	if (mAttackCoolDown == 0)
 	{
 		mAttackCoolDown = kSwordLag;
