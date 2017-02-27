@@ -7,12 +7,14 @@ using namespace std;
 LTexture* Enemy::kDefault_Texture = NULL;
 vector<SDL_Rect> Enemy::kDefault_AnimationClips = vector<SDL_Rect>(0);
 SDL_Rect Enemy::kDefault_OffsetCollisionBox = { 0,0,32,32 };
+SDL_Rect Enemy::kDefault_OffsetHitbox = { 10,0,12,32 };
 
 
 
 Enemy::Enemy()
 {
-	mHealth = kDefault_MaxHealth;
+	mMaxHealth = kDefault_MaxHealth;
+	mHealth = mMaxHealth;
 	mAnimationFrame = 0;
 	mXV = 0;
 	mYV = 0;
@@ -26,7 +28,8 @@ Enemy::Enemy()
 
 Enemy::Enemy(Uint8 x, Uint8 y, bool right, Level* level)
 {
-	mHealth = kDefault_MaxHealth;
+	mMaxHealth = kDefault_MaxHealth;
+	mHealth = mMaxHealth;
 	mAnimationFrame = 0;
 	mXV = 0;
 	mYV = 0;
@@ -44,15 +47,15 @@ void Enemy::step(vector<SDL_Rect>& colliders)
 	mYV += kDefault_Gravity;
 	mXV = mDirectionRight ? kDefault_WalkSpeed : -kDefault_WalkSpeed;
 	
-	attack();
-	checkHurt();
 	
 	if (mHitStun <= 0 && mHealth > 0)//cant move if you're stunned
 	{
+		attack();//shouldn't attack in hitstun
+		checkHurt();//shouldn't get attacked in hitstun
 		move(colliders, kDefault_OffsetCollisionBox);
 		handleAnimation();
 	}
-	else mHitStun--;
+	else --mHitStun;
 	
 	//Change direction when a wall is touched
 	if (mTouchIndex & (kTouchingLeft | kTouchingRight)) mDirectionRight = !mDirectionRight;
@@ -91,12 +94,18 @@ void Enemy::attack()
 {
 	if (mLevel == NULL) return; //Enemies aren't always bound to a level
 	//does nothing so far
-	Hitbox mHybridBox = { kDefault_OffsetCollisionBox , 4};
-	mHybridBox.hitbox.x += mX;
-	mHybridBox.hitbox.y += mY;
-	mHurtbox = mHybridBox.hitbox;
+	Hitbox hurtbox = { kDefault_OffsetCollisionBox , 4};
+	hurtbox.hitbox.x += mX;
+	hurtbox.hitbox.y += mY;
+	mHurtbox = hurtbox.hitbox;
 
-	mLevel->addHitbox(mHybridBox, false, true, true);
+	Hitbox hitbox = { kDefault_OffsetHitbox, 0 };
+	hitbox.hitbox.x += mX;
+	hitbox.hitbox.y += mY;
+
+	mLevel->addHitbox(hurtbox, false, false, true);
+	mLevel->addHitbox(hitbox, false, true, false);
+
 }
 
 
@@ -129,6 +138,10 @@ void Enemy::checkHurt()
 			mHitStun = kDefault_HitStunFrames;
 		}
 	}
+
+	//some checks to prevent under/overflow
+	if (mHealth < 0) mHealth = 0;
+	if (mHealth > mMaxHealth) mHealth = mMaxHealth;
 }
 
 void Enemy::handleAnimation()

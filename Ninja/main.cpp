@@ -74,7 +74,7 @@ bool init()
 
 	//Initialize window
 	gWindow = SDL_CreateWindow("ninja", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
-		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN /*| SDL_WINDOW_FULLSCREEN_DESKTOP*/);
 	if (gWindow == NULL)
 	{
 		cout << "Window could not initialize!\n" << SDL_GetError() << endl;
@@ -263,6 +263,7 @@ int main(int argc, char* args[])
 		//ninja.move(debugLevel.getRects());
 		ninja.step();
 		Blinky.step();
+		ninja.endstep();
 
 		camera.x = ninja.getX() - kScreenWidth/2 + ninja.kClipWidth/2;
 		camera.y = ninja.getY() - kScreenHeight/2 + ninja.kClipHeight/2;

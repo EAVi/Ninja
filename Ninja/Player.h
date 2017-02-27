@@ -33,6 +33,9 @@ public:
 	//handles everything that should be done within a frame
 	void step();
 
+	//since hitboxes are deleted every frame, Ninja needs to check for hitbox collision at the end of the frame
+	void endstep();
+
 	//moves the object accordingly
 	void move(std::vector<SDL_Rect>& colliders);
 
@@ -76,6 +79,7 @@ private:
 	bool mWallClinging;
 	bool mJump;
 	bool mAirborne;
+	Uint8 mHitStun;
 
 	void mLeftPress();//the function for when the left key is pressed
 	void mJumpPress();//the function for when the jump key is pressed
@@ -88,8 +92,9 @@ private:
 	void mCheckClinging();//checks if clinging to a wall and changes mWallClinging
 	void mCollisionSquisher();//modifies collision boxes if needed
 	void mBoundPlayer();//Bounds player velocity and character within the level
-	void mAddHurtbox();
+	void mAddHurtbox();//Puts a player hurtbox into the mLevel's vector
 	void mAttack();//Attacks if currently attacking
+	void mCheckHurt();//checks for collision with hurtboxes and hitboxes
 
 	static float kGravityF;//SOON TO REPLACE INTEGER GRAVITY
 	static const int kTerminalVelocity = 7;//player terminal velocity
@@ -102,6 +107,7 @@ private:
 	static const Uint8 kHitStunFrames = 5;
 	static SDL_Rect kStandardCollisionBox;
 	static SDL_Rect kJumpingCollisionBox;
+	static const int kMaxHealth = 50;
 };
 
 enum NinjaAnimationFrames

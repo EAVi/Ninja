@@ -9,7 +9,7 @@ Player::Player()
 {
 	this->mTexture = NULL;
 	mAnimationFrameRectangles.clear();
-	mCollisionBox = {10,0,12,32};
+	mCollisionBox = kStandardCollisionBox;
 	mX = 0;
 	mY = 0;
 	mXVelocity = 0;
@@ -19,6 +19,8 @@ Player::Player()
 	mAnimationFrame = 0;
 	mAttackCoolDown = 0;
 	mSwordHitbox = { {6,0,19,25}, 3 };
+	mMaxHealth = kMaxHealth;
+	mHealth = mMaxHealth;
 }
 
 void Player::setTexture(LTexture* texture)
@@ -54,31 +56,32 @@ void Player::handleEvent(SDL_Event& e)
 
 void Player::step()
 {
-	//apply gravity if not already touching floor
-	if (!(mTouchIndex & kTouchingTop))
+
+	if (mHitStun <= 0)
 	{
-		mYVelocityF += kGravityF;
-		mYVelocity = mYVelocityF;	
+		//apply gravity if not already touching floor
+		if (!(mTouchIndex & kTouchingTop))
+		{
+			mYVelocityF += kGravityF;
+			mYVelocity = mYVelocityF;	
+		}
+
+		mCheckClinging();
+		move(mLevel->getRects());
+
+		//makes character face the right way
+		if (mXVelocity > 0) mFlipType = SDL_FLIP_NONE;
+		else if (mXVelocity < 0) mFlipType = SDL_FLIP_HORIZONTAL;
+
+		mBoundPlayer();
+
+		mCollisionSquisher();
+
+		handleAnimation();//handles animation
+		mAttack();//NOTE that this is not the attack event handler, that would be mAttackPress()
+		mAddHurtbox();//pushes a hurtbox into the mLevel->mPlayerHurtbox vector.
 	}
-
-	mCheckClinging();
-	move(mLevel->getRects());
-
-	//makes character face the right way
-	if (mXVelocity > 0) mFlipType = SDL_FLIP_NONE;
-	else if (mXVelocity < 0) mFlipType = SDL_FLIP_HORIZONTAL;
-
-	mBoundPlayer();
-
-	mCollisionSquisher();
-
-	handleAnimation();
-	mAttack();
-	//Makes a hurtbox and throws it into the level's hurtbox vector
-	Hitbox hurtbox = { mCollisionBox , 0 };
-	hurtbox.hitbox.x += mX;
-	hurtbox.hitbox.y += mY;
-	mLevel->addHitbox(hurtbox, true, false, true);
+	else --mHitStun;
 
 	if (mTouchIndex & kTouchingTop)
 	{
@@ -86,6 +89,13 @@ void Player::step()
 		if (mYVelocity == 0)//if touching floor and not moving vertically
 			mRestorePoint = { mX, mY };//sets the restore point in case of out of bounds, will replace when checkpoints are introduced
 	}
+}
+
+void Player::endstep()
+{
+	if (mHitStun == 0)
+		mCheckHurt();
+
 }
 
 void Player::move(vector<SDL_Rect>& colliders)
@@ -234,6 +244,11 @@ void Player::mRightPress()
 
 void Player::mAddHurtbox()
 {
+	//Makes a hurtbox and throws it into the level's hurtbox vector
+	Hitbox hurtbox = { mCollisionBox , 0 };
+	hurtbox.hitbox.x += mX;
+	hurtbox.hitbox.y += mY;
+	mLevel->addHitbox(hurtbox, true, false, true);
 }
 
 void Player::mCheckClinging()
@@ -323,8 +338,30 @@ void Player::mAttack()
 	mAttackCoolDown = (mAttackCoolDown > 0) ? mAttackCoolDown - 1 : mAttackCoolDown; //lowers the mAttackCoolDown if greater than 0
 }
 
+void Player::mCheckHurt()
+{
+	SDL_Rect hurtbox = mCollisionBox;
+	hurtbox.x += mX;
+	hurtbox.y += mY;
+	
+	vector<Hitbox> temp = mLevel->getEnemyHitboxes();
+	for (int i = 0, j = temp.size(); i < j; ++i)
+	{
+		if (checkCollision(hurtbox, temp[i].hitbox))
+		{
+			mHealth -= temp[i].damage;
+			mHitStun = kHitStunFrames;
+		}
+	}
+
+	//some checks to prevent under/overflow
+	if (mHealth < 0) mHealth = 0;
+	if (mHealth > mMaxHealth) mHealth = mMaxHealth;
+}
+
 void Player::mAttackPress()
 {
+	//Not allowed to use sword while wallclinging
 	if (mWallClinging) return;
 	if (mAttackCoolDown == 0)
 	{
