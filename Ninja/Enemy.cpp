@@ -24,6 +24,7 @@ Enemy::Enemy()
 	mRewindAnimation = false;
 	mOddFrame = false;
 	mLevel = NULL;
+	mHitStun = 0;
 }
 
 Enemy::Enemy(Uint8 x, Uint8 y, bool right, Level* level)
@@ -39,17 +40,15 @@ Enemy::Enemy(Uint8 x, Uint8 y, bool right, Level* level)
 	mRewindAnimation = false;
 	mOddFrame = false;
 	mLevel = level;
-
+	mHitStun = 0;
 }
 
 void Enemy::step(vector<SDL_Rect>& colliders)
-{
-	mYV += kDefault_Gravity;
-	mXV = mDirectionRight ? kDefault_WalkSpeed : -kDefault_WalkSpeed;
-	
-	
+{	
 	if (mHitStun <= 0 && mHealth > 0)//cant move if you're stunned
 	{
+		mYV += kDefault_Gravity;
+		mXV = mDirectionRight ? kDefault_WalkSpeed : -kDefault_WalkSpeed;
 		attack();//shouldn't attack in hitstun
 		checkHurt();//shouldn't get attacked in hitstun
 		move(colliders, kDefault_OffsetCollisionBox);
