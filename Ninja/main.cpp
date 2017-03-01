@@ -74,7 +74,7 @@ bool init()
 
 	//Initialize window
 	gWindow = SDL_CreateWindow("ninja", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
-		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN /*| SDL_WINDOW_FULLSCREEN_DESKTOP*/);
+		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 	if (gWindow == NULL)
 	{
 		cout << "Window could not initialize!\n" << SDL_GetError() << endl;
@@ -227,6 +227,7 @@ int main(int argc, char* args[])
 		return 0;
 	}
 	bool quit = false;
+	bool ghostalive = true;//just a temporary variable for testing, will probably stick around for a while
 	Player ninja;
 	ninja.setTexture(&gNinjaTexture);
 	gFontTexture.colorMod(0xFF, 0, 0);
@@ -262,7 +263,8 @@ int main(int argc, char* args[])
 
 		//ninja.move(debugLevel.getRects());
 		ninja.step();
-		Blinky.step();
+		if (ghostalive)
+			Blinky.step();
 		ninja.endstep();
 
 		camera.x = ninja.getX() - kScreenWidth/2 + ninja.kClipWidth/2;
@@ -272,6 +274,7 @@ int main(int argc, char* args[])
 		ninja.render(camera.x, camera.y);
 		Blinky.render(camera.x, camera.y);
 		gUIDrawer.drawHealthbar(health, maxhealth, health);
+		ghostalive = Blinky.checkLiving();
 		/*
 		gWriter.RenderString("the quick brown fox jumps over lazy dog", 8, 8, &red);
 		gWriter.RenderString("THE QUICK BROWN FOX JUMPS OVER LAZY DOG", 8, 16, &red);

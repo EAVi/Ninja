@@ -52,10 +52,11 @@ void Enemy::step(vector<SDL_Rect>& colliders)
 		attack();//shouldn't attack in hitstun
 		checkHurt();//shouldn't get attacked in hitstun
 		move(colliders, kDefault_OffsetCollisionBox);
-		handleAnimation();
 	}
 	else --mHitStun;
 	
+	handleAnimation();
+
 	//Change direction when a wall is touched
 	if (mTouchIndex & (kTouchingLeft | kTouchingRight)) mDirectionRight = !mDirectionRight;
 }
@@ -147,8 +148,16 @@ void Enemy::handleAnimation()
 {
 	if (mOddFrame)//this makes it so that the ghosts are only 30FPS 
 	{
+		if (mHealth <= 0)//dying animation
+		{
+			if (mAnimationFrame > kDeathEnd || mAnimationFrame < kDeathStart)
+			{
+				mRewindAnimation = false;
+				mAnimationFrame = kDeathStart;
+			}
+		}
 
-		if (mAnimationFrame > kRunEnd || mAnimationFrame < kRunStart)
+		else if (mAnimationFrame > kRunEnd || mAnimationFrame < kRunStart)
 		{
 			mRewindAnimation = false;
 			mAnimationFrame = kRunStart;
@@ -176,6 +185,13 @@ void Enemy::setTexture(LTexture* texture)
 		spriteClipper(texture->getWidth(), 
 		texture->getHeight(), 
 		{ 0, 0, kDefault_ClipW, kDefault_ClipH });
+}
+
+bool Enemy::checkLiving()
+{
+	if (mAnimationFrame == kDeathEnd)
+		return false;
+	return true;
 }
 
 

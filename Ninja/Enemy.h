@@ -43,6 +43,7 @@ public:
 	virtual void checkHurt();//checks for damage taken and hitstun
 	virtual void handleAnimation();
 	virtual void setTexture(LTexture* texture);//sets texture for all default enemy
+	virtual bool checkLiving();//for the level to know when to delete an enemy
 private:
 	bool mBoss;
 	int mHealth;
