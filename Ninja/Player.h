@@ -100,7 +100,7 @@ private:
 	static const int kTerminalVelocity = 7;//player terminal velocity
 //NOTE THAT INTEGER GRAVITY WILL BE REMOVED SOON
 	static const int kGravity = 1;//player gravity
-	static const int kJumpVelocity = 11;//velocity gained during jump
+	static const int kJumpVelocity = 9;//velocity gained during jump
 	static const int kMovementSpeed = 5;
 	static const Uint8 kSwordLag = 24;
 	static const Uint8 kSwordFrames = 3;

@@ -20,7 +20,7 @@ public:
 	static const int kDefault_Gravity = 1;//gravity for base class enemy
 	static const int kDefault_TerminalVelocity = 6;//TV for base class enemy
 	static LTexture* kDefault_Texture;//texture for base class enemy
-	static const int kDefault_MaxHealth = 20;//max health for base class enemy
+	static const int kDefault_MaxHealth = 1;//max health for base class enemy
 	static std::vector<SDL_Rect> kDefault_AnimationClips;//vector containing the sprite animation rectangles
 	static SDL_Rect kDefault_OffsetCollisionBox;//collisionBox to be added with mX, mY in order to check optimal position
 	static SDL_Rect kDefault_OffsetHitbox;

@@ -126,11 +126,12 @@ private:
 	int mLevelWidth;
 	int mLevelHeight;
 	bool mDeathBarrier;
-	std::vector<Enemy*> mEnemies;//pointer for polymorphism
 	std::vector<Hitbox> mPlayerHitboxes;
 	std::vector<Hitbox> mPlayerHurtboxes;
 	std::vector<Hitbox> mEnemyHitboxes;
 	std::vector<Hitbox> mEnemyHurtboxes;
+	static const Uint8 kMaxEnemies = 255;
+	Enemy* mEnemies[kMaxEnemies];//pointer for polymorphism
 
 };
 
