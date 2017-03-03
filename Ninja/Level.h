@@ -123,6 +123,8 @@ public:
 	void initEnemyArray();
 
 	//allocates some enemy memory and puts it into the array
+	//eType is the enemy type you want, any number from 0-254
+	//x and y are the coordinates, multiplied by the tilesize 16
 	void addEnemy(Uint8 eType, Uint8 x, Uint8 y);
 
 	//does a step for every enemy

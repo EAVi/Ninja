@@ -234,6 +234,8 @@ int main(int argc, char* args[])
 	SDL_Rect camera = { 0, 0, kScreenWidth, kScreenHeight };
 	SDL_Color red = { 0xFF, 0, 0, 0xFF };
 
+	//toggle-able debug options
+	bool debugtoggle = false;
 
 	//build the debug level
 	Level debugLevel(1366,768,&camera);
@@ -252,9 +254,11 @@ int main(int argc, char* args[])
 		debugLevel.clearHitboxes();//need to put before the event handler because the events make hitboxes
 		while (SDL_PollEvent(&mainevent))
 		{
-			if (mainevent.type == SDL_QUIT)
+			if (mainevent.type == SDL_QUIT)//alt-f4 or clicking x on window
 				quit = true;
-			if (mainevent.key.keysym.sym == SDLK_ESCAPE && mainevent.type == SDL_KEYDOWN)
+			if (mainevent.key.keysym.sym == SDLK_BACKQUOTE && mainevent.type == SDL_KEYDOWN && mainevent.key.repeat == 0)//press tilde key
+				debugtoggle = !debugtoggle;
+			if (mainevent.key.keysym.sym == SDLK_ESCAPE && mainevent.type == SDL_KEYDOWN && debugtoggle)
 				debugLevel.addEnemy(0, 55, 6);
 
 			ninja.handleEvent(mainevent);
@@ -275,14 +279,15 @@ int main(int argc, char* args[])
 		ninja.render(camera.x, camera.y);
 		debugLevel.drawEnemies();
 		gUIDrawer.drawHealthbar(health, maxhealth, health);
-		/*
-		gWriter.RenderString("the quick brown fox jumps over lazy dog", 8, 8, &red);
-		gWriter.RenderString("THE QUICK BROWN FOX JUMPS OVER LAZY DOG", 8, 16, &red);
-		gWriter.RenderString("0123456789.", 8, 24, &red);
-		*/
-		gWriter.RenderString(ninja.getX(), 8, 32);
-		gWriter.RenderString(ninja.getY(), 40, 32);
-		debugLevel.debugShowHitboxes(*gRenderer);
+
+		if (debugtoggle)//the debug stuff, shows some stats, and renders hurtboxes
+		{
+			gWriter.RenderString(ninja.getX(), 8, 32);
+			gWriter.RenderString(ninja.getY(), 40, 32);
+			gWriter.RenderString(debugLevel.enemyCount(), 8, 40);
+
+			debugLevel.debugShowHitboxes(*gRenderer);
+		}
 
 		SDL_RenderPresent(gRenderer);
 	}
