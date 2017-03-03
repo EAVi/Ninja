@@ -252,8 +252,13 @@ void Level::stepEnemies()
 	for (int i = 0; i < kMaxEnemies; ++i)
 	{
 		if (mEnemies[i] != NULL)
+		{
 			mEnemies[i]->step();
+			if (!mEnemies[i]->checkLiving())
+				mDeleteEnemy(i);
+		}
 	}
+
 }
 
 void Level::drawEnemies()
@@ -263,6 +268,17 @@ void Level::drawEnemies()
 		if (mEnemies[i] != NULL)
 			mEnemies[i]->render(mCamera->x,mCamera->y);
 	}
+}
+
+Uint8 Level::enemyCount()
+{
+	Uint8 c = 0;
+	for (int i = 0; i < kMaxEnemies; ++i)
+	{
+		if (mEnemies[i] != NULL)//if the slot isn't empty, it's an enemy
+			++c;
+	}
+	return c;
 }
 
 void Level::mDeleteEnemy(Uint8 slot)

@@ -131,6 +131,9 @@ public:
 	//does a render for every enemy
 	void drawEnemies();
 
+	//returns number of enemies
+	Uint8 enemyCount();
+
 private:
 	Matrix<Block> mBlocks;
 	std::vector<LTexture*> mBGTextures;

@@ -233,7 +233,6 @@ int main(int argc, char* args[])
 	gFontTexture.colorMod(0xFF, 0, 0);
 	SDL_Rect camera = { 0, 0, kScreenWidth, kScreenHeight };
 	SDL_Color red = { 0xFF, 0, 0, 0xFF };
-	Enemy Blinky(50, 6);//the default enemy is a ghost texture, hence Blinky
 
 
 	//build the debug level
@@ -246,10 +245,7 @@ int main(int argc, char* args[])
 	int health = 5;
 	int maxhealth = 20;
 
-	debugLevel.addEnemy(0,55,6);
-
 	ninja.setLevel(&debugLevel);
-	Blinky.setLevel(&debugLevel);
 
 	while (!quit)
 	{
@@ -258,15 +254,18 @@ int main(int argc, char* args[])
 		{
 			if (mainevent.type == SDL_QUIT)
 				quit = true;
+			if (mainevent.key.keysym.sym == SDLK_ESCAPE && mainevent.type == SDL_KEYDOWN)
+				debugLevel.addEnemy(0, 55, 6);
+
 			ninja.handleEvent(mainevent);
+
 		}
 		SDL_SetRenderDrawColor(gRenderer, 0,0,0,0xFF);
 		SDL_RenderClear(gRenderer);
 
 		//ninja.move(debugLevel.getRects());
 		ninja.step();
-		if (ghostalive)
-			Blinky.step();
+		debugLevel.stepEnemies();
 		ninja.endstep();
 
 		camera.x = ninja.getX() - kScreenWidth/2 + ninja.kClipWidth/2;
@@ -274,9 +273,8 @@ int main(int argc, char* args[])
 		debugLevel.step();//bounds camera and renders
 
 		ninja.render(camera.x, camera.y);
-		Blinky.render(camera.x, camera.y);
+		debugLevel.drawEnemies();
 		gUIDrawer.drawHealthbar(health, maxhealth, health);
-		ghostalive = Blinky.checkLiving();
 		/*
 		gWriter.RenderString("the quick brown fox jumps over lazy dog", 8, 8, &red);
 		gWriter.RenderString("THE QUICK BROWN FOX JUMPS OVER LAZY DOG", 8, 16, &red);
