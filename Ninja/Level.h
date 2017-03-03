@@ -48,6 +48,9 @@ public:
 	//-Constructor with dimensions
 	Level(int width, int height, SDL_Rect* camera);
 
+	//-Deconstructor, destroys all enemies
+	~Level();
+
 	//-Returns a rectangle of the level's dimensions
 	SDL_Rect getLevelDimensions();
 
@@ -80,7 +83,7 @@ public:
 	//-Corrects the camera's position so it doesnt go out of bounds
 	void boundCamera();
 
-	//-Imports all the background textures
+	//-Imports all the background textures, goes to a static function
 	void setBGTextures(std::vector<LTexture>& textures);
 	void setBGTextures(std::vector<LTexture*>& textures);//-Overload using pointers
 
@@ -116,6 +119,18 @@ public:
 
 	void step();
 
+	//nullifies all enemy pointers
+	void initEnemyArray();
+
+	//allocates some enemy memory and puts it into the array
+	void addEnemy(Uint8 eType, Uint8 x, Uint8 y);
+
+	//does a step for every enemy
+	void stepEnemies();
+
+	//does a render for every enemy
+	void drawEnemies();
+
 private:
 	Matrix<Block> mBlocks;
 	std::vector<LTexture*> mBGTextures;
@@ -132,7 +147,8 @@ private:
 	std::vector<Hitbox> mEnemyHurtboxes;
 	static const Uint8 kMaxEnemies = 255;
 	Enemy* mEnemies[kMaxEnemies];//pointer for polymorphism
-
+	void mDeleteEnemy(Uint8 slot);//deletes an enemy if the slot given has an enemy
+	void mClearEnemies();//deletes all enemies in the level
 };
 
 #endif

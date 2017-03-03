@@ -246,6 +246,8 @@ int main(int argc, char* args[])
 	int health = 5;
 	int maxhealth = 20;
 
+	debugLevel.addEnemy(0,55,6);
+
 	ninja.setLevel(&debugLevel);
 	Blinky.setLevel(&debugLevel);
 

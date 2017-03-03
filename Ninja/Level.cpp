@@ -19,6 +19,7 @@ Level::Level()
 	mPlayerHurtboxes.clear();
 	mEnemyHitboxes.clear();
 	mEnemyHurtboxes.clear();
+	initEnemyArray();
 }
 
 Level::Level(int width, int height, SDL_Rect* camera)
@@ -35,6 +36,12 @@ Level::Level(int width, int height, SDL_Rect* camera)
 	mPlayerHurtboxes.clear();
 	mEnemyHitboxes.clear();
 	mEnemyHurtboxes.clear();
+	initEnemyArray();
+}
+
+Level::~Level()
+{
+	this->mClearEnemies();
 }
 
 SDL_Rect Level::getLevelDimensions()
@@ -209,6 +216,70 @@ void Level::step()
 	boundCamera();
 	renderBg();
 	renderLevel();
+}
+
+void Level::initEnemyArray()
+{
+	for (int i = 0; i < kMaxEnemies; ++i)
+	{
+		mEnemies[i] = NULL;
+	}
+}
+
+void Level::addEnemy(Uint8 eType, Uint8 x, Uint8 y)
+{
+	Uint8 slot = 0;
+	for (; slot < kMaxEnemies; ++slot)
+	{
+		if (mEnemies[slot] == NULL)
+			break;
+
+	}
+
+	//no more than 255 enemies allowed in a level, my dumb rule
+	if (slot == kMaxEnemies) return;
+
+	switch (eType)
+	{
+	default:
+		mEnemies[slot] = new Enemy(x, y, false, this);
+	}
+
+}
+
+void Level::stepEnemies()
+{
+	for (int i = 0; i < kMaxEnemies; ++i)
+	{
+		if (mEnemies[i] != NULL)
+			mEnemies[i]->step();
+	}
+}
+
+void Level::drawEnemies()
+{
+	for (int i = 0; i < kMaxEnemies; ++i)
+	{
+		if (mEnemies[i] != NULL)
+			mEnemies[i]->render(mCamera->x,mCamera->y);
+	}
+}
+
+void Level::mDeleteEnemy(Uint8 slot)
+{
+	if (mEnemies[slot] != NULL)
+	{
+		delete mEnemies[slot];
+		mEnemies[slot] = NULL;
+	}
+}
+
+void Level::mClearEnemies()
+{
+	for (int i = 0; i < kMaxEnemies; ++i)
+	{
+		mDeleteEnemy(i);
+	}
 }
 
 bool Level::Loadmap(string filename)
