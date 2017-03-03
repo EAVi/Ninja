@@ -1,13 +1,7 @@
-Begin Dumb legal stuff:
-                All files provided are 100% made by Eric "Magnar" Villanueva. 
-      Yes, even the textures; they're all mine.
-                You're allowed to do whatever you want with these files except sell them or pass them 
-      off as your own.
-                (This games isn't impressive at all so nobody would buy it anyways).
-                You are absolutely allowed to clone this project and make your own repository 
-      of it, so long as your repo has a readme with a link to "https://github.com/EAVi/Ninja"
-      I mean, If you have illegal intentions, this 
-                document is probably not gonna stop you anyways
+Begin Dumb legal stuff
+               -Don't steal my stuff. Everything here is my stuff -> Dont steal anything here.
+               -Give credit where it is due, reused code and other work should link back to this page:
+                  https://github.com/EAVi/Ninja
 End Dumb legal stuff
     
     Controls:
@@ -16,6 +10,18 @@ End Dumb legal stuff
     Spacebar - jump
     M - sword attack
     
+    To compile on Linux:
+    -Get the sdl2 development libraries.
+    -Get the sdl2-image development libraries.
+    -Use the makefile.
+    
+    To compile on Windows:
+    -I use Visual Studio 2015 with Git extension, I compile using the SDL2 and SDL2-image x86 libraries. 
+    You can compile however you want though.
+    -Figure it out yourself lol.
+    
+    
+    Misc:
     If you look at the files, you'll probably notice a directory "data" with a file "debug.txt"
     the file contains a bunch of 8-bit numbers. This file is actually the map file that is loaded in order to construct the map. 
     In essence, it's just an array 8-bit numbers used to read in arguments of background objects and block tile objects.
