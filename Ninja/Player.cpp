@@ -99,7 +99,7 @@ void Player::endstep()
 		mCheckHurt();
 	else //stun animation
 	{
-		if (mAttackCoolDown <= 0)
+		if (mAttackCoolDown <= 0 && mTouchIndex && kTouchingTop)
 			mAnimationFrame = kStandStun;
 		else if (!(mTouchIndex && kTouchingTop))
 			mAnimationFrame = kAirStun;
