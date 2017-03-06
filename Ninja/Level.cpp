@@ -395,6 +395,24 @@ bool Level::Loadmap(string filename)
 		});
 	}//end block loader
 
+	 //Enemy Loader
+	attrs = 3;//(8, 16, 16, 8, 1,< 1) //there's leftover 6 bits
+	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); i = i + attrs)
+	{
+		loadPoint = i;
+		//gotta stop making backgrounds eventually, if the texture number is at maximum, go to next part
+		if (idata[i] == 255)
+		{
+			++loadPoint;
+			break;
+		}
+
+		addEnemy(
+			idata[i], 
+			idata[i + 1], 
+			idata[i + 2]);
+	}//end Enemy loader
+
 	return true;
 }/*Loadmap*/
 

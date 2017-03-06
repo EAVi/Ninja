@@ -52,11 +52,12 @@ public:
 	void setposition(int x, int y);
 
 	//return x,y position
-	int getX();
-	int getY();
+	int& getX();
+	int& getY();
 
 	//returns player health
-	int getHealth();
+	int& getHealth();
+	int& getMaxHealth();
 private:
 	LTexture* mTexture;
 	SDL_Point mRestorePoint;
@@ -75,6 +76,7 @@ private:
 	Uint8 mTouchIndex;
 	Uint16 mAnimationFrame;
 	Uint8 mAttackCoolDown;
+	Uint8 mInvincibilityFrames;
 	Hitbox mSwordHitbox;
 	bool mWallClinging;
 	bool mJump;
@@ -98,13 +100,13 @@ private:
 
 	static float kGravityF;//SOON TO REPLACE INTEGER GRAVITY
 	static const int kTerminalVelocity = 7;//player terminal velocity
-//NOTE THAT INTEGER GRAVITY WILL BE REMOVED SOON
-	static const int kGravity = 1;//player gravity
 	static const int kJumpVelocity = 9;//velocity gained during jump
 	static const int kMovementSpeed = 5;
 	static const Uint8 kSwordLag = 24;
-	static const Uint8 kSwordFrames = 3;
+	static const Uint8 kSwordFrames = 4;
 	static const Uint8 kHitStunFrames = 5;
+	static const Uint8 kInvincibilityFrames = 20;
+	static const Uint8 kBlinkingFrequency = 10;
 	static SDL_Rect kStandardCollisionBox;
 	static SDL_Rect kJumpingCollisionBox;
 	static const int kMaxHealth = 50;
@@ -125,7 +127,11 @@ enum NinjaAnimationFrames
 	kEffectSlice = 47,//the slicing crescent thing
 	kWalkSlashStart = 48,
 	kWalkSlashEnd = 60,
-	kWallCling = 61
+	kWallCling = 61,
+	kStandStun = 62,
+	kStandStunSword = 63,
+	kAirStun = 16
+
 };
 
 #endif

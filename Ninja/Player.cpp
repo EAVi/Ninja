@@ -21,6 +21,7 @@ Player::Player()
 	mSwordHitbox = { {6,0,19,25}, 3 };
 	mMaxHealth = kMaxHealth;
 	mHealth = mMaxHealth;
+	mInvincibilityFrames = 0;
 }
 
 void Player::setTexture(LTexture* texture)
@@ -93,8 +94,19 @@ void Player::step()
 
 void Player::endstep()
 {
+	mInvincibilityFrames = (mInvincibilityFrames != 0) ? mInvincibilityFrames - 1 : mInvincibilityFrames;
 	if (mHitStun == 0)
 		mCheckHurt();
+	else //stun animation
+	{
+		if (mAttackCoolDown <= 0)
+			mAnimationFrame = kStandStun;
+		else if (!(mTouchIndex && kTouchingTop))
+			mAnimationFrame = kAirStun;
+		else mAnimationFrame = kStandStunSword;
+	}
+	if (mHitStun == 1)//last frame of hitstun, apply invincibility frames
+		mInvincibilityFrames = kInvincibilityFrames + 1;
 
 }
 
@@ -127,6 +139,11 @@ void Player::move(vector<SDL_Rect>& colliders)
 
 void Player::render(int x, int y)
 {
+	//Do not render on the blinking frames
+	if ((mInvincibilityFrames + 1) % kBlinkingFrequency == 0)
+		return;
+
+
 	mTexture->renderTexture(this->mX - x, this->mY - y, 
 		&mAnimationFrameRectangles[mAnimationFrame], 0.0, NULL, mFlipType);
 	
@@ -196,19 +213,24 @@ void Player::setposition(int x, int y)
 	mY = y;
 }
 
-int Player::getX()
+int& Player::getX()
 {
 	return this->mX;
 }
 
-int Player::getY()
+int& Player::getY()
 {
 	return this->mY;
 }
 
-int Player::getHealth()
+int& Player::getHealth()
 {
 	return mHealth;
+}
+
+int& Player::getMaxHealth()
+{
+	return mMaxHealth;
 }
 
 
@@ -341,19 +363,33 @@ void Player::mAttack()
 
 void Player::mCheckHurt()
 {
+	if (mInvincibilityFrames > 0) return; //can't get hurt while invincible
+
 	SDL_Rect hurtbox = mCollisionBox;
 	hurtbox.x += mX;
 	hurtbox.y += mY;
 	
-	vector<Hitbox> temp = mLevel->getEnemyHitboxes();
+	int hdamage = 0;//highest damage
+	int hhitstun = 0;//highest stun(DNE yet)
+
+	vector<Hitbox>& temp = mLevel->getEnemyHitboxes();
 	for (int i = 0, j = temp.size(); i < j; ++i)
 	{
 		if (checkCollision(hurtbox, temp[i].hitbox))
 		{
-			mHealth -= temp[i].damage;
-			mHitStun = kHitStunFrames;
+			if (temp[i].damage > hdamage)
+				hdamage = temp[i].damage;
+			if (kHitStunFrames > hhitstun)//will change the hitbox data structure to have hitstun
+				hhitstun = kHitStunFrames;
 		}
 	}
+
+	mHealth -= hdamage;
+	mHitStun = hhitstun;
+
+	if (hdamage > 0 && hhitstun == 0)//the way invincibility is handled, the player would otherwise be damage-able the next frame
+		mInvincibilityFrames = kInvincibilityFrames;
+
 
 	//some checks to prevent under/overflow
 	if (mHealth < 0) mHealth = 0;

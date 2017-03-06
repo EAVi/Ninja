@@ -278,7 +278,7 @@ int main(int argc, char* args[])
 
 		ninja.render(camera.x, camera.y);
 		debugLevel.drawEnemies();
-		gUIDrawer.drawHealthbar(health, maxhealth, health);
+		gUIDrawer.drawHealthbar(ninja.getHealth(), ninja.getMaxHealth(), health);
 
 		if (debugtoggle)//the debug stuff, shows some stats, and renders hurtboxes
 		{

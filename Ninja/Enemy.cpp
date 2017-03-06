@@ -94,12 +94,12 @@ void Enemy::attack()
 {
 	if (mLevel == NULL) return; //Enemies aren't always bound to a level
 	//does nothing so far
-	Hitbox hurtbox = { kDefault_OffsetCollisionBox , 4};
+	Hitbox hurtbox = { kDefault_OffsetCollisionBox , 0};
 	hurtbox.hitbox.x += mX;
 	hurtbox.hitbox.y += mY;
 	mHurtbox = hurtbox.hitbox;
 
-	Hitbox hitbox = { kDefault_OffsetHitbox, 0 };
+	Hitbox hitbox = { kDefault_OffsetHitbox, 4 };
 	hitbox.hitbox.x += mX;
 	hitbox.hitbox.y += mY;
 
@@ -129,7 +129,7 @@ void Enemy::render(int xD, int yD)
 
 void Enemy::checkHurt()
 {
-	vector<Hitbox> temp = mLevel->getPlayerHitboxes();
+	vector<Hitbox>& temp = mLevel->getPlayerHitboxes();
 	for (int i = 0, j = temp.size(); i < j; ++i)
 	{
 		if (checkCollision(mHurtbox, temp[i].hitbox))

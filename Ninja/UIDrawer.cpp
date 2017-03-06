@@ -30,18 +30,21 @@ void UIDrawer::drawHealthbar(int & health, int & maxhealth, int & lives) const
 	SDL_Color blue = {0,0,255,255};
 	SDL_Color red = { 255,0,0,255 };
 
-	gUITextures[kHealthbarGradient]->colorMod(red);
+	if (width <= Healthbar::dims.w >> 1 /*w divided by 2*/)
+		gUITextures[kHealthbarGradient]->colorMod(red);
+	else 
+		gUITextures[kHealthbarGradient]->colorMod(blue);
 
-		gUITextures[kHealthbarGradient]->renderTexture(
-			Healthbar::dims.x,
-			Healthbar::dims.y,
-			NULL,
-			0.0,
-			NULL,
-			SDL_FLIP_NONE,
-			&width,
-			&height
-			);
+	gUITextures[kHealthbarGradient]->renderTexture(
+		Healthbar::dims.x,
+		Healthbar::dims.y,
+		NULL,
+		0.0,
+		NULL,
+		SDL_FLIP_NONE,
+		&width,
+		&height
+		);
 	if (lives <= 5)//shows only a certain amount of lives before it just shows "x6, x7, etc."
 		for (int i = 0; i < lives; ++i)
 		{
