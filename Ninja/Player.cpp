@@ -305,7 +305,7 @@ void Player::mCollisionSquisher()
 		{//dont need to have this check, since I'm probably not going to change the collision boxes
 			mY += (kJumpingCollisionBox.y +  kJumpingCollisionBox.h) - (kStandardCollisionBox.y + kStandardCollisionBox.h);
 			mYVelocityF = 0;
-			mYVelocity = 0;
+			mYVelocity = mYVelocityF;
 		}
 	}//end box squisher
 }
@@ -332,7 +332,11 @@ void Player::mBoundPlayer()
 		{
 			mX = mRestorePoint.x;
 			mY = mRestorePoint.y;
-			//kill the player
+			mY += kStandardCollisionBox.y + kStandardCollisionBox.h - kJumpingCollisionBox.y - kJumpingCollisionBox.h;
+			mYVelocityF = 0;
+			mYVelocity = mYVelocityF;
+			mTouchIndex |= kTouchingTop;
+			//should kill the player, but not now
 		}
 	}
 }
