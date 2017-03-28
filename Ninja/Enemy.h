@@ -37,6 +37,10 @@ public:
 	virtual void step(std::vector<SDL_Rect>& colliders);//virtual function that will be called for every object for every frame
 	virtual void step();
 	void move(std::vector<SDL_Rect>& colliders, SDL_Rect& offBox);//movement function, the velocities should be changed beforehand in the step() function
+	void moveRocket();//movement function, just moves and doesn't check for collision (can be used for bullet-bill-ish enemies)
+	void moveEdge(std::vector<SDL_Rect>& colliders, SDL_Rect& offBox);
+	//movement function, checks for collision, but doesn't do optimal-move(for enemies that won't be affected by gravity, intended for red-koopa-like enemies)
+	//it's also to reduce overhead, not sure if it will actually help
 	void setLevel(Level* level);//sets the level for the enemy
 	virtual void attack();//virtual attack function
 	virtual void render(int xD, int yD);//render relative to camera

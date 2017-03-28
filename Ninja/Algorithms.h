@@ -46,6 +46,20 @@ std::vector<SDL_Rect> getCollisionIndex(SDL_Rect& player, std::vector<SDL_Rect>&
 //given many collision boxes, finds the optimal movement
 SDL_Point optimizedMove(SDL_Rect& player, std::vector<SDL_Rect>& boxes, int& xV, int& yV, Uint8& touchIndex);
 
+/*
+given a single collision box, check if on edge 
+uses three rectangles to check if there's an edge ahead
+*/
+bool checkEdge(SDL_Rect& lowerL, SDL_Rect& lowerR, SDL_Rect& boxes);
+
+/*
+checks edge stuff for certain blocks
+Why this functions is needed:
+some enemies just need to check whether there's a edge or wall in front of them or not.
+Optimized move may cause a bit of overhead, this is an attempt to improve time complexity on small-fry enemies
+*/
+bool checkEdges(SDL_Rect& player, std::vector<SDL_Rect>& boxes);
+
 //creates a vector of the clips for a spritesheet
 std::vector<SDL_Rect> spriteClipper(int width, int height, SDL_Rect clipsize);
 

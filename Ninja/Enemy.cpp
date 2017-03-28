@@ -47,11 +47,11 @@ void Enemy::step(vector<SDL_Rect>& colliders)
 {	
 	if (mHitStun <= 0 && mHealth > 0)//cant move if you're stunned
 	{
-		mYV += kDefault_Gravity;
+		//mYV += kDefault_Gravity;
 		mXV = mDirectionRight ? kDefault_WalkSpeed : -kDefault_WalkSpeed;
 		attack();//shouldn't attack in hitstun
 		checkHurt();//shouldn't get attacked in hitstun
-		move(colliders, kDefault_OffsetCollisionBox);
+		moveEdge(colliders, kDefault_OffsetCollisionBox);
 	}
 	else --mHitStun;
 	
@@ -69,20 +69,38 @@ void Enemy::step()
 
 void Enemy::move(vector<SDL_Rect>& colliders, SDL_Rect& offBox)
 {
-	int offsetX = offBox.x;//the offset of the collision box
-	int offsetY = offBox.y;//the offset of the collision box
-	SDL_Rect enemy = { mX + offsetX, mY + offsetY, offBox.w, offBox.h };
-
+	SDL_Rect enemy = { mX + offBox.x, mY + offBox.y, offBox.w, offBox.h };
 
 	//checks for collision and moves accordingly
 	//also modifies the y velocity if needed
 	SDL_Point optimalPoint = optimizedMove(enemy, colliders, mXV, mYV, mTouchIndex);
-	mX = optimalPoint.x - offsetX;
-	mY = optimalPoint.y - offsetY;
+	mX = optimalPoint.x - offBox.x;
+	mY = optimalPoint.y - offBox.y;
 
 	if (mYV >= kDefault_TerminalVelocity)
 		mYV = kDefault_TerminalVelocity;
 
+}
+
+void Enemy::moveRocket()
+{
+	mX += mXV;
+	mY += mYV;
+}
+
+void Enemy::moveEdge(std::vector<SDL_Rect>& colliders, SDL_Rect & offBox)
+{
+	mTouchIndex = 0;
+
+	mX += mXV;
+	mY += mYV;
+
+	SDL_Rect enemy = { mX + offBox.x, mY + offBox.y, offBox.w, offBox.h };
+
+	if (checkEdges(enemy, colliders))
+	{
+		mTouchIndex = 255;
+	}
 }
 
 void Enemy::setLevel(Level * level)

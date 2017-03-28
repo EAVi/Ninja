@@ -106,7 +106,7 @@ private:
 	static const Uint8 kSwordFrames = 4;
 	static const Uint8 kHitStunFrames = 5;
 	static const Uint8 kInvincibilityFrames = 20;
-	static const Uint8 kBlinkingFrequency = 10;
+	static const Uint8 kBlinkingFrequency = 3;
 	static SDL_Rect kStandardCollisionBox;
 	static SDL_Rect kJumpingCollisionBox;
 	static const int kMaxHealth = 50;

@@ -126,7 +126,7 @@ SDL_Point optimizedMove(SDL_Rect& player, vector<SDL_Rect>& boxes, int& xV, int&
 	tempRect.x += xV;
 	tempRect.y += yV;
 
-	//v0.4 to get a good index, expand all edges by 1 
+	//to get a good index, expand all edges by 1 
 	//before getting the collision index, then unexpand
 	tempRect.x -= 1; tempRect.y -= 1;
 	tempRect.w += 2; tempRect.h += 2;
@@ -134,7 +134,7 @@ SDL_Point optimizedMove(SDL_Rect& player, vector<SDL_Rect>& boxes, int& xV, int&
 	//checks collision for intended movement
 	vector<SDL_Rect> colliders = getCollisionIndex(tempRect, boxes);
 
-	//v0.4 unexpand
+	//unexpand
 	tempRect.x += 1; tempRect.y += 1;
 	tempRect.w -= 2; tempRect.h -= 2;
 
@@ -196,88 +196,50 @@ SDL_Point optimizedMove(SDL_Rect& player, vector<SDL_Rect>& boxes, int& xV, int&
 	return{ tempRect.x, tempRect.y };
 }
 
-/*
-SDL_Point optimizedMove(SDL_Rect& player, vector<SDL_Rect>& boxes, int& xV, int& yV, Uint8& touchIndex)
+bool checkEdge(SDL_Rect & lowerL, SDL_Rect & lowerR, SDL_Rect & boxes)
 {
-	SDL_Rect tempRect = player;
-	tempRect.x += xV;
-	tempRect.y += yV;
-
-	//v0.4 to get a good index, expand all edges by 1 
-	//before getting the collision index, then unexpand
-	tempRect.x -= 1; tempRect.y -= 1;
-	tempRect.w += 2; tempRect.h += 2;
-
-	//checks collision for intended movement
-	vector<SDL_Rect> colliders = getCollisionIndex(tempRect, boxes);
-
-	//v0.4 unexpand
-	tempRect.x += 1; tempRect.y += 1;
-	tempRect.w -= 2; tempRect.h -= 2;
-
-	
-	//gets a touching index for the colliders, it's just a bunch of flags
-	touchIndex = getTouchingIndex(player, colliders);
-
-	//if there's no collision, then it ends here
-	if (colliders.size() == 0)
-		return{ tempRect.x, tempRect.y };
-
-	//resets the rectangle's Y position, we're gonna do X testing
-	tempRect.y = player.y;
-	
-	//X testing, does not need to test if xV == 0
-	if (xV < 0)
-		if ((touchIndex & kTouchingRight)) tempRect.x = player.x;
-		else while (tempRect.x < player.x)
-		{
-			if (!checkCollision(tempRect, colliders))
-				break;
-			tempRect.x++;
-		}
-		
-	if (xV > 0)
-		if ((touchIndex & kTouchingLeft)) tempRect.x = player.x;
-		else while (tempRect.x > player.x)
-		{
-			if (!checkCollision(tempRect, colliders))
-				break;
-			tempRect.x--;
-		}
-
-	tempRect.y = player.y + yV;
-	//Y testing, same process, but touching collisions will reset velocity
-	if (yV < 0)
-		if (touchIndex & kTouchingBottom)
-		{
-			tempRect.y = player.y;
-			yV = 0;
-		}
-		else while (tempRect.y < player.y)
-		{
-			if (!checkCollision(tempRect, colliders))
-				break;
-			tempRect.y++;
-		}
-
-	if (yV > 0)
-		if (touchIndex & kTouchingTop)
-		{
-			tempRect.y = player.y;
-			yV = 0;
-		}
-		else while (tempRect.y > player.y)
-		{
-			if (!checkCollision(tempRect, colliders))
-				break;
-			tempRect.y--;
-		}
-
-	//return the optimized point
-	return{tempRect.x, tempRect.y};
+	return (!checkCollision(lowerL, boxes) || !checkCollision(lowerR, boxes));
 }
-*/
 
+
+bool checkEdges(SDL_Rect & player, std::vector<SDL_Rect>& boxes)
+{
+	//to get a good index, expand all edges by 1 
+	//before getting the collision index, then unexpand
+	player.x -= 1; player.y -= 1;
+	player.w += 2; player.h += 2;
+
+	//checks collision indexes
+	vector<SDL_Rect> colliders = getCollisionIndex(player, boxes);
+
+	//unexpand
+	player.x += 1; player.y += 1;
+	player.w -= 2; player.h -= 2;
+
+	SDL_Rect left, right, up;
+	up = player;
+	up.x -= up.w;
+	up.w = up.w * 3;
+	left = player;
+	left.x--;
+	left.y += left.h + 1;
+	left.w  = left.h = 1;
+	right = left;
+	right.x += player.w + 1;
+
+	
+
+	if (checkCollision(up, colliders)) return true;
+
+	bool lcheck = true, rcheck = true;
+
+	if (checkCollision(left, colliders))
+		lcheck = false;
+	if (checkCollision(right, colliders))
+		rcheck = false;
+
+	return (lcheck || rcheck);
+}
 
 vector<SDL_Rect> spriteClipper(int width, int height, SDL_Rect clipsize)
 {
