@@ -395,6 +395,8 @@ bool Level::Loadmap(string filename)
 		});
 	}//end block loader
 
+	mRects = rectangleMerge(mRects);
+
 	 //Enemy Loader
 	attrs = 3;//(8, 16, 16, 8, 1,< 1) //there's leftover 6 bits
 	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); i = i + attrs)

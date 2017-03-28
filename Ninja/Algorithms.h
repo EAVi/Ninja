@@ -63,5 +63,21 @@ bool checkEdges(SDL_Rect& player, std::vector<SDL_Rect>& boxes);
 //creates a vector of the clips for a spritesheet
 std::vector<SDL_Rect> spriteClipper(int width, int height, SDL_Rect clipsize);
 
+/*
+checks if a and b are glue-able and glues them if they are
+for example: a = {0,0,255,255} b = {256,0,20,255}
+the result is {0,0,276,255}
+*/
+SDL_Rect glueRectangles(SDL_Rect a, SDL_Rect b);
+
+/*
+gets all rectangles and glues gluable ones together
+this is to reduce the number of collision boxes in the level
+meaning more efficient collision detection
+*/
+std::vector<SDL_Rect> rectangleMerge(std::vector<SDL_Rect> rects);
+
+
+
 
 #endif

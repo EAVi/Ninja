@@ -261,3 +261,125 @@ vector<SDL_Rect> spriteClipper(int width, int height, SDL_Rect clipsize)
 
 	return tempClipper;
 }
+
+SDL_Rect glueRectangles(SDL_Rect a, SDL_Rect b)
+{
+	//if none of the conditions are met, this will be the error condition
+	SDL_Rect temp = {-1,-1,-1,-1};
+
+	int aTop = a.y;
+	int aLeft = a.x;
+	int aBottom = a.y + a.h;
+	int aRight = a.x + a.w;
+
+	int bTop = b.y;
+	int bLeft = b.x;
+	int bBottom = b.y + b.h;
+	int bRight = b.x + b.w;
+
+	//check if aligned on x coordinate
+	if (aLeft == bLeft && aRight == bRight)
+	{
+		//if it's aligned on the x coordinate, then you have to glue on the y-axis, only if they're touching or colliding on the y axis
+
+		//find the highest top (smallest y), the rectangles should be connected for this to work
+		if (between(aTop, bTop - 1, bBottom + 1))//if (bTop <= aTop <= bBottom)
+		{
+			temp.x = a.x;//a.x == b.x
+			temp.w = a.w;//a.w == b.w
+			temp.y = bTop;
+		}
+
+		if (between(bTop, aTop - 1, aBottom + 1))//if (aTop <= bTop <= aBottom)
+		{
+			temp.x = a.x;
+			temp.w = a.w;
+			temp.y = aTop;
+		}
+
+		//to find the height of the resultant rectangle, find the largest bottom
+		//much like in real life, bigger bottom == best candidate (heheheheh)
+		if (aBottom >= bBottom && temp.x != -1)//a has the deeper bottom, take that height
+			temp.h = aBottom - temp.y;
+		else if (bBottom >= aBottom && temp.x != -1)//b has the deeper bottom, take that height
+			temp.h = bBottom - temp.y;
+	}
+
+	//do the same stuff but switch the axis
+	//check if aligned on y coordinate
+	if (aTop == bTop && aBottom == bBottom)
+	{
+		//if it's aligned on the y coordinate, then you have to glue on the x-axis, only if they're touching or colliding on the x axis
+
+		//find the leftmost coordinate (smallest x)
+		if (between(aLeft, bLeft - 1, bRight + 1))//if (bLeft <= aLeft <= bRight)
+		{
+			temp.y = a.y;//a.y == b.y
+			temp.h = a.h;//a.h == b.h
+			temp.x = bLeft;
+		}
+
+		if (between(bLeft, aLeft - 1, aRight + 1))//if (aLeft <= aTop <= bRight)
+		{
+			temp.y = a.y;
+			temp.h = a.h;
+			temp.x = aLeft;
+		}
+
+		//then find the rightmost coordinate
+		//the butt joke doesn't work in this axis :(
+		if (aRight >= bRight && temp.y != -1)//a has the furthest right, take that right
+			temp.w = aRight - temp.x;
+		else if (bRight >= aRight && temp.y != -1)//b has the furthest right, take that right
+			temp.w = bRight - temp.x;
+	}
+
+	return temp;
+}
+
+std::vector<SDL_Rect> rectangleMerge(std::vector<SDL_Rect> rects)
+{
+	int origSize = rects.size() + 1;//needs to be +1 to enter the loop
+	vector<SDL_Rect> temp = rects;
+	vector<SDL_Rect> copy;
+	copy.clear();
+
+	while (origSize != copy.size())//will keep on going until the number doesn't reduce
+	{
+		copy = temp;
+		temp.clear();
+		bool* used = new bool[copy.size()];//to keep track of whether a rectangle has been already merged into another
+		
+		//initializing the used array to all false
+		for (int i = 0, j = copy.size(); i < j; ++i)
+			used[i] = false;
+
+		for (int i = 0, j = copy.size(); i < j; ++i)
+		{
+			for (int k = i + 1; k < j; ++k)
+			{
+				SDL_Rect glued = { -1,-1,-1,-1 };//the glued together resultant, with a default error
+				if (!used[i] && !used[k])
+					glued = glueRectangles(copy[i], copy[k]);
+				if (glued.x != -1)//{-1,-1,-1,-1} is the default error, and I won't have any negative values in my game
+				{
+					used[i] = used[k] = true;
+					temp.push_back(glued);
+				}
+			}
+			
+			if (!used[i]) temp.push_back(copy[i]);
+		}
+		delete used;
+
+		/*
+		//debugging stuff, just shows the steps
+		for (int i = 0, j = temp.size(); i < j; ++i)
+			cout << temp[i].x << ',' << temp[i].y << ',' << temp[i].w << ',' << temp[i].h << '|';
+		cout << endl;
+		*/
+
+		origSize = temp.size();
+	}
+	return temp;
+}
