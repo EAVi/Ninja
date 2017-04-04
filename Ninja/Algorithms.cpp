@@ -277,6 +277,20 @@ SDL_Rect glueRectangles(SDL_Rect a, SDL_Rect b)
 	int bBottom = b.y + b.h;
 	int bRight = b.x + b.w;
 
+	//check if a is inside b
+	if (between(aLeft, bLeft - 1, bRight + 1)
+		&& between(aRight, bLeft - 1, bRight + 1)
+		&& between(aTop, bTop - 1, bBottom + 1)
+		&& between(aBottom, bTop - 1, bBottom + 1))
+		return b;
+
+	//check if b is inside a
+	if (between(bLeft, aLeft - 1, aRight + 1)
+		&& between(bRight, aLeft - 1,  aRight + 1)
+		&& between(bTop, aTop - 1, aBottom + 1)
+		&& between(bBottom, aTop - 1, aBottom + 1))
+		return a;
+
 	//check if aligned on x coordinate
 	if (aLeft == bLeft && aRight == bRight)
 	{
