@@ -22,7 +22,7 @@ Enemy::Enemy()
 	mY = 0;
 	mDirectionRight = false;
 	mRewindAnimation = false;
-	mOddFrame = false;
+	//mOddFrame = false;
 	mLevel = NULL;
 	mHitStun = 0;
 }
@@ -38,7 +38,7 @@ Enemy::Enemy(Uint8 x, Uint8 y, bool right, Level* level)
 	mY = y * 16;
 	mDirectionRight = right;
 	mRewindAnimation = false;
-	mOddFrame = false;
+	//mOddFrame = false;
 	mLevel = level;
 	mHitStun = 0;
 }
@@ -164,35 +164,33 @@ void Enemy::checkHurt()
 
 void Enemy::handleAnimation()
 {
-	if (mOddFrame)//this makes it so that the ghosts are only 30FPS 
+	//if (mOddFrame)//this makes it so that the ghosts are only 30FPS
+	if (mHealth <= 0)//dying animation
 	{
-		if (mHealth <= 0)//dying animation
-		{
-			if (mAnimationFrame > kDeathEnd || mAnimationFrame < kDeathStart)
-			{
-				mRewindAnimation = false;
-				mAnimationFrame = kDeathStart;
-			}
-		}
-
-		else if (mAnimationFrame > kRunEnd || mAnimationFrame < kRunStart)
+		if (mAnimationFrame > kDeathEnd || mAnimationFrame < kDeathStart)
 		{
 			mRewindAnimation = false;
-			mAnimationFrame = kRunStart;
+			mAnimationFrame = kDeathStart;
 		}
-		else // if already running
-		{
-			if (mAnimationFrame == kRunEnd) //goes backwards if it reached the end
-				mRewindAnimation = true;
-
-			if (mAnimationFrame == kRunStart)//goes forward if it reaches the beginning again
-				mRewindAnimation = false;
-		}
-
-		mAnimationFrame = (mRewindAnimation) ?
-			mAnimationFrame - 1 : mAnimationFrame + 1;
 	}
-	mOddFrame = !mOddFrame;
+
+	else if (mAnimationFrame > kRunEnd || mAnimationFrame < kRunStart)
+	{
+		mRewindAnimation = false;
+		mAnimationFrame = kRunStart;
+	}
+	else // if already running
+	{
+		if (mAnimationFrame == kRunEnd) //goes backwards if it reached the end
+			mRewindAnimation = true;
+
+		if (mAnimationFrame == kRunStart)//goes forward if it reaches the beginning again
+			mRewindAnimation = false;
+	}
+
+	mAnimationFrame = (mRewindAnimation) ?
+		mAnimationFrame - 1 : mAnimationFrame + 1;
+	//mOddFrame = !mOddFrame;
 }
 
 void Enemy::setTexture(LTexture* texture)

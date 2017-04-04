@@ -29,9 +29,9 @@ public:
 	enum DefaultAnimationFrames
 	{
 		kRunStart = 0,
-		kRunEnd = 7,
-		kDeathStart = 8,
-		kDeathEnd = 23
+		kRunEnd = 15,
+		kDeathStart = 16,
+		kDeathEnd = 31
 	};
 
 	virtual void step(std::vector<SDL_Rect>& colliders);//virtual function that will be called for every object for every frame
@@ -53,7 +53,7 @@ private:
 	int mHealth;
 	int mMaxHealth;
 	Uint16 mAnimationFrame;
-	bool mOddFrame;
+	//bool mOddFrame;
 	bool mRewindAnimation;
 	int mX, mY, mXV, mYV;
 	Uint8 mAttackFrame;
