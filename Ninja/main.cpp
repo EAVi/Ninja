@@ -124,11 +124,12 @@ bool loadAssets()
 	tempBlock.setAllBlockTextures(&gBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 2;
+	Uint8 bgTexNum = 3;
 	string bgTexS[] = 
 	{
 		"GFX/bluesky.png",
 		"GFX/snowmtn.png",
+		"GFX/grasshills.png",
 	};
 
 	for (Uint8 i = 0; i < bgTexNum; ++i)
