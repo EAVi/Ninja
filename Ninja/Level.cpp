@@ -299,6 +299,89 @@ void Level::mClearEnemies()
 	}
 }
 
+void Level::mBGGoodEdge(int & ax, int & bx, int & aw)
+{
+	//NAN error prevention measure
+	if (aw == 0) return;
+
+	int diff;
+	int div;
+	if (ax < bx)
+	{
+		diff = bx - ax;//want to get a positive number, want to move the bg up
+	}
+	else if (ax == bx)
+		return;
+	else //ax >=bx
+	{
+		//diff = -(ax - bx + aw - 1);//should cieling up, we want the best corner
+		//should be negative because 
+		//we're moving ax down to get a good corner
+		diff = bx - ax - aw + 1;//
+	}
+	div = diff / aw;
+	ax += div * aw;
+}
+
+void Level::mBGTileRender(Uint8 & bgnum, SDL_Rect & c, bool & tX, bool & tY)
+{
+	//NAN error prevention measure
+	if (c.w == 0 || c.h == 0)
+		return;
+
+	if (!(tX || tY) && (checkCollision(c, *mCamera)))//if there's no tiling, just do a simple collisioncheck
+		{
+			mBGTextures[mBackgrounds[bgnum].TextNum]->renderTexture(c.x - mCamera->x, c.y - mCamera->y);
+			return;
+		}
+	else
+	{
+		if (tX)//finds the good edge for x if xtile is true
+			mBGGoodEdge(c.x, mCamera->x, c.w);
+		if (tY)//finds the good edge for y if ytile is true
+			mBGGoodEdge(c.y, mCamera->y, c.h);
+		//if both these conditions were met, then 
+
+
+		/*
+		here's a big arbitrary formula, it gets the width between the left side of c
+		and the right side of mCamera, divides it by the width of c, and cielings it up
+		it's just a number to see how many times the loop should happen
+
+		Also, the number will ALWAYS be greater than 1 if the bg is onscreen.
+		*/
+		Uint8 xtilenum = (mCamera->x + mCamera->w + c.w - 1 - c.x) / c.w;
+		Uint8 ytilenum = (mCamera->y + mCamera->h + c.h - 1 - c.y) / c.h;
+
+
+		int origy = c.y;//a number for the y value to revert to at the beginning of the nested loop
+
+		for (int i = 0; i < xtilenum; ++i)
+		{
+			c.y = origy;//reverting back to the y value
+			for (int j = 0; j < ytilenum; ++j)
+			{
+				mBGTextures[mBackgrounds[bgnum].TextNum]->renderTexture(c.x - mCamera->x, c.y - mCamera->y);
+				c.y += c.w;
+			}
+			c.x += c.w;
+		}
+
+
+		//if the top-rightmost tile doesn't collide, then no need to render
+		if (!(checkCollision(c, *mCamera))) return;
+
+		
+
+		//the following line is just a test, okay
+		//mBGTextures[mBackgrounds[bgnum].TextNum]->renderTexture(c.x - mCamera->x, c.y - mCamera->y);
+
+	}
+	
+			
+}
+
+
 bool Level::Loadmap(string filename)
 {
 	//file reading segment
@@ -469,9 +552,6 @@ void Level::renderBg()
 {
 	for (Uint8 i = 0; i < (Uint8)mBackgrounds.size(); ++i)
 	{
-
-		int rX, rY;
-		//makes it easier to keep track of the values
 		SDL_Rect rect
 		{
 			mBackgrounds[i].initX,
@@ -480,109 +560,31 @@ void Level::renderBg()
 			mCamera->y,
 		};
 
-		//the render destination of the background, with cases where flops aren't needed
-		switch (mBackgrounds[i].depth)
-		{
-		case 0:
-			rX = rect.x;
-			rY = rect.y;
-			break;
-		case 255:
-			rX = rect.x + rect.w;
-			rY = rect.y + rect.h;
-			break;
-		default:
-			rX = (int)(rect.x + ((rect.w) * (mBackgrounds[i].depth / 255.f)));
-			rY = (int)(rect.y + ((rect.h) * (mBackgrounds[i].depth / 255.f)));
-		}
-
 		SDL_Rect coll
 		{
-			rX,
-			rY,
+			0,//render x
+			0,//render y
 			mBGTextures[mBackgrounds[i].TextNum]->getWidth(),
 			mBGTextures[mBackgrounds[i].TextNum]->getHeight()
 		};
 
-		//cout << coll.x << " " << coll.w << endl;
-		//cout << mCamera->x << " " << mCamera->w << "\n\n";
-
-
-		//checks whether to create a new background, first needs to check for collision
-		if (checkCollision(coll, *mCamera))
+		//the render destination of the background, with cases where flops aren't needed
+		switch (mBackgrounds[i].depth)
 		{
-			if (mBackgrounds[i].tileX)
-			{
-				//if the background leaks to the right edge
-				if ((mCamera->x + mCamera->w) > (coll.x + coll.w))
-				{
-					createBg(
-						mBackgrounds[i].TextNum,
-						mBackgrounds[i].initX + coll.w,
-						mBackgrounds[i].initY,
-						mBackgrounds[i].depth,
-						mBackgrounds[i].tileX,
-						mBackgrounds[i].tileY,
-						(Uint8)i
-						);
-				}
-
-				//if the background leaks to the left edge
-				if (coll.x > mCamera->x)
-				{
-					createBg(
-						mBackgrounds[i].TextNum,
-						mBackgrounds[i].initX - coll.w,
-						mBackgrounds[i].initY,
-						mBackgrounds[i].depth,
-						mBackgrounds[i].tileX,
-						mBackgrounds[i].tileY,
-						(Uint8)i
-						);
-
-				}
-			}
-
-			if (mBackgrounds[i].tileY)
-			{
-				//if the background leaks to the bottom edge
-				if ((mCamera->y + mCamera->h) > (coll.y + coll.h))
-				{
-					createBg(
-						mBackgrounds[i].TextNum,
-						mBackgrounds[i].initX,
-						mBackgrounds[i].initY + coll.h,
-						mBackgrounds[i].depth,
-						mBackgrounds[i].tileX,
-						mBackgrounds[i].tileY,
-						(Uint8)i
-						);
-				}
-
-				//if the background leaks to the bottom edge
-				if (mCamera->y < coll.y)
-				{
-					createBg(
-						mBackgrounds[i].TextNum,
-						mBackgrounds[i].initX,
-						mBackgrounds[i].initY - coll.h,
-						mBackgrounds[i].depth,
-						mBackgrounds[i].tileX,
-						mBackgrounds[i].tileY,
-						(Uint8)i
-						);
-
-				}
-			}
+		case 0://the background will stay still, like a block tile. only uses addition
+			coll.x = mBackgrounds[i].initX;
+			coll.y = mBackgrounds[i].initY;
+			break;
+		case 255://the background will follow the camera, ie it'll stay at the same place on screen. only uses addition
+			coll.x = mBackgrounds[i].initX + mCamera->x;
+			coll.y = mBackgrounds[i].initY + mCamera->y;
+			break;
+		default://the background has parallax, it will follow the camera with some ratio. uses flops to determine the amount of movement
+			coll.x = (int)(mBackgrounds[i].initX + ((mCamera->x) * (mBackgrounds[i].depth / 255.f)));
+			coll.y = (int)(mBackgrounds[i].initY + ((mCamera->y) * (mBackgrounds[i].depth / 255.f)));
 		}
 
-		//checks whether to render the BG object
-		if (checkCollision(coll, *mCamera))
-			mBGTextures[mBackgrounds[i].TextNum]->renderTexture(rX - mCamera->x, rY - mCamera->y);
-		else if (mBackgrounds[i].tileY && mBackgrounds[i].tileX)//can only delete if it tiles
-		{
-			mBackgrounds.erase(mBackgrounds.begin() + i);
-			--i;
-		}
+
+		mBGTileRender(i, coll, mBackgrounds[i].tileX, mBackgrounds[i].tileY);//calls the tilerender command to do the rest of the dirtywork
 	}
 }

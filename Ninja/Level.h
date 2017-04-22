@@ -154,6 +154,9 @@ private:
 	Enemy* mEnemies[kMaxEnemies];//pointer for polymorphism
 	void mDeleteEnemy(Uint8 slot);//deletes an enemy if the slot given has an enemy
 	void mClearEnemies();//deletes all enemies in the level
+
+	void mBGGoodEdge(int & ax, int & bx, int & aw);//modifies ax, finds topmost or leftmost edge
+	void mBGTileRender(Uint8& bgnum, SDL_Rect& c, bool & tX, bool & tY);//renders the background for X tiling only
 };
 
 #endif
