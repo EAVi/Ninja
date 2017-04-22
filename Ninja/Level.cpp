@@ -552,14 +552,6 @@ void Level::renderBg()
 {
 	for (Uint8 i = 0; i < (Uint8)mBackgrounds.size(); ++i)
 	{
-		SDL_Rect rect
-		{
-			mBackgrounds[i].initX,
-			mBackgrounds[i].initY,
-			mCamera->x,
-			mCamera->y,
-		};
-
 		SDL_Rect coll
 		{
 			0,//render x
