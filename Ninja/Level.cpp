@@ -340,8 +340,7 @@ void Level::mBGTileRender(Uint8 & bgnum, SDL_Rect & c, bool & tX, bool & tY)
 			mBGGoodEdge(c.x, mCamera->x, c.w);
 		if (tY)//finds the good edge for y if ytile is true
 			mBGGoodEdge(c.y, mCamera->y, c.h);
-		//if both these conditions were met, then 
-
+		//if both these conditions were met, then it'll return a good corner
 
 		/*
 		here's a big arbitrary formula, it gets the width between the left side of c
@@ -367,18 +366,9 @@ void Level::mBGTileRender(Uint8 & bgnum, SDL_Rect & c, bool & tX, bool & tY)
 			c.x += c.w;
 		}
 
-
 		//if the top-rightmost tile doesn't collide, then no need to render
 		if (!(checkCollision(c, *mCamera))) return;
-
-		
-
-		//the following line is just a test, okay
-		//mBGTextures[mBackgrounds[bgnum].TextNum]->renderTexture(c.x - mCamera->x, c.y - mCamera->y);
-
-	}
-	
-			
+	}		
 }
 
 
