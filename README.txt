@@ -10,6 +10,10 @@ End Dumb legal stuff
     Spacebar - jump
     M - sword attack
     
+    Debug Controls:
+    (Tilde key) - enable debug features
+    ESC(while debug is active) - spawn a ghost
+    
     To compile on Linux:
     -Get the sdl2 development libraries.
     -Get the sdl2-image development libraries.
