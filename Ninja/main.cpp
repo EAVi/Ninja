@@ -286,13 +286,14 @@ int main(int argc, char* args[])
 
 		if (debugtoggle)//the debug stuff, shows some stats, and renders hurtboxes
 		{
-			gWriter.RenderString(ninja.getX(), 8, 32);
-			gWriter.RenderString(ninja.getY(), 40, 32);
-			gWriter.RenderString(debugLevel.enemyCount(), 8, 40);
-
+			gWriter << '\x86'+(string)"Ninja x:" << ninja.getX() << '\n';
+			gWriter << (char)0x81 << (string)"Ninja y:" << ninja.getY() << '\n';
+			gWriter << '\x88' + (string)"Enemy Count:" << (int)debugLevel.enemyCount() << '\n';
+			
 			debugLevel.debugShowHitboxes(*gRenderer);
 		}
 
+		gWriter.ClearBuffer();//draws all strings from the buffer onto the screen
 		SDL_RenderPresent(gRenderer);
 	}
 	exit();

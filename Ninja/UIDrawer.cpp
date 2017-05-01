@@ -1,5 +1,7 @@
 #include "UIDrawer.h"
 
+using namespace std;
+
 enum UITextureNums : Uint8
 {
 	kHealthbar, kHealthbarGradient, kNinjaLifeIcon

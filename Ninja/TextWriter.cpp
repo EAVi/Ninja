@@ -1,5 +1,7 @@
 #include "TextWriter.h"
 
+using namespace std;
+
 enum textColors : Uint8
 {
 	kRed, kOrange, kYellow, kGreen, kBlue, kPurple, kWhite, kBlack, kRainbow
@@ -9,7 +11,6 @@ enum textColors : Uint8
 TextWriter::TextWriter()
 {
 	mTexture = NULL;
-	mAllText = "";
 	mClipDimensions = { 0,0 };
 
 	mColorNum = 0;
@@ -28,7 +29,6 @@ TextWriter::TextWriter()
 TextWriter::TextWriter(LTexture* texture, int w, int h)
 {
 	mTexture = texture;
-	mAllText = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. ";
 	mClipDimensions = { w, h };
 
 	mColorNum = 0;
@@ -55,10 +55,10 @@ TextWriter::~TextWriter()
 
 void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 {
-	if (color == NULL)
+	if (color == NULL)//this initializes the colornum to 0, because NULL means RAINBOW TIME BAYBEEE
 		mColorNum = 0;
 
-	if (color != NULL)
+	if (color != NULL)//if non-NULL, then it will do the color you put
 		this->mTexture->colorMod(*color);
 
 	SDL_Point pointy = { x, y };
@@ -71,10 +71,41 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 			this->mTexture->colorMod(mColors[mColorNum]);
 			mColorNum++;
 		}
-		int clipnum = cToInt(text[i]);
-		if (clipnum != 64)
+
+		Uint8 clipnum = (Uint8)(text[i]);
+		
+		if (clipnum == (int)'\n')//NEWLINE symbol
+		{
+			pointy.x = x;
+			pointy.y += mClipDimensions.y;
+		}
+		/*
+		To assign a color is a weird process, the best way (in my opinion) is to use a hex value escape character
+		These hex values begin at x80
+		For example:
+			<< (char)0x80 << "RED";
+			<< '\x80'+(string)"RED";
+		You can't have it all in one string unless you put a space after the escape character
+		*/
+		else if (clipnum > 127)// for color assignment
+		{
+			mColorNum = (clipnum - 128) % (mColors.size() + 1);
+			if (mColorNum == kRainbow)
+			{
+				color = NULL;//nullifies the color, allowing rainbow mode
+				mColorNum = kRed;
+			}
+			else
+				color = &mColors[0];//just gives color a value to prevent rainbowing
+			this->mTexture->colorMod(mColors[mColorNum]);
+		}
+		else
+		{
 			mTexture->renderTexture(pointy.x, pointy.y, &mCharClips[clipnum]);
-		pointy.x += mClipDimensions.x;
+			pointy.x += mClipDimensions.x;
+		}
+
+		
 	}
 }
 
@@ -97,12 +128,37 @@ void TextWriter::RenderString(int val, int x, int y, SDL_Color* color)
 }
 
 
-Uint8 TextWriter::cToInt(char a)
+void TextWriter::ClearBuffer()
 {
-	for (Uint8 i = 0, j = mAllText.size(); i < j ; ++i)
+	string s;
+	int y = kScreenHeight - mClipDimensions.y;
+	while (!mWriteBuffer.empty())
 	{
-		if (mAllText[i] == a)
-			return i;
+		s += mWriteBuffer.front();
+		mWriteBuffer.pop();
 	}
-	return 64;
+	for (int i = 0; i < s.size(); ++i)
+	{
+		if (s[i] == '\n')
+			y -= mClipDimensions.y;
+	}
+
+	RenderString(s, 0, y);
+
+
+	/*
+	//outdated version of the function
+	RenderString(*wb, 0, y);
+	string * wb;
+	int y = kScreenHeight - 8 * mWriteBuffer.size();
+	//int i = mWriteBuffer.size();
+	while (!mWriteBuffer.empty())
+	{
+		wb = &mWriteBuffer.front();
+		RenderString(*wb, 0, y);
+		mWriteBuffer.pop();
+		y += 8;
+		//i = mWriteBuffer.size();
+	}
+	*/
 }
