@@ -312,7 +312,7 @@ int main(int argc, char* args[])
 		if ((rr != 30) || OddFrame)
 			SDL_RenderPresent(gRenderer);
 		clock.tick();
-		if (rr != 30)
+		if (rr == 30)
 			OddFrame = !OddFrame;
 	}
 	exit();
