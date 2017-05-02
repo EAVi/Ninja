@@ -1,4 +1,3 @@
-//making a random comment to to test github stuff
 #ifdef _WIN32
 #include <vld.h>//visual leak detector comment this out if you do not have, it's pretty good
 #include <SDL.h>
@@ -29,6 +28,7 @@
 #include "Enemy.h"
 #include "MagMatrix.h"
 #include "UIDrawer.h"
+#include "Timer.h"
 
 
 using namespace std;
@@ -50,6 +50,7 @@ vector <LTexture*> gUITextures;
 vector<LTexture*> gBackgroundTextures;
 
 TextWriter gWriter;
+Timer clock;
 
 UIDrawer gUIDrawer;
 
@@ -230,6 +231,12 @@ int main(int argc, char* args[])
 		exit();
 		return 0;
 	}
+
+	int rr = 0;
+	SDL_DisplayMode monitor;
+	SDL_GetDisplayMode(0, 0, &monitor);
+	rr = monitor.refresh_rate;
+
 	bool quit = false;
 	bool ghostalive = true;//just a temporary variable for testing, will probably stick around for a while
 	Player ninja;
@@ -252,6 +259,7 @@ int main(int argc, char* args[])
 	int maxhealth = 20;
 
 	ninja.setLevel(&debugLevel);
+	bool OddFrame = false;//allows 30 FPS monitors to play the game at full speed by skipping vsync every odd frame and rendering twice
 
 	while (!quit)
 	{
@@ -286,15 +294,26 @@ int main(int argc, char* args[])
 
 		if (debugtoggle)//the debug stuff, shows some stats, and renders hurtboxes
 		{
-			gWriter << '\x86'+(string)"Ninja x:" << ninja.getX() << '\n';
-			gWriter << (char)0x81 << (string)"Ninja y:" << ninja.getY() << '\n';
-			gWriter << '\x88' + (string)"Enemy Count:" << (int)debugLevel.enemyCount() << '\n';
+			gWriter << '\x86' + (string)"Ninja pos: (" << ninja.getX() << ",\x82 " << ninja.getY() << '\x86' << ")\n";
+			gWriter << '\x88' + (string)"Enemy Count: " << (int)debugLevel.enemyCount() << '\n';
+			gWriter << '\x83' << clock.getFramerate() << " FPS\n";
+			gWriter << '\x86' << clock.getVSyncFramerate() << " FPS - VS\n";
+			if (rr != 0)
+			{
+				gWriter << '\x84' << monitor.refresh_rate << "Hz Monitor with dimensions " << monitor.w << 'x' << monitor.h << '\n';
+			}
+			//gWriter << '\x88' << "Frame #"<< clock.getFrameCount() << '\n';
 			
 			debugLevel.debugShowHitboxes(*gRenderer);
 		}
 
 		gWriter.ClearBuffer();//draws all strings from the buffer onto the screen
-		SDL_RenderPresent(gRenderer);
+		clock.vtick();
+		if ((rr != 30) || OddFrame)
+			SDL_RenderPresent(gRenderer);
+		clock.tick();
+		if (rr != 30)
+			OddFrame = !OddFrame;
 	}
 	exit();
 	return 0;
