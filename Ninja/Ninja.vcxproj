@@ -19,12 +19,14 @@
     <ClCompile Include="LTexture.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TextWriter.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="UIDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="UIDrawer.h" />
     <ClInclude Include="Hitbox.h" />
     <ClInclude Include="Level.h" />
