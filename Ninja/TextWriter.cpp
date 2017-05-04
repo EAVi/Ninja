@@ -8,6 +8,7 @@ enum textColors : Uint8
 };
 
 
+
 TextWriter::TextWriter()
 {
 	mTexture = NULL;
@@ -61,7 +62,7 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 	if (color != NULL)//if non-NULL, then it will do the color you put
 		this->mTexture->colorMod(*color);
 
-	SDL_Point pointy = { x, y };
+	SDL_Point pointy = { x, y };//point where the text will be rendered
 	for (Uint16 i = 0, j = text.size(); i < j; ++i)
 	{
 		if (color == NULL)//the rainbow loop
@@ -130,35 +131,22 @@ void TextWriter::RenderString(int val, int x, int y, SDL_Color* color)
 
 void TextWriter::ClearBuffer()
 {
-	string s;
-	int y = kScreenHeight - mClipDimensions.y;
-	while (!mWriteBuffer.empty())
+	string s; //temporary string that will hold all of the buffers cocatenated together
+
+	//x position doesn't matter, it'll be 0
+	int y = kScreenHeight - mClipDimensions.y;//the text will be drawn in the bottom left corner.
+
+	while (!mWriteBuffer.empty())//add everything from the buffer onto the strings, one at a time
 	{
 		s += mWriteBuffer.front();
 		mWriteBuffer.pop();
 	}
 	for (int i = 0; i < s.size(); ++i)
 	{
+		//count the number of endlines there are, and move the topmost text upwards to accomodate
 		if (s[i] == '\n')
 			y -= mClipDimensions.y;
 	}
 
-	RenderString(s, 0, y);
-
-
-	/*
-	//outdated version of the function
-	RenderString(*wb, 0, y);
-	string * wb;
-	int y = kScreenHeight - 8 * mWriteBuffer.size();
-	//int i = mWriteBuffer.size();
-	while (!mWriteBuffer.empty())
-	{
-		wb = &mWriteBuffer.front();
-		RenderString(*wb, 0, y);
-		mWriteBuffer.pop();
-		y += 8;
-		//i = mWriteBuffer.size();
-	}
-	*/
+	RenderString(s, 0, y);//draw it using the renderstring function
 }

@@ -42,6 +42,7 @@ LTexture gNinjaTexture;
 LTexture gBlockTexture;
 LTexture gFontTexture;
 LTexture gEnemyTexture;
+LTexture gRobotTexture;
 LTexture gTempTexture;//completely unneeded, just here for testing
 LTexture gTempTexture1;//completel unneeded, just here for testing
 
@@ -186,6 +187,18 @@ bool loadAssets()
 	}
 	tempEnemy.setTexture(&gEnemyTexture);
 
+	Robot tempRobot;
+	if (!gRobotTexture.loadTextureFile("GFX/AllRoboPirate.png", &gColorKey))
+	{
+		cout << SDL_GetError() << endl;
+		return false;
+	}
+	tempRobot.setTexture(&gRobotTexture);
+
+	
+	
+
+
 
 
 	return true;
@@ -194,6 +207,8 @@ bool loadAssets()
 void exit()
 {
 	gNinjaTexture.freeTexture();
+	gEnemyTexture.freeTexture();
+	gRobotTexture.freeTexture();
 	gBlockTexture.freeTexture();
 	gFontTexture.freeTexture();
 	gTempTexture.freeTexture();

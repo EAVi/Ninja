@@ -9,6 +9,7 @@
 #include <SDL2/SDL_image.h>
 #endif
 #include <string>
+#include <sstream>
 #include <vector>
 #include <queue>
 #include <cstdlib>
@@ -19,6 +20,7 @@ extern const int kScreenWidth;//the global screen width and height is needed for
 extern const int kScreenHeight;
 
 enum textColors : Uint8;
+enum textCommand : Uint8;
 
 class TextWriter
 {
@@ -78,7 +80,6 @@ private:
 	std::vector<SDL_Color> mColors;
 	std::vector<SDL_Rect> mCharClips;
 	SDL_Point mClipDimensions;
-	//std::ostream* mStream;
 	std::queue<std::string> mWriteBuffer;
 };
 

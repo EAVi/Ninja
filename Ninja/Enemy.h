@@ -15,6 +15,7 @@ class Enemy
 {
 public:
 	Enemy();//default constructor, probably won't be used
+	virtual ~Enemy();//virtual deconstructor
 	Enemy(Uint8 x, Uint8 y, bool right = false, Level* level = NULL);
 	static const int kDefault_WalkSpeed = 1;//walk speed for the base class enemy
 	static const int kDefault_Gravity = 1;//gravity for base class enemy
@@ -48,7 +49,7 @@ public:
 	virtual void handleAnimation();
 	virtual void setTexture(LTexture* texture);//sets texture for all default enemy
 	virtual bool checkLiving();//for the level to know when to delete an enemy
-private:
+protected:
 	bool mBoss;
 	int mHealth;
 	int mMaxHealth;

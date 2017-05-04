@@ -230,7 +230,7 @@ void Level::addEnemy(Uint8 eType, Uint8 x, Uint8 y)
 {
 	if (eType == 255) return;//255 is the terminator for the level builder
 	Uint8 slot = 0;
-	for (; slot < kMaxEnemies; ++slot)
+	for (; slot < kMaxEnemies; ++slot)//find an empty slot to put an enemy
 	{
 		if (mEnemies[slot] == NULL)
 			break;

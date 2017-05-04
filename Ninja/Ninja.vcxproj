@@ -18,6 +18,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="LTexture.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Robot.cpp" />
     <ClCompile Include="TextWriter.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="UIDrawer.cpp" />
@@ -26,6 +27,7 @@
     <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Robot.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UIDrawer.h" />
     <ClInclude Include="Hitbox.h" />

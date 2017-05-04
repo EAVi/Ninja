@@ -27,6 +27,15 @@ Enemy::Enemy()
 	mHitStun = 0;
 }
 
+Enemy::~Enemy()
+{
+/*
+According to dumb rules of c++, you can't destroy an inherited
+object without a virtual destructor, so here it is, 
+a whole lot of nothing happening in this destructor
+*/
+}
+
 Enemy::Enemy(Uint8 x, Uint8 y, bool right, Level* level)
 {
 	mMaxHealth = kDefault_MaxHealth;
