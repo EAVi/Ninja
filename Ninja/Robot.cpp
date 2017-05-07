@@ -12,7 +12,7 @@ vector<SDL_Rect> Robot::kRobot_AnimationClips = vector<SDL_Rect>(0);
 
 Robot::Robot()
 {
-	Enemy();
+	Enemy::Enemy();
 	mMaxHealth = kRobot_MaxHealth;
 	mHealth = mMaxHealth;
 }
@@ -25,36 +25,32 @@ Robot::~Robot()
 
 Robot::Robot(Uint8 x, Uint8 y, bool right, Level * level)
 {
-	Enemy(x, y, right, level);
-	mMaxHealth = kRobot_MaxHealth;
-	mHealth = mMaxHealth;
-	mX = x * 16;
-	mY = y * 16;
+	//mX = x * 16;
+	//mY = y * 16;
+	Enemy::Enemy(x, y, right, level);
+	//mMaxHealth = kRobot_MaxHealth;
+	//mHealth = mMaxHealth;
 }
 
 void Robot::step(std::vector<SDL_Rect>& colliders)
 {
+	Enemy::step(colliders);
 }
 
 void Robot::step()
 {
-
+	Enemy::step();
 }
 
 void Robot::attack()
 {
-
+	Enemy::attack();
 }
 
 void Robot::render(int xD, int yD)
 {
-	if (kRobot_AnimationClips.empty())
-	{
-		gWriter << "Robot subscript of range!\n";
-		return;
-	}
-
-	mAnimationFrame = 0;
+	Enemy::render(xD, yD);
+	/*
 	SDL_RendererFlip ftype = SDL_FLIP_NONE;
 	if (!mDirectionRight)
 		ftype = SDL_FLIP_HORIZONTAL;
@@ -68,26 +64,30 @@ void Robot::render(int xD, int yD)
 			NULL,
 			ftype);
 	}
+	*/
 }
 
 void Robot::checkHurt()
 {
-
+	Enemy::checkHurt();
 }
 
 void Robot::handleAnimation()
 {
-
+	Enemy::handleAnimation();
 }
 
 void Robot::setTexture(LTexture * texture)
 {
+	Enemy::setTexture(texture);
+	/*
 	kRobot_Texture = texture;
 
 	kRobot_AnimationClips =
 		spriteClipper(texture->getWidth(),
 			texture->getHeight(),
 			{ 0, 0, kDefault_ClipW, kDefault_ClipH });
+	*/
 }
 
 bool Robot::checkLiving()
