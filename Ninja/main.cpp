@@ -51,7 +51,7 @@ vector <LTexture*> gUITextures;
 vector<LTexture*> gBackgroundTextures;
 
 TextWriter gWriter;
-Timer clock;
+Timer gClock;
 
 UIDrawer gUIDrawer;
 
@@ -311,22 +311,22 @@ int main(int argc, char* args[])
 		{
 			gWriter << '\x86' + (string)"Ninja pos: (" << ninja.getX() << ",\x82 " << ninja.getY() << '\x86' << ")\n";
 			gWriter << '\x88' + (string)"Enemy Count: " << (int)debugLevel.enemyCount() << '\n';
-			gWriter << '\x83' << clock.getFramerate() << " FPS\n";
-			gWriter << '\x86' << clock.getVSyncFramerate() << " FPS - VS\n";
+			gWriter << '\x83' << gClock.getFramerate() << " FPS\n";
+			gWriter << '\x86' << gClock.getVSyncFramerate() << " FPS - VS\n";
 			if (rr != 0)
 			{
 				gWriter << '\x84' << monitor.refresh_rate << "Hz Monitor with dimensions " << monitor.w << 'x' << monitor.h << '\n';
 			}
-			//gWriter << '\x88' << "Frame #"<< clock.getFrameCount() << '\n';
+			//gWriter << '\x88' << "Frame #"<< gClock.getFrameCount() << '\n';
 			
 			debugLevel.debugShowHitboxes(*gRenderer);
 		}
 
 		gWriter.ClearBuffer();//draws all strings from the buffer onto the screen
-		clock.vtick();
+		gClock.vtick();
 		if ((rr != 30) || OddFrame)
 			SDL_RenderPresent(gRenderer);
-		clock.tick();
+		gClock.tick();
 		if (rr == 30)
 			OddFrame = !OddFrame;
 	}
