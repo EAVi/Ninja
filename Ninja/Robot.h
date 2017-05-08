@@ -11,6 +11,7 @@
 #include "Algorithms.h"
 #include "LTexture.h"
 #include "Enemy.h"
+#include "Level.h"
 
 class Robot : public Enemy
 {
@@ -34,12 +35,12 @@ public:
 	//static SDL_Rect kDefault_OffsetHitbox;
 	//static const int kDefault_ClipW = 32, kDefault_ClipH = 32;
 	//static const Uint8 kDefault_HitStunFrames = 5;
-	enum DefaultAnimationFrames
+	enum RobotAnimationFrames
 	{
 		kRunStart = 0,
 		kRunEnd = 7,
 		kDeathStart = 8,
-		kDeathEnd = 16
+		kDeathEnd = 15
 	};
 
 	void step(std::vector<SDL_Rect>& colliders);//virtual function that will be called for every object for every frame

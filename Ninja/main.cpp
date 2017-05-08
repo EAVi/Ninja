@@ -21,7 +21,6 @@
 #include <sstream>
 #include "LTexture.h"
 #include "Player.h"
-#include "Block.h"
 #include "Algorithms.h"
 #include "Level.h"
 #include "TextWriter.h"
@@ -76,7 +75,11 @@ bool init()
 
 	//Initialize window
 	gWindow = SDL_CreateWindow("ninja", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+#ifndef NDEBUG//(if not-not debug) Also known as (if debug)
+		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN /*| SDL_WINDOW_FULLSCREEN_DESKTOP*/);
+#else
 		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+#endif
 	if (gWindow == NULL)
 	{
 		cout << "Window could not initialize!\n" << SDL_GetError() << endl;
@@ -121,9 +124,9 @@ bool loadAssets()
 		cout << SDL_GetError() << endl;
 		return false;
 	}
-
-	Block tempBlock;//creates a temporary block, just to set the texture
-	tempBlock.setAllBlockTextures(&gBlockTexture);
+	
+	Level tempLevel;//creates a temporary level, just to set the static texture
+	tempLevel.setBlockTextures(&gBlockTexture);
 
 	//background texture loader
 	Uint8 bgTexNum = 6;
@@ -195,12 +198,6 @@ bool loadAssets()
 	}
 	tempRobot.setTexture(&gRobotTexture);
 
-	
-	
-
-
-
-
 	return true;
 }
 
@@ -240,7 +237,6 @@ void exit()
 
 int main(int argc, char* args[])
 {
-
 	if (!(init() && loadAssets()))
 	{
 		exit();
@@ -267,7 +263,6 @@ int main(int argc, char* args[])
 	Level debugLevel(1366,768,&camera);
 	debugLevel.setBGTextures(gBackgroundTextures);
 	debugLevel.Loadmap("data/debug.txt");
-
 	
 	SDL_Event mainevent;
 	int health = 5;
@@ -275,7 +270,6 @@ int main(int argc, char* args[])
 
 	ninja.setLevel(&debugLevel);
 	bool OddFrame = false;//allows 30 FPS monitors to play the game at full speed by skipping vsync every odd frame and rendering twice
-
 	while (!quit)
 	{
 		debugLevel.clearHitboxes();//need to put before the event handler because the events make hitboxes
@@ -313,6 +307,7 @@ int main(int argc, char* args[])
 			gWriter << '\x88' + (string)"Enemy Count: " << (int)debugLevel.enemyCount() << '\n';
 			gWriter << '\x83' << gClock.getFramerate() << " FPS\n";
 			gWriter << '\x86' << gClock.getVSyncFramerate() << " FPS - VS\n";
+			SDL_Delay(300);
 			if (rr != 0)
 			{
 				gWriter << '\x84' << monitor.refresh_rate << "Hz Monitor with dimensions " << monitor.w << 'x' << monitor.h << '\n';

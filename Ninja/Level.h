@@ -9,7 +9,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include "Block.h"
 #include "LTexture.h"
 #include "Algorithms.h"
 #include "Hitbox.h"
@@ -64,12 +63,8 @@ public:
 	//returns all collision boxes
 	std::vector<SDL_Rect>& getRects();
 
-	//-Adds more blocks to the map
-	void setBlocks(Block block);
-
-	//-Overload with vectors
-	//-this function is useless outside of debug, by the way
-	void setBlocks(std::vector<Block> blocks);
+	//-Places a block on the map, will overwrite an existing block if necessary
+	void setBlock(Uint8 block, Uint8 x, Uint8 y);
 
 	//-Renders every inidividual block
 	void renderLevel();
@@ -84,9 +79,12 @@ public:
 	//-Corrects the camera's position so it doesnt go out of bounds
 	void boundCamera();
 
-	//-Imports all the background textures, goes to a static function
+	//-Imports all the background textures, goes to a static vector
 	void setBGTextures(std::vector<LTexture>& textures);
 	void setBGTextures(std::vector<LTexture*>& textures);//-Overload using pointers
+
+	//set the block textures
+	void setBlockTextures(LTexture* textures);
 
 	//-Adds a background to the vector
 	bool createBg(Background bg, Sint16 insert);
@@ -137,12 +135,15 @@ public:
 	//returns number of enemies
 	Uint8 enemyCount();
 
+
 private:
-	Matrix<Block> mBlocks;
-	std::vector<LTexture*> mBGTextures;
-	std::vector<Background> mBackgrounds;
-	std::vector<SDL_Rect> mRects;
-	SDL_Color mAmbient;
+	Matrix<Uint8> mBlocks;
+	static std::vector<LTexture*> mBGTextures;//the textures for the backgrounds
+	static LTexture* mBlockTextures;//the texture for the blocks
+	std::vector<Background> mBackgrounds;//the data representing the backgrounds
+	std::vector<SDL_Rect> mRects;//the collision rectangles
+	static std::vector<SDL_Rect> mBlockClipRects;//the render target rectangles for the block textures
+	SDL_Color mAmbient;//unused, the ambient lighting will be implemented someday
 	SDL_Rect* mCamera;
 	int mLevelWidth;
 	int mLevelHeight;
@@ -158,6 +159,8 @@ private:
 
 	void mBGGoodEdge(int & ax, int & bx, int & aw);//modifies ax, finds topmost or leftmost edge
 	void mBGTileRender(Uint8& bgnum, SDL_Rect& c, bool & tX, bool & tY);//renders the background for X tiling only
+	void drawBlock(Uint16 x, Uint16 y);//draws a single block
+	void mClearBlocks();//sets all blocks to 255, which is the null block
 };
 
 #endif

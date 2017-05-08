@@ -1,9 +1,13 @@
 #include "Level.h"
 
+#include <iostream>
+
 using namespace std;
 
 int Level::tilesize = 16;
-
+vector<SDL_Rect> Level::mBlockClipRects = spriteClipper(256, 256, {0,0,16,16});
+std::vector<LTexture*> Level::mBGTextures = vector<LTexture*>();
+LTexture* Level::mBlockTextures = NULL;
 
 Level::Level()
 {
@@ -61,19 +65,10 @@ vector<SDL_Rect>& Level::getRects()
 	return mRects;
 }
 
-void Level::setBlocks(Block block)
+void Level::setBlock(Uint8 block, Uint8 x, Uint8 y)
 {
-	mBlocks.get(block.getX() / tilesize, block.getY() / tilesize) = block;
+	mBlocks.get(x,y) = block;
 }
-
-void Level::setBlocks(vector<Block> blocks)//note that this converts vector to matrix
-{
-	for (int i = 0, j = blocks.size(); i < j; ++i)
-	{
-		this->setBlocks(blocks[i]);
-	}
-}
-
 
 void Level::renderLevel()
 {
@@ -87,10 +82,9 @@ void Level::renderLevel()
 	for (; i < j; ++i)//x position
 		for (k = kReset; k < l; ++k)//y position
 			if (mBlocks.valid(i, k)//checks for validity, I'm confident that this is no longer needed, but keeping it for safe measures
-				&& (mBlocks.get(i, k).getClip() != 255))//ensures it is not a default block
+				&& (mBlocks.get(i, k) != 255))//ensures it is not a default block
 			{
-
-				mBlocks.get(i, k).render(mCamera->x, mCamera->y);
+				drawBlock(i,k);
 			}
 }
 
@@ -242,8 +236,10 @@ void Level::addEnemy(Uint8 eType, Uint8 x, Uint8 y)
 
 	switch (eType)
 	{
+	case 0:
+		mEnemies[slot] = new Robot(x, y, false, this);	break;
 	default:
-		mEnemies[slot] = new Enemy(x, y, false, this);
+		mEnemies[slot] = new Enemy(x, y, false, this);	break;
 	}
 
 }
@@ -371,6 +367,18 @@ void Level::mBGTileRender(Uint8 & bgnum, SDL_Rect & c, bool & tX, bool & tY)
 	}		
 }
 
+void Level::drawBlock(Uint16 x, Uint16 y)
+{
+	mBlockTextures->renderTexture((x << 4) - mCamera->x, (y << 4) - mCamera->y, &mBlockClipRects[mBlocks.get(x, y)]);
+}
+
+void Level::mClearBlocks()
+{
+	int j = mBlocks.size();
+	for (int i = 0; i < j; ++i)
+		mBlocks[i] = 255;
+}
+
 
 bool Level::Loadmap(string filename)
 {
@@ -436,6 +444,7 @@ bool Level::Loadmap(string filename)
 	attrs = 4; //(8, 8, 8, 4,< 4)
 	//block loader
 	mBlocks.setDimensions((mLevelWidth + (tilesize - 1)) / tilesize, (mLevelHeight + (tilesize - 1)) / tilesize);
+	mClearBlocks();
 	for (Uint16 i = loadPoint, j = idata.size(); i < (j - attrs + 1); i = i + attrs, loadPoint = i)
 	{
 		if (idata[i] == 255)
@@ -450,13 +459,10 @@ bool Level::Loadmap(string filename)
 			{
 				Uint8 xPosition = idata[i + 1] + k;
 				Uint8 yPosition = idata[i + 2] + l;
-				Block tempBlock
-					({( xPosition ) * tilesize,
-					(yPosition) * tilesize,
-					idata[i] });
+				//idata[i] is the block texture
 				
 				if (mBlocks.valid(xPosition, yPosition))
-					mBlocks.get(xPosition, yPosition) = tempBlock;
+					mBlocks.get(xPosition, yPosition) = idata[i];
 			}
 
 		//create the collision rectangles based on given dimensions
@@ -503,6 +509,11 @@ void Level::setBGTextures(vector<LTexture>& textures)
 void Level::setBGTextures(vector<LTexture*>& textures)
 {
 	mBGTextures = textures;
+}
+
+void Level::setBlockTextures(LTexture * textures)
+{
+	mBlockTextures = textures;
 }
 
 
