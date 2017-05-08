@@ -28,12 +28,13 @@ private:
 template <typename T>
 Matrix<T>::Matrix()
 {
+	mData = NULL;
 	setDimensions(0, 0);
 }
 
 template <typename T>
 Matrix<T>::Matrix(int x, int y)
-{
+{	mData = NULL;
 	mX = 0;
 	mY = 0;//just in case other memories may conflict
 	setDimensions(x, y);

@@ -25,6 +25,7 @@
 #include "Level.h"
 #include "TextWriter.h"
 #include "Enemy.h"
+#include "Robot.h"
 #include "MagMatrix.h"
 #include "UIDrawer.h"
 #include "Timer.h"
