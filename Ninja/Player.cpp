@@ -233,6 +233,11 @@ int& Player::getMaxHealth()
 	return mMaxHealth;
 }
 
+SDL_Rect & Player::getCollisionBox()
+{
+	return mCollisionBox;
+}
+
 
 void Player::mLeftPress()
 {

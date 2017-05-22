@@ -1,0 +1,134 @@
+How to make a level, by Magnar
+
+Note that when I use the word "currently",
+I mean "as of 1:25 AM 5/22/2017"
+------------------------------
+
+Creating a level has 5 parts:
+	1) Level attributes
+	2) Backgrounds
+	3) Blocks
+	4) Enemies
+	5) Doors
+
+	You'll probably notice that in the text files, there 
+are a bunch of numbers in there from 0-255. That's 8 bits. 
+This game runs on a lot of 8-bit logic, because that's
+what I was going for. Every structure in a level is also 
+constructed with 8-bit numbers. 
+	So, if you put any number larger than 255 in these 
+text files, the computer will either poop itself or will 
+truncate some bits. Just don't do it, kay?
+
+Separating the 5 parts:
+		When you want to signal the level loader 
+	that you want to go on to the next part, put a 255
+	as a signal, and the next part will begin, and also
+	put a 255 at the end of file, just because.
+		NOTE that the level attributes are 
+	an exception, they do not need the 255 signal.
+		
+	IE: If you put 255 as the first argument to any 
+	    of the parts, it will ignore that byte and skip 
+	    to the next part. Except for Part 1.
+
+Parsing/Separating your numbers:
+		There are only two parse characters, SPACE
+	and newline, these can be used to separate your numbers
+	from the next numbersanything else will not work, no 
+	commas, no semicolons.
+
+-----------------------------
+1) Level Attributes (7 arguments, 7 bytes)
+	Level Width - the number of blocks you want to fit on the x axis
+	Level Heigth - width, but on y axis.
+	Ambient Red - will adjust lighting, does not work yet
+	Ambient Green - ""
+	Ambient Blue - ""
+	Player Spawn X - Only required on the first level of the zone*
+	Player Spawn Y - ""
+
+	*The spawn position will not be read for any file that isn't 
+	 the first level of the zone, but is still needed in the file
+	 so put some number in there, I personally prefer putting "255 255"
+	 and making that on it's own line.
+-----------------------------
+2) Backgrounds (6 arguments,  7 bytes)
+	Texture Number - there's currently 6 bgs to choose from:
+		"GFX/BG/bluesky.png",
+		"GFX/BG/snowmtn.png",
+		"GFX/BG/grasshills.png",
+		"GFX/BG/nightynight.png",
+		"GFX/BG/skyline.png",
+		"GFX/BG/redsky.png",
+	X position - is 16 bits, takes 2 bytes of memory
+		   - first part of X position is Coarse.
+		   - second part is fine position.
+	Y position - "" Note that the origin is the top-left corner
+	Depth - Parallax, how much the background follows the camera.
+		255 means the background follows completely, 
+		0 means the background does not follow at all.
+	TileX - 1 bit, second-rightmost bit, if true, the 
+		background will repeat on the x axis.
+	TileY - 1 bit, rightmost bit, y axis.
+------------------------------
+3) Blocks (5 arguments, 4 bytes)
+	Block Number - there are currently 9 blocks that have 
+			been textured, to see which block represents 
+			what number, look at the GFX/BlockSheet.png
+	Block X - This will be the X position of the block, 
+		  multiplied by the tile size.
+	Block Y - ""
+	TileDimensions Y - 4 bits, four leftmost bits of the last bit*
+	TileDimensions X - 4 bits, four rightmost bits of the last bit*
+	
+	       *imagine the byte in binary form (add 1) and split it into two parts:
+		0000 0000
+		Y    X
+		You can tile up to 16x16 blocks. 
+		"0" will give you a 1x1 tile
+		"15" will give you a 16x1 tile.
+		"16" will give you a 1x16 tile.
+		"255" will give you a 16x16 tile.
+-----------------------------
+4) Blocks (3 arguments, 3 bytes)
+	Enemy Type - there are currently two types of enemy:
+			0 - Robo Pirate
+			1 - Space Ghost
+	X Position - as usual, multiplied by tilesize
+	Y Position - ""
+-----------------------------
+5) Door (7 arguments, 7 bytes)
+*note that a door is invisible and doesn't actually look like a door
+*portal or warp is more accurate, I guess.
+	Collision Box(4 bytes)
+		X - multiplied by tilesize
+		Y - ""
+		Width - ""
+		Height - ""
+	Destination Level - if you're currently in "debug_0.txt" and 
+				want to go to "debug_1.txt", just put "1"
+				as the number.
+	Destination X - X position on the destination 
+			level you'd like to go to*
+	Destination Y - Y ""
+
+	*For Destination X or Y, if you don't want to specify a 
+	 position, just put 255.
+-----------------------------
+CLOSING NOTES:
+-Every level you make should start with debug_
+ followed by a number, folowed by .txt
+-if you have a gap in the numbering, any number 
+ after that gap will be ignored. For example:
+	debug_0.txt
+	debug_1.txt
+	debug_3.txt
+	debug_4.txt
+ Since debug_2.txt is missing, 3 and 4 will 
+	not be counted.
+	
+
+Alright, have fun making maps!
+Aww who am I kidding, I wrote this for myself, not for some nonexistant audience.
+Alright, have fun making maps!

@@ -63,7 +63,7 @@ public:
 	{
 		std::stringstream s;
 		s << x;
-		mWriteBuffer.push(s.str());
+		mWriteBuffer += s.str();
 		return *this;
 	}
 	
@@ -80,7 +80,7 @@ private:
 	std::vector<SDL_Color> mColors;
 	std::vector<SDL_Rect> mCharClips;
 	SDL_Point mClipDimensions;
-	std::queue<std::string> mWriteBuffer;
+	std::string mWriteBuffer;
 };
 
 #endif

@@ -131,22 +131,17 @@ void TextWriter::RenderString(int val, int x, int y, SDL_Color* color)
 
 void TextWriter::ClearBuffer()
 {
-	string s; //temporary string that will hold all of the buffers cocatenated together
-
 	//x position doesn't matter, it'll be 0
 	int y = kScreenHeight - mClipDimensions.y;//the text will be drawn in the bottom left corner.
 
-	while (!mWriteBuffer.empty())//add everything from the buffer onto the strings, one at a time
-	{
-		s += mWriteBuffer.front();
-		mWriteBuffer.pop();
-	}
-	for (int i = 0; i < s.size(); ++i)
+	for (int i = 0; i < mWriteBuffer.size(); ++i)
 	{
 		//count the number of endlines there are, and move the topmost text upwards to accomodate
-		if (s[i] == '\n')
+		if (mWriteBuffer[i] == '\n')
 			y -= mClipDimensions.y;
 	}
 
-	RenderString(s, 0, y);//draw it using the renderstring function
+	RenderString(mWriteBuffer, 0, y);//draw it using the renderstring function
+
+	mWriteBuffer = "";
 }

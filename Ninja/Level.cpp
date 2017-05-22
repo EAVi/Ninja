@@ -16,6 +16,7 @@ Level::Level()
 	mCamera = NULL;
 	mDeathBarrier = false;
 	mBlocks.clear();
+	mDoors.clear();
 	mBGTextures.clear();
 	mBackgrounds.clear();
 	mRects.clear();
@@ -24,6 +25,8 @@ Level::Level()
 	mEnemyHitboxes.clear();
 	mEnemyHurtboxes.clear();
 	initEnemyArray();
+	mSpawnX = 0;
+	mSpawnY = 0;
 }
 
 Level::Level(int width, int height, SDL_Rect* camera)
@@ -33,6 +36,7 @@ Level::Level(int width, int height, SDL_Rect* camera)
 	mCamera = camera;
 	mDeathBarrier = false;
 	mBlocks.clear();
+	mDoors.clear();
 	mBGTextures.clear();
 	mBackgrounds.clear();
 	mRects.clear();
@@ -41,6 +45,8 @@ Level::Level(int width, int height, SDL_Rect* camera)
 	mEnemyHitboxes.clear();
 	mEnemyHurtboxes.clear();
 	initEnemyArray();
+	mSpawnX = 0;
+	mSpawnY = 0;
 }
 
 Level::~Level()
@@ -52,13 +58,6 @@ SDL_Rect Level::getLevelDimensions()
 {
 	return{ 0, 0, mLevelWidth, mLevelHeight };
 }
-
-/*
-vector<Block> Level::getBlocks()
-{
-	return mBlocks;
-}
-*/
 
 vector<SDL_Rect>& Level::getRects()
 {
@@ -72,6 +71,11 @@ void Level::setBlock(Uint8 block, Uint8 x, Uint8 y)
 
 void Level::renderLevel()
 {
+	if (mCamera == NULL)
+	{
+		cout << "Level mCamera NULL\n";
+		return;
+	}
 	int i = mCamera->x / tilesize;
 	int j = ((mCamera->x + mCamera->w + tilesize - 1) / tilesize);//basically, just rounds it up
 
@@ -101,6 +105,11 @@ SDL_Color Level::getAmbientLight()
 
 void Level::boundCamera()
 {
+	if (mCamera == NULL)
+	{
+		cout << "Level mCamera NULL\n";
+		return;
+	}
 	if (mCamera->x + mCamera->w > this->mLevelWidth)
 		mCamera->x = this->mLevelWidth - mCamera->w;
 	if (mCamera->y + mCamera->h > this->mLevelHeight)
@@ -278,6 +287,30 @@ Uint8 Level::enemyCount()
 	return c;
 }
 
+void Level::setCamera(SDL_Rect * camera)
+{
+	if (camera == NULL)
+		cout << "NULL camera being passed to level\n";
+	else
+		mCamera = camera;
+}
+
+void Level::getSpawnPoint(Uint8 & x, Uint8 & y)
+{
+	x = mSpawnX;
+	y = mSpawnY;
+}
+
+Door * Level::checkDoorCollision(SDL_Rect c)
+{
+	for (int i = 0, j = mDoors.size(); i < j; ++i)
+	{
+		if (checkCollision(mDoors[i].coll, c))
+			return &mDoors[i];
+	}
+	return NULL;
+}
+
 void Level::mDeleteEnemy(Uint8 slot)
 {
 	if (mEnemies[slot] != NULL)
@@ -348,6 +381,8 @@ void Level::mBGTileRender(Uint8 & bgnum, SDL_Rect & c, bool & tX, bool & tY)
 		Uint8 xtilenum = (mCamera->x + mCamera->w + c.w - 1 - c.x) / c.w;
 		Uint8 ytilenum = (mCamera->y + mCamera->h + c.h - 1 - c.y) / c.h;
 
+		if (!tX) xtilenum = 1;
+		if (!tY) ytilenum = 1;
 
 		int origy = c.y;//a number for the y value to revert to at the beginning of the nested loop
 
@@ -416,6 +451,16 @@ bool Level::Loadmap(string filename)
 	Uint32 loadPoint = 0;
 
 	Uint8 attrs = 0; //amount of 8-bit elements used in a given object
+
+	//Level dimensions, ambient light, spawn point
+	mLevelWidth = idata[0] * tilesize;
+	mLevelHeight = idata[1] * tilesize;
+	setAmbientLight({ (Uint8)idata[2], (Uint8)idata[3], (Uint8)idata[4] });
+
+	mSpawnX = idata[5];
+	mSpawnY = idata[6];
+
+	loadPoint += 7; 
 
 	
 	//background loader
@@ -493,6 +538,32 @@ bool Level::Loadmap(string filename)
 			idata[i + 1], 
 			idata[i + 2]);
 	}//end Enemy loader
+
+	//Door loader
+	attrs = 7;//{8, 8, 8, 8}, 8, 8, 8
+	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); i = i + attrs)
+	{
+		loadPoint = i;
+		if (idata[i] == 255)
+		{
+			++loadPoint;
+			break;
+		}
+
+		int x, y, w, h;
+		
+		x = ((int)idata[i]) * tilesize;
+		y = ((int)idata[i + 1]) * tilesize;
+		w = ((int)idata[i + 2]) * tilesize;
+		h = ((int)idata[i + 3]) * tilesize;
+
+		mDoors.push_back
+			({
+			{x, y, w, h},
+			(Uint8)idata[i + 4],
+			(Uint8)idata[i + 5],
+			(Uint8)idata[i + 6]});
+	}//Door loader
 
 	return true;
 }/*Loadmap*/
