@@ -29,6 +29,7 @@
 #include "MagMatrix.h"
 #include "UIDrawer.h"
 #include "Timer.h"
+#include "Zone.h"
 
 
 using namespace std;
@@ -250,7 +251,6 @@ int main(int argc, char* args[])
 	rr = monitor.refresh_rate;
 
 	bool quit = false;
-	bool ghostalive = true;//just a temporary variable for testing, will probably stick around for a while
 	Player ninja;
 	ninja.setTexture(&gNinjaTexture);
 	gFontTexture.colorMod(0xFF, 0, 0);
@@ -261,27 +261,36 @@ int main(int argc, char* args[])
 	bool debugtoggle = false;
 
 	//build the debug level
-	Level debugLevel(1366,768,&camera);
-	debugLevel.setBGTextures(gBackgroundTextures);
-	debugLevel.Loadmap("data/debug.txt");
-	
+	Zone debugZone(&camera, &ninja, "data/debug", ".txt", gBackgroundTextures);
+	debugZone.init();
+	debugZone.setSpawn();
+
+
 	SDL_Event mainevent;
 	int health = 5;
 	int maxhealth = 20;
 
-	ninja.setLevel(&debugLevel);
 	bool OddFrame = false;//allows 30 FPS monitors to play the game at full speed by skipping vsync every odd frame and rendering twice
 	while (!quit)
 	{
-		debugLevel.clearHitboxes();//need to put before the event handler because the events make hitboxes
+		debugZone.clearHitboxesCurrentLevel();
 		while (SDL_PollEvent(&mainevent))
 		{
 			if (mainevent.type == SDL_QUIT)//alt-f4 or clicking x on window
 				quit = true;
 			if (mainevent.key.keysym.sym == SDLK_BACKQUOTE && mainevent.type == SDL_KEYDOWN && mainevent.key.repeat == 0)//press tilde key
 				debugtoggle = !debugtoggle;
+
+			if (mainevent.key.keysym.sym == SDLK_ESCAPE && mainevent.type == SDL_KEYDOWN && mainevent.key.repeat == 0)
+			{
+				cout << "switching level\n";
+				debugZone.setLevel(1);
+			}
+			
+			/*
 			if (mainevent.key.keysym.sym == SDLK_ESCAPE && mainevent.type == SDL_KEYDOWN && debugtoggle)
 				debugLevel.addEnemy(0, 55, 6);
+			*/
 
 			ninja.handleEvent(mainevent);
 
@@ -291,31 +300,30 @@ int main(int argc, char* args[])
 
 		//ninja.move(debugLevel.getRects());
 		ninja.step();
-		debugLevel.stepEnemies();
+		debugZone.stepEnemiesCurrentLevel();
 		ninja.endstep();
 
 		camera.x = ninja.getX() - kScreenWidth/2 + ninja.kClipWidth/2;
 		camera.y = ninja.getY() - kScreenHeight/2 + ninja.kClipHeight/2;
-		debugLevel.step();//bounds camera and renders
+		debugZone.stepCurrentLevel();
 
 		ninja.render(camera.x, camera.y);
-		debugLevel.drawEnemies();
+		debugZone.drawEnemiesCurrentLevel();
 		gUIDrawer.drawHealthbar(ninja.getHealth(), ninja.getMaxHealth(), health);
 
 		if (debugtoggle)//the debug stuff, shows some stats, and renders hurtboxes
 		{
 			gWriter << '\x86' + (string)"Ninja pos: (" << ninja.getX() << ",\x82 " << ninja.getY() << '\x86' << ")\n";
-			gWriter << '\x88' + (string)"Enemy Count: " << (int)debugLevel.enemyCount() << '\n';
+			gWriter << '\x88' + (string)"Enemy Count: " << (int)debugZone.enemyCountCurrentLevel() << '\n';
 			gWriter << '\x83' << gClock.getFramerate() << " FPS\n";
 			gWriter << '\x86' << gClock.getVSyncFramerate() << " FPS - VS\n";
-			SDL_Delay(300);
 			if (rr != 0)
 			{
 				gWriter << '\x84' << monitor.refresh_rate << "Hz Monitor with dimensions " << monitor.w << 'x' << monitor.h << '\n';
 			}
 			//gWriter << '\x88' << "Frame #"<< gClock.getFrameCount() << '\n';
 			
-			debugLevel.debugShowHitboxes(*gRenderer);
+			debugZone.debugShowHitboxesCurrentLevel(*gRenderer);
 		}
 
 		gWriter.ClearBuffer();//draws all strings from the buffer onto the screen
@@ -326,6 +334,7 @@ int main(int argc, char* args[])
 		if (rr == 30)
 			OddFrame = !OddFrame;
 	}
+	debugZone.release();
 	exit();
 	return 0;
 }

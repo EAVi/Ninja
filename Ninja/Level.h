@@ -27,6 +27,15 @@ struct Background
 	bool tileY;
 };
 
+//if you collide with a rectangle, you go to the specified place
+struct Door
+{
+	SDL_Rect coll;//collision box for the warp
+	Uint8 level;//which level in the zone to warp to
+	Uint8 x;//position to warp to, x
+	Uint8 y;//position to warp to, y
+};
+
 inline bool operator==(const Background& a, const Background& b)
 {
 	return (a.TextNum == b.TextNum &&
@@ -135,6 +144,14 @@ public:
 	//returns number of enemies
 	Uint8 enemyCount();
 
+	//set mCamera
+	void setCamera(SDL_Rect* camera);
+
+	//modifies the references given
+	void getSpawnPoint(Uint8 & x, Uint8 & y);
+
+	//Check Collision with door
+	Door* checkDoorCollision(SDL_Rect c);
 
 private:
 	Matrix<Uint8> mBlocks;
@@ -142,6 +159,7 @@ private:
 	static LTexture* mBlockTextures;//the texture for the blocks
 	std::vector<Background> mBackgrounds;//the data representing the backgrounds
 	std::vector<SDL_Rect> mRects;//the collision rectangles
+	std::vector<Door> mDoors;//all the warpy doors
 	static std::vector<SDL_Rect> mBlockClipRects;//the render target rectangles for the block textures
 	SDL_Color mAmbient;//unused, the ambient lighting will be implemented someday
 	SDL_Rect* mCamera;
@@ -161,6 +179,8 @@ private:
 	void mBGTileRender(Uint8& bgnum, SDL_Rect& c, bool & tX, bool & tY);//renders the background for X tiling only
 	void drawBlock(Uint16 x, Uint16 y);//draws a single block
 	void mClearBlocks();//sets all blocks to 255, which is the null block
+	Uint8 mSpawnX;
+	Uint8 mSpawnY;
 };
 
 #endif

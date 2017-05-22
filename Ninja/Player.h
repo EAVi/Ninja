@@ -57,6 +57,8 @@ public:
 	//returns player health
 	int& getHealth();
 	int& getMaxHealth();
+
+	SDL_Rect& getCollisionBox();
 private:
 	LTexture* mTexture;
 	SDL_Point mRestorePoint;
