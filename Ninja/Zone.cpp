@@ -169,10 +169,6 @@ void Zone::release()
 {
 	if (mLevels.size() != 0)//if the mLevel has not been init properly, do not need to release
 	{
-		for (int i = 0, j = (int)mLevelCount; i < j; ++i)
-		{
-			mLevels[i].~Level();//deallocate memory for all levels
-		}
 		mLevelCount = 0;
 		mLevels.clear();
 	}
