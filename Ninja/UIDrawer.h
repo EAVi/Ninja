@@ -13,7 +13,7 @@
 #include "LTexture.h"
 #include "TextWriter.h"
 
-extern std::vector<LTexture*> gUITextures; //global textures defined in main.cpp
+//std::vector<LTexture*> gUITextures; //global textures defined in main.cpp
 extern TextWriter gWriter;//global writer defined in main.cpp
 
 enum UITextureNums : Uint8;
@@ -25,7 +25,7 @@ class UIDrawer
 public:
 	UIDrawer();
 	void drawHealthbar(int& health, int& maxhealth, int& lives)const;
-
+	static std::vector<LTexture*> gUITextures; //global textures defined in Game.cpp init()
 private:
 
 };

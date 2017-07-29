@@ -60,7 +60,7 @@ public:
 	void clearHitboxesCurrentLevel();
 
 	/* Will render what the current level is*/
-	void stepCurrentLevel();
+	void renderCurrentLevel();
 
 	/* Draw enemies in the current level*/
 	void drawEnemiesCurrentLevel();

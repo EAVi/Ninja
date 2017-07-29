@@ -76,7 +76,7 @@ public:
 	void setBlock(Uint8 block, Uint8 x, Uint8 y);
 
 	//-Renders every inidividual block
-	void renderLevel();
+	void renderBlocks();
 
 	//-A color that will be set to be used for color modulation
 	//-Note that it doesn't actually set the color modulation 
@@ -125,7 +125,8 @@ public:
 	//returns the Player hitbox vector
 	std::vector<Hitbox>& getPlayerHitboxes();
 
-	void step();
+	//render function: boundcamera, renderbg, renderblocks
+	void renderLevel();
 
 	//nullifies all enemy pointers
 	void initEnemyArray();

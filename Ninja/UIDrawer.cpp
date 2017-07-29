@@ -2,6 +2,8 @@
 
 using namespace std;
 
+vector<LTexture*> UIDrawer::gUITextures = vector<LTexture*>();
+
 enum UITextureNums : Uint8
 {
 	kHealthbar, kHealthbarGradient, kNinjaLifeIcon

@@ -38,6 +38,14 @@ public:
 
 	//gets the frame count
 	int getFrameCount();
+
+	//for monitors above 60 Hz, you will need to set the frame delay
+	//so the framerate does not go overboard
+	void setFrameDelay(int a);
+
+	//function which will be called for monitors above 60fps
+	void delayRender();
+
 private:
 	int mFrameCount;
 	int mDiffFrame;
@@ -46,6 +54,7 @@ private:
 	int mVSyncTicks;
 	int mFrameRate;
 	int mVSyncFrameRate;
+	int mFrameDelay;
 };
 
 #endif

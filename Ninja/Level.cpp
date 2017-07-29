@@ -69,7 +69,7 @@ void Level::setBlock(Uint8 block, Uint8 x, Uint8 y)
 	mBlocks.get(x,y) = block;
 }
 
-void Level::renderLevel()
+void Level::renderBlocks()
 {
 	if (mCamera == NULL)
 	{
@@ -214,11 +214,11 @@ std::vector<Hitbox>& Level::getPlayerHitboxes()
 	return mPlayerHitboxes;
 }
 
-void Level::step()
+void Level::renderLevel()
 {
 	boundCamera();
 	renderBg();
-	renderLevel();
+	renderBlocks();
 }
 
 void Level::initEnemyArray()

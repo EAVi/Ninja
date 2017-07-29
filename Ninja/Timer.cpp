@@ -59,3 +59,15 @@ int Timer::getFrameCount()
 {
 	return mFrameCount;
 }
+
+void Timer::setFrameDelay(int a)
+{
+	mFrameDelay = a;
+}
+
+void Timer::delayRender()
+{
+	int delay = SDL_GetTicks() - mLastTick;
+	if (delay > 0)
+		SDL_Delay(delay);
+}

@@ -110,9 +110,9 @@ void Zone::clearHitboxesCurrentLevel()
 	mLevels[mCurrentLevel].clearHitboxes();
 }
 
-void Zone::stepCurrentLevel()
+void Zone::renderCurrentLevel()
 {
-	mLevels[mCurrentLevel].step();
+	mLevels[mCurrentLevel].renderLevel();
 }
 
 void Zone::drawEnemiesCurrentLevel()
