@@ -68,6 +68,6 @@ void Timer::setFrameDelay(int a)
 void Timer::delayRender()
 {
 	int delay = SDL_GetTicks() - mLastTick;
-	if (delay > 0)
-		SDL_Delay(delay);
+	if (delay < mFrameDelay)
+		SDL_Delay(mFrameDelay - delay);
 }
