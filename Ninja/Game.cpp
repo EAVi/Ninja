@@ -313,12 +313,12 @@ void Game::render()
 		mZone.drawEnemiesCurrentLevel();
 		mUIDrawer.drawHealthbar(mPlayer.getHealth(), mPlayer.getMaxHealth(), mLives);
 		debugOptions();
+		gWriter.ClearBuffer();
+		mTimer.vtick();
 		if (mSuper60)
 		{
 			mTimer.delayRender();
 		}
-		mTimer.vtick();
-		gWriter.ClearBuffer();
 		SDL_RenderPresent(mRenderer);
 		mTimer.tick();
 	}
