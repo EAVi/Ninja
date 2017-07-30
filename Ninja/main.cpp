@@ -2,15 +2,17 @@
 #include <vld.h>//visual leak detector comment this out if you do not have, it's pretty good
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h> 
 /*
-#include <SDL_mixer.h> //These libraries are unused
+//These libraries are unused
 #include <SDL_ttf.h>
 */
 #elif defined __APPLE__ && __MACH__ || defined Macintosh || defined macintosh || defined __linux__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h> 
 /*
-#include <SDL2/SDL_mixer.h> //These libraries are unused
+//These libraries are unused
 #include <SDL2/SDL_ttf.h>
 */
 #endif
@@ -30,6 +32,7 @@
 #include "Timer.h"
 #include "Zone.h"
 #include "Game.h"
+#include "LAudio.h"
 
 using namespace std;
 

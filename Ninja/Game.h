@@ -1,15 +1,15 @@
 #ifdef _WIN32
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h> 
 /*
-#include <SDL_mixer.h> //These libraries are unused
 #include <SDL_ttf.h>
 */
 #elif defined __APPLE__ && __MACH__ || defined Macintosh || defined macintosh || defined __linux__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 /*
-#include <SDL2/SDL_mixer.h> //These libraries are unused
 #include <SDL2/SDL_ttf.h>
 */
 #endif
@@ -28,6 +28,7 @@
 #include "UIDrawer.h"
 #include "Timer.h"
 #include "Zone.h"
+#include "LAudio.h"
 
 class Game
 {
@@ -86,6 +87,7 @@ private:
 	SDL_Point mScreen;
 	SDL_Event mEvent;
 	Timer mTimer;
+	LAudio mSoundBox;
 
 	//gets monitor refresh rate and screen dimensions
 	void screenAttrs();
@@ -104,4 +106,5 @@ private:
 
 	//the debug options
 	void debugOptions();
+
 };

@@ -61,6 +61,22 @@ bool Game::init()
 		return false;
 	}
 
+	//Initialize SDL_Mixer
+	//flags = MIX_INIT_;
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
+	{
+		cout << "Error opening SDL_Mixer!\nError # " << Mix_GetError();
+		return false;
+	}
+
+	//Tries allocating 16 channels for mixing, but will accept less (A mute game still functions-ish)
+	Uint8 numChannels = (Uint8)(Mix_AllocateChannels((int)LAudio::mChannels));
+	if (numChannels < 3)
+		cout << "Warning: Could only allocate " << numChannels <<  " channels!" << endl;
+	else if (numChannels < LAudio::mChannels)
+		cout << "Warning: Less mixer channels than optimal: " << numChannels << endl;
+	LAudio::mChannels = numChannels;
+
 	return true;
 }
 
@@ -156,6 +172,13 @@ bool Game::loadAssets()
 	}
 	tempRobot.setTexture(&mRobotTexture);
 
+	//Load all the sounds and music
+	//Music
+	mSoundBox.loadSFX("SFX/MUS/00.wav", true);
+	mSoundBox.loadSFX("SFX/MUS/01.wav",true);
+	//mSoundBox.playMusic(1);
+	//Sounds
+
 	return true;
 }
 
@@ -217,8 +240,11 @@ void Game::destroyAssets()
 	SDL_DestroyRenderer(mRenderer);
 	mRenderer = NULL;
 
+	mSoundBox.release();
 	SDL_Quit();
 	IMG_Quit();
+	Mix_CloseAudio();
+	Mix_Quit();
 }
 
 void Game::gameLoop()

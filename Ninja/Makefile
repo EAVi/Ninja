@@ -9,9 +9,7 @@ SRCS=Algorithms.cpp Enemy.cpp Game.cpp Level.cpp LTexture.cpp main.cpp Player.cp
 #Create object files from sources
 OBJS=$(SRCS:.cpp=.o)
 #libraries and stuff
-SDLF=-lSDL2 -lSDL2_image
-#The computers at my computer lab have SDL2 installed but do not have SDL2-image
-#so for me, I'd build the libraries and link using the paths -I/pool/u/cse/SID#/SDL2-image/include/ -L/pool/u/cse/SID#/SDL2-image/lib/ 
+SDLF=-lSDL2 -lSDL2_image -lSDL2_mixer
 
 #Macros are optional, you'd need to define as MCRO="-D LINUX" or whatever
 

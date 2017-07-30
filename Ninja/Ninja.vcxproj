@@ -14,6 +14,7 @@
     <ClCompile Include="Algorithms.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="LAudio.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="LTexture.cpp" />
@@ -28,6 +29,7 @@
     <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="LAudio.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UIDrawer.h" />
