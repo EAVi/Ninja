@@ -7,6 +7,12 @@ enum textColors : Uint8
 	kRed, kOrange, kYellow, kGreen, kBlue, kPurple, kWhite, kBlack, kRainbow
 };
 
+enum textCommand : Uint8
+{
+	kOff = 0,
+	kSuperImpose = 1,
+};
+
 
 
 TextWriter::TextWriter()
@@ -21,6 +27,8 @@ TextWriter::TextWriter()
 	mColors.push_back({ 0, 255, 0 });//green
 	mColors.push_back({ 0, 0, 255 });//blue
 	mColors.push_back({ 255, 0, 255 });//purple
+	mColors.push_back({ 255, 255, 255 });//white
+	mColors.push_back({ 0, 0, 0 });//black
 
 	//fills the rectangle vector
 	SDL_Rect clipsize = { 0, 0, 0, 0 };
@@ -88,6 +96,18 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 			<< '\x80'+(string)"RED";
 		You can't have it all in one string unless you put a space after the escape character
 		*/
+		else if(clipnum > 127 + kRainbow + 1)//for command assignment
+		{
+			switch (clipnum - 127 - kRainbow - 2)
+			{
+			case 1:
+				mCommand |= kSuperImpose;
+				break;
+			default: //Case 0
+				mCommand = kOff;
+				break;
+			}
+		}
 		else if (clipnum > 127)// for color assignment
 		{
 			mColorNum = (clipnum - 128) % (mColors.size() + 1);
@@ -100,18 +120,28 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 				color = &mColors[0];//just gives color a value to prevent rainbowing
 			this->mTexture->colorMod(mColors[mColorNum]);
 		}
-		else
+		else//for rendering the font clip
 		{
+			//Superimpose condition
+			if (mCommand & kSuperImpose)
+			{
+				mTexture->colorMod(mColors[kBlack]);//set color to black
+				mTexture->renderTexture(pointy.x + 1, pointy.y + 1, &mCharClips[clipnum]);//render the black
+				mTexture->colorMod(mColors[mColorNum]);//reset back to previous color, will re-render over the black
+			}
 			mTexture->renderTexture(pointy.x, pointy.y, &mCharClips[clipnum]);
 			pointy.x += mClipDimensions.x;
 		}
 
-		
 	}
+	//deactivate commands, to prevent the commands from applying
+	//to a buffer or a later renderstring() call
+	mCommand = kOff;
 }
 
-void TextWriter::RenderString(string text, int x, int y, textColors color)
+void TextWriter::RenderString(string text, int x, int y, textColors color, textCommand comm)
 {
+	mCommand = comm;
 	if (color != kRainbow)
 		this->RenderString(text, x, y, &mColors[color]);
 	else //if color is rainbow

@@ -71,7 +71,6 @@ private:
 
 	SDL_Renderer* mRenderer;
 	SDL_Window* mWindow;
-	int mLives;
 	SDL_Color mColorKey;
 	LTexture mNinjaTexture;
 	LTexture mBlockTexture;

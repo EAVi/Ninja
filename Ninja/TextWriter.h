@@ -41,7 +41,7 @@ public:
 	void RenderString(std::string text, int x, int y, SDL_Color* color = NULL);
 
 	//-Renders string at position, overload using textcolors
-	void RenderString(std::string text, int x, int y, textColors color);
+	void RenderString(std::string text, int x, int y, textColors color, textCommand comm = (textCommand)0);
 
 	//-overload using double
 	void RenderString(double val, int x, int y, SDL_Color* color = NULL);
@@ -77,6 +77,7 @@ public:
 private:
 	LTexture* mTexture;
 	Uint8 mColorNum;
+	Uint8 mCommand;
 	std::vector<SDL_Color> mColors;
 	std::vector<SDL_Rect> mCharClips;
 	SDL_Point mClipDimensions;

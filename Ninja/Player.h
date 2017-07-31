@@ -57,8 +57,11 @@ public:
 	//returns player health
 	int& getHealth();
 	int& getMaxHealth();
+	int& getLives();
 
 	SDL_Rect& getCollisionBox();
+
+	bool checkDead();
 private:
 	LTexture* mTexture;
 	SDL_Point mRestorePoint;
@@ -73,7 +76,7 @@ private:
 	float mYVelocityF;//precise gravity, is truncated to mYVelocity so collision math can be done
 	int mHealth;
 	int mMaxHealth;
-	int lives;
+	int mLives;
 	Uint8 mTouchIndex;
 	Uint16 mAnimationFrame;
 	Uint8 mAttackCoolDown;
@@ -131,6 +134,8 @@ enum NinjaAnimationFrames
 	kWallCling = 61,
 	kStandStun = 62,
 	kStandStunSword = 63,
+	kLogDeathStart = 64,
+	kLogDeathEnd = 79,
 	kAirStun = 16
 
 };

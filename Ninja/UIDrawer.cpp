@@ -49,7 +49,7 @@ void UIDrawer::drawHealthbar(int & health, int & maxhealth, int & lives) const
 		&width,
 		&height
 		);
-	if (lives <= 5)//shows only a certain amount of lives before it just shows "x6, x7, etc."
+	if (lives <= 5 && lives != 0)//shows only a certain amount of lives before it just shows "x6, x7, etc."
 		for (int i = 0; i < lives; ++i)
 		{
 			int xpos = Healthbar::life.x + (Healthbar::life.w + 1) * i;
@@ -68,6 +68,6 @@ void UIDrawer::drawHealthbar(int & health, int & maxhealth, int & lives) const
 		);
 		string lifecounter = "x";
 		lifecounter += to_string(lives);
-		gWriter.RenderString(lifecounter, Healthbar::life.x + Healthbar::life.w + 1, Healthbar::life.y, (textColors)8);
+		gWriter.RenderString(lifecounter, Healthbar::life.x + Healthbar::life.w + 1, Healthbar::life.y, (textColors)8, (textCommand)1);
 	}
 }

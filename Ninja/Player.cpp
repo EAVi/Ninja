@@ -18,9 +18,10 @@ Player::Player()
 	mFlipType = SDL_FLIP_NONE;
 	mAnimationFrame = 0;
 	mAttackCoolDown = 0;
-	mSwordHitbox = { {6,0,19,25}, 3 };
+	mSwordHitbox = { {6,-1,24,27}, 3 };
 	mMaxHealth = kMaxHealth;
 	mHealth = mMaxHealth;
+	mLives = 6;
 	mInvincibilityFrames = 0;
 }
 
@@ -71,8 +72,11 @@ void Player::step()
 		move(mLevel->getRects());
 
 		//makes character face the right way
-		if (mXVelocity > 0) mFlipType = SDL_FLIP_NONE;
-		else if (mXVelocity < 0) mFlipType = SDL_FLIP_HORIZONTAL;
+		if (mHealth > 0)
+		{
+			if (mXVelocity > 0) mFlipType = SDL_FLIP_NONE;
+			else if (mXVelocity < 0) mFlipType = SDL_FLIP_HORIZONTAL;
+		}
 
 		mBoundPlayer();
 
@@ -97,7 +101,7 @@ void Player::endstep()
 	mInvincibilityFrames = (mInvincibilityFrames != 0) ? mInvincibilityFrames - 1 : mInvincibilityFrames;
 	if (mHitStun == 0)
 		mCheckHurt();
-	else //stun animation
+	else //stun animation overrides all
 	{
 		if (mAttackCoolDown <= 0 && mTouchIndex && kTouchingTop)
 			mAnimationFrame = kStandStun;
@@ -122,7 +126,15 @@ void Player::move(vector<SDL_Rect>& colliders)
 
 	//checks for collision and moves accordingly
 	//also modifies the y velocity if needed
-	SDL_Point optimalPoint = optimizedMove(player, colliders, mXVelocity, mYVelocity, mTouchIndex);
+	SDL_Point optimalPoint;
+	if (mHealth > 0)//if living, can move freely
+		optimalPoint = optimizedMove(player, colliders, mXVelocity, mYVelocity, mTouchIndex);
+	else//if dead, use zero for xVelocity
+	{
+		int zero = 0;
+		optimalPoint = optimizedMove(player, colliders, zero, mYVelocity, mTouchIndex);
+	}
+
 	mX = optimalPoint.x - offsetX;
 	mY = optimalPoint.y - offsetY;
 
@@ -140,7 +152,9 @@ void Player::move(vector<SDL_Rect>& colliders)
 void Player::render(int x, int y)
 {
 	//Do not render on the blinking frames
-	if ((mInvincibilityFrames + 1) % kBlinkingFrequency == 0)
+	if (((mInvincibilityFrames + 1) % kBlinkingFrequency == 0)
+		&& mHealth != 0 //don't want to blink on death frames
+		)
 		return;
 
 
@@ -163,7 +177,39 @@ void Player::render(int x, int y)
 
 void Player::handleAnimation()
 {
-	if (mTouchIndex & kTouchingTop //if touching the ground
+	//handle death animation
+	if (mHealth <= 0)
+	{
+		if (mLives == 0) //For 0 lives, we have a special death animation
+		{
+			//if you're dead, keep it up
+			if (mAnimationFrame >= kDeathStart && mAnimationFrame < kDeathEnd)
+			{
+				mAnimationFrame++;
+			}
+			//if not already dead, start dying
+			else if (mAnimationFrame != kDeathEnd)
+			{
+				mInvincibilityFrames = 60;
+				mAnimationFrame = kDeathStart;
+			}
+		}
+		else //do the log death animation
+		{
+			//if you're dead, keep it up
+			if (mAnimationFrame >= kLogDeathStart && mAnimationFrame < kLogDeathEnd)
+			{
+				mAnimationFrame++;
+			}
+			//if not already dead, start dying
+			else if (mAnimationFrame != kLogDeathEnd)
+			{
+				mInvincibilityFrames = 60;
+				mAnimationFrame = kLogDeathStart;
+			}
+		}
+	}
+	else if (mTouchIndex & kTouchingTop //if touching the ground
 		|| (mYVelocity <= 2  && mJump) && !mWallClinging && mXVelocity != 0) //or running off an edge (but not falling too fast) (allows running through gaps seamlessly)
 	{
 		if (mXVelocity != 0
@@ -233,9 +279,20 @@ int& Player::getMaxHealth()
 	return mMaxHealth;
 }
 
+int & Player::getLives()
+{
+	return mLives;
+}
+
 SDL_Rect & Player::getCollisionBox()
 {
 	return mCollisionBox;
+}
+
+bool Player::checkDead()
+{
+	return ( ( mAnimationFrame == kDeathEnd || mAnimationFrame == kLogDeathEnd)
+		&& mInvincibilityFrames <= 0);
 }
 
 
@@ -246,7 +303,8 @@ void Player::mLeftPress()
 
 void Player::mJumpPress()
 {
-	if (mHitStun > 0) return;
+	//Can't jump if in hitstun or dead
+	if (mHitStun > 0 && mHealth >= 0) return;
 	if (mJump && !(mTouchIndex & kTouchingBottom))//if you can jump, you will jump
 	{
 		mJump = false;
@@ -372,7 +430,8 @@ void Player::mAttack()
 
 void Player::mCheckHurt()
 {
-	if (mInvincibilityFrames > 0) return; //can't get hurt while invincible
+	if (mInvincibilityFrames > 0 //can't get hurt while invincible
+		|| mHealth <= 0) return; //can't get hurt while already dead
 
 	SDL_Rect hurtbox = mCollisionBox;
 	hurtbox.x += mX;
@@ -393,8 +452,14 @@ void Player::mCheckHurt()
 		}
 	}
 
-	mHealth -= hdamage;
-	mHitStun = hhitstun;
+	mHealth -= hdamage;//chooses the highest damage
+	mHitStun = hhitstun;//and the highest hitstun
+
+	if (mHealth <= 0)
+	{
+		//mHitStun = 0;
+		mHealth = 0;
+	}
 
 	if (hdamage > 0 && hhitstun == 0)//the way invincibility is handled, the player would otherwise be damage-able the next frame
 		mInvincibilityFrames = kInvincibilityFrames;

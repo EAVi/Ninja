@@ -11,7 +11,6 @@ Game::Game()
 	mCamera = { 0, 0, kScreenWidth, kScreenHeight };
 	mDebug = false;
 	mTimer.setFrameDelay(kFramePeriod);
-	mLives = 6;
 }
 
 bool Game::init()
@@ -317,6 +316,18 @@ void Game::beginstep()
 {
 	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(mRenderer);
+	if (mPlayer.checkDead())
+	{
+		if (mPlayer.getLives() != 0)
+		{
+		mPlayer.getLives()--;
+		mPlayer.getHealth() = mPlayer.getMaxHealth();
+		}
+		else
+		{
+			//GAME OVER
+		}
+	}
 	mPlayer.step();
 	mZone.stepEnemiesCurrentLevel();
 }
@@ -337,7 +348,7 @@ void Game::render()
 		mZone.renderCurrentLevel();
 		mPlayer.render(mCamera.x, mCamera.y);
 		mZone.drawEnemiesCurrentLevel();
-		mUIDrawer.drawHealthbar(mPlayer.getHealth(), mPlayer.getMaxHealth(), mLives);
+		mUIDrawer.drawHealthbar(mPlayer.getHealth(), mPlayer.getMaxHealth(), mPlayer.getLives());
 		debugOptions();
 		gWriter.ClearBuffer();
 		mTimer.vtick();
@@ -355,7 +366,7 @@ void Game::debugOptions()
 	if (mDebug)//the debug stuff, shows some stats, and renders hurtboxes
 	{
 		gWriter << '\x86' + (string)"Ninja pos: (" << mPlayer.getX() << ",\x82 " << mPlayer.getY() << '\x86' << ")\n";
-		gWriter << '\x88' + (string)"Enemy Count: " << (int)mZone.enemyCountCurrentLevel() << '\n';
+		gWriter << '\x8A' << '\x88' + (string)"Enemy Count: " << (int)mZone.enemyCountCurrentLevel() << '\x89' << '\n';
 		gWriter << '\x83' << mTimer.getFramerate() << " FPS\n";
 		gWriter << '\x86' << mTimer.getVSyncFramerate() << " FPS - VS\n";
 		//if (rr != 0)
