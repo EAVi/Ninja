@@ -53,7 +53,7 @@ Parsing/Separating your numbers:
 	 so put some number in there, I personally prefer putting "255 255"
 	 and making that on it's own line.
 -----------------------------
-2) Backgrounds (6 arguments,  7 bytes)
+2) Backgrounds (8 arguments,  10 bytes)
 	Texture Number - there's currently 6 bgs to choose from:
 		"GFX/BG/bluesky.png",
 		"GFX/BG/snowmtn.png",
@@ -68,6 +68,9 @@ Parsing/Separating your numbers:
 	Depth - Parallax, how much the background follows the camera.
 		255 means the background follows completely, 
 		0 means the background does not follow at all.
+	X Velocity - Signed 8-bit integer, every frame will move this direction
+		   - will move that much regardless of depth
+	Y Velocity - ""
 	TileX - 1 bit, second-rightmost bit, if true, the 
 		background will repeat on the x axis.
 	TileY - 1 bit, rightmost bit, y axis.

@@ -23,6 +23,8 @@ struct Background
 	Sint16 initX;
 	Sint16 initY;
 	Uint8 depth;
+	Sint8 XV;
+	Sint8 YV;
 	bool tileX;
 	bool tileY;
 };
@@ -99,7 +101,7 @@ public:
 	bool createBg(Background bg, Sint16 insert);
 	
 	//-Overload allowing more stuff
-	bool createBg(Uint8 TextNum, Sint16 initX, Sint16 initY, Uint8 depth, bool tileX = false, bool tileY = false, Sint16 insert = 0);
+	bool createBg(Uint8 TextNum, Sint16 initX, Sint16 initY, Uint8 depth, Sint8 XV = 0, Sint8 YV = 0, bool tileX = false, bool tileY = false, Sint16 insert = 0);
 
 	//Does the math and renders the backgrounds
 	void renderBg();

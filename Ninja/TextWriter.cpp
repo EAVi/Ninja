@@ -11,6 +11,7 @@ enum textCommand : Uint8
 {
 	kOff = 0,
 	kSuperImpose = 1,
+	kTypewriterStart = 2,
 };
 
 
@@ -33,6 +34,8 @@ TextWriter::TextWriter()
 	//fills the rectangle vector
 	SDL_Rect clipsize = { 0, 0, 0, 0 };
 	mCharClips.clear();
+	mTick = 0;
+	mTypeSpeed = 3;
 }
 
 TextWriter::TextWriter(LTexture* texture, int w, int h)
@@ -55,6 +58,8 @@ TextWriter::TextWriter(LTexture* texture, int w, int h)
 	SDL_Rect clipsize = { 0, 0, w, h };
 	mCharClips.clear();
 	mCharClips = spriteClipper(mTexture->getWidth(),mTexture->getHeight(),clipsize);
+	mTick = 0;
+	mTypeSpeed = 3;
 }
 
 TextWriter::~TextWriter()
@@ -103,6 +108,15 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 			case 1:
 				mCommand |= kSuperImpose;
 				break;
+			case 2://turn off superimpose
+				mCommand &= ~kSuperImpose;
+				break;
+			case 3:
+				mCommand |= kTypewriterStart;
+				break;
+			case 4://turn off the typewriter
+				mCommand &= ~kTypewriterStart;
+				break;
 			default: //Case 0
 				mCommand = kOff;
 				break;
@@ -122,21 +136,33 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 		}
 		else//for rendering the font clip
 		{
-			//Superimpose condition
-			if (mCommand & kSuperImpose)
+			if (!(mCommand & kTypewriterStart) //if typewriter is off
+				|| mTypeMove < mTick/mTypeSpeed)			//or typewriter is on and hasn't advanced too much
 			{
-				mTexture->colorMod(mColors[kBlack]);//set color to black
-				mTexture->renderTexture(pointy.x + 1, pointy.y + 1, &mCharClips[clipnum]);//render the black
-				mTexture->colorMod(mColors[mColorNum]);//reset back to previous color, will re-render over the black
+				//Superimpose condition
+				if (mCommand & kSuperImpose)
+				{
+					mTexture->colorMod(mColors[kBlack]);//set color to black
+					mTexture->renderTexture(pointy.x + 1, pointy.y + 1, &mCharClips[clipnum]);//render the black
+					mTexture->colorMod(mColors[mColorNum]);//reset back to previous color, will re-render over the black
+				}
+				mTexture->renderTexture(pointy.x, pointy.y, &mCharClips[clipnum]);
+				pointy.x += mClipDimensions.x;
+
+				/*
+				increments the typemove for every character that is drawn
+				in typewriter mode
+				*/
+				if (mCommand & kTypewriterStart)
+					mTypeMove++;
 			}
-			mTexture->renderTexture(pointy.x, pointy.y, &mCharClips[clipnum]);
-			pointy.x += mClipDimensions.x;
 		}
 
 	}
 	//deactivate commands, to prevent the commands from applying
 	//to a buffer or a later renderstring() call
 	mCommand = kOff;
+	mTypeMove = 0;
 }
 
 void TextWriter::RenderString(string text, int x, int y, textColors color, textCommand comm)
@@ -172,6 +198,11 @@ void TextWriter::ClearBuffer()
 	}
 
 	RenderString(mWriteBuffer, 0, y);//draw it using the renderstring function
-
+	mTick++;//advance the ticks
 	mWriteBuffer = "";
+}
+
+void TextWriter::ClearTicks()
+{
+	mTick = 0;
 }

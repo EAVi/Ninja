@@ -74,6 +74,8 @@ public:
 	*/
 	void ClearBuffer();
 
+	void ClearTicks();
+
 private:
 	LTexture* mTexture;
 	Uint8 mColorNum;
@@ -82,6 +84,9 @@ private:
 	std::vector<SDL_Rect> mCharClips;
 	SDL_Point mClipDimensions;
 	std::string mWriteBuffer;
+	int mTick;//number of times that clearbuffer has been called
+	int mTypeMove;//number of characters that have been rendered past the current character
+	Uint8 mTypeSpeed;
 };
 
 #endif

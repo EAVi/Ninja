@@ -102,7 +102,7 @@ bool Game::loadAssets()
 	tempLevel.setBlockTextures(&mBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 6;
+	Uint8 bgTexNum = 7;
 	string bgTexS[] =
 	{
 		"GFX/BG/bluesky.png",
@@ -111,6 +111,7 @@ bool Game::loadAssets()
 		"GFX/BG/nightynight.png",
 		"GFX/BG/skyline.png",
 		"GFX/BG/redsky.png",
+		"GFX/BG/snow.png",
 	};
 
 	for (Uint8 i = 0; i < bgTexNum; ++i)
@@ -365,10 +366,10 @@ void Game::debugOptions()
 {
 	if (mDebug)//the debug stuff, shows some stats, and renders hurtboxes
 	{
-		gWriter << '\x86' + (string)"Ninja pos: (" << mPlayer.getX() << ",\x82 " << mPlayer.getY() << '\x86' << ")\n";
-		gWriter << '\x8A' << '\x88' + (string)"Enemy Count: " << (int)mZone.enemyCountCurrentLevel() << '\x89' << '\n';
+		gWriter << '\x8C'<< '\x86' + (string)"Ninja pos: (" << mPlayer.getX() << ",\x82 " << mPlayer.getY() << '\x86' << ")\n";
+		gWriter << '\x8A' << '\x88' + (string)"Enemy Count: " << (int)mZone.enemyCountCurrentLevel() << '\x8B' << '\n';
 		gWriter << '\x83' << mTimer.getFramerate() << " FPS\n";
-		gWriter << '\x86' << mTimer.getVSyncFramerate() << " FPS - VS\n";
+		gWriter << '\x86' << mTimer.getVSyncFramerate() << " FPS - VS\n" << '\x8D' <<  '\x8D';
 		//if (rr != 0)
 		//{
 		gWriter << '\x84' << mRefreshRate << "Hz Monitor with dimensions " << mScreen.x << 'x' << mScreen.y << '\n';

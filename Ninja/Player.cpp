@@ -304,7 +304,7 @@ void Player::mLeftPress()
 void Player::mJumpPress()
 {
 	//Can't jump if in hitstun or dead
-	if (mHitStun > 0 && mHealth >= 0) return;
+	if (mHitStun > 0 || mHealth <= 0) return;
 	if (mJump && !(mTouchIndex & kTouchingBottom))//if you can jump, you will jump
 	{
 		mJump = false;
@@ -475,6 +475,7 @@ void Player::mAttackPress()
 	//Not allowed to use sword while wallclinging or in hitstun
 	if (mHitStun > 0) return;
 	if (mWallClinging) return;
+	if (mHealth <= 0) return;
 	if (mAttackCoolDown == 0)
 	{
 		mAttackCoolDown = kSwordLag;

@@ -392,7 +392,7 @@ void Level::mBGTileRender(Uint8 & bgnum, SDL_Rect & c, bool & tX, bool & tY)
 			for (int j = 0; j < ytilenum; ++j)
 			{
 				mBGTextures[mBackgrounds[bgnum].TextNum]->renderTexture(c.x - mCamera->x, c.y - mCamera->y);
-				c.y += c.w;
+				c.y += c.h;
 			}
 			c.x += c.w;
 		}
@@ -464,7 +464,7 @@ bool Level::Loadmap(string filename)
 
 	
 	//background loader
-	attrs = 7;//(8, 16, 16, 8, 1,< 1) //there's leftover 6 bits
+	attrs = 9;//(8, 16, 16, 8, 1,< 1, 8, 8) //there's leftover 6 bits
 	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); i = i + attrs)
 	{
 		loadPoint = i;
@@ -476,12 +476,14 @@ bool Level::Loadmap(string filename)
 		}
 		
 		createBg(
-			idata[i],
-			idata[i + 1] * 256 + idata[i + 2],
-			idata[i + 3] * 256 + idata[i + 4],
-			idata[i + 5],
-			idata[i + 6] & 2,
-			idata[i + 6] & 1
+			idata[i],//textnum
+			idata[i + 1] * 256 + idata[i + 2],//initx
+			idata[i + 3] * 256 + idata[i + 4],//inity
+			idata[i + 5],//depth
+			(Sint8)idata[i + 6],//XV
+			(Sint8)idata[i + 7],//YV
+			idata[i + 8] & 2,//tilex
+			idata[i + 8] & 1//tiley
 			);
 	}//end background loader
 	
@@ -615,15 +617,18 @@ bool Level::createBg(Background bg, Sint16 insert)
 	return !exists;
 }
 
-bool Level::createBg(Uint8 TextNum, Sint16 initX, Sint16 initY, Uint8 depth, bool tileX, bool tileY, Sint16 insert)
+bool Level::createBg(Uint8 TextNum, Sint16 initX, Sint16 initY, Uint8 depth, Sint8 XV, Sint8 YV, bool tileX, bool tileY, Sint16 insert)
 {
-	return (createBg({ TextNum, initX, initY, depth, tileX, tileY }, insert));
+	return (createBg({ TextNum, initX, initY, depth, XV, YV, tileX, tileY }, insert));
 }
 
 void Level::renderBg()
 {
 	for (Uint8 i = 0; i < (Uint8)mBackgrounds.size(); ++i)
 	{
+		mBackgrounds[i].initX += mBackgrounds[i].XV;//moves the background if XV or YV are nonzero
+		mBackgrounds[i].initY += mBackgrounds[i].YV;
+
 		SDL_Rect coll
 		{
 			0,//render x
