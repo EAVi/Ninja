@@ -214,6 +214,11 @@ void Zone::mCheckDoors()
 
 }
 
+Uint8 Zone::getSongCurrentLevel()
+{
+	return mLevels[mCurrentLevel].getSong();
+}
+
 void Zone::countFiles()
 {
 	int tcount = 0;

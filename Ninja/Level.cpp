@@ -27,6 +27,7 @@ Level::Level()
 	initEnemyArray();
 	mSpawnX = 0;
 	mSpawnY = 0;
+	mSong = 255;
 }
 
 Level::Level(int width, int height, SDL_Rect* camera)
@@ -47,6 +48,7 @@ Level::Level(int width, int height, SDL_Rect* camera)
 	initEnemyArray();
 	mSpawnX = 0;
 	mSpawnY = 0;
+	mSong = 255;
 }
 
 Level::~Level()
@@ -311,6 +313,11 @@ Door * Level::checkDoorCollision(SDL_Rect c)
 	return NULL;
 }
 
+Uint8 Level::getSong()
+{
+	return mSong;
+}
+
 void Level::mDeleteEnemy(Uint8 slot)
 {
 	if (mEnemies[slot] != NULL)
@@ -450,17 +457,16 @@ bool Level::Loadmap(string filename)
 	}
 	Uint32 loadPoint = 0;
 
-	Uint8 attrs = 0; //amount of 8-bit elements used in a given object
+	Uint8 attrs = 8; //amount of 8-bit elements used in a given object
 
 	//Level dimensions, ambient light, spawn point
 	mLevelWidth = idata[0] * tilesize;
 	mLevelHeight = idata[1] * tilesize;
 	setAmbientLight({ (Uint8)idata[2], (Uint8)idata[3], (Uint8)idata[4] });
-
 	mSpawnX = idata[5];
 	mSpawnY = idata[6];
-
-	loadPoint += 7; 
+	mSong = idata[7];
+	loadPoint += attrs; 
 
 	
 	//background loader

@@ -39,7 +39,7 @@ Parsing/Separating your numbers:
 	commas, no semicolons.
 
 -----------------------------
-1) Level Attributes (7 arguments, 7 bytes)
+1) Level Attributes (8 arguments, 8 bytes)
 	Level Width - the number of blocks you want to fit on the x axis
 	Level Heigth - width, but on y axis.
 	Ambient Red - will adjust lighting, does not work yet
@@ -47,6 +47,7 @@ Parsing/Separating your numbers:
 	Ambient Blue - ""
 	Player Spawn X - Only required on the first level of the zone*
 	Player Spawn Y - ""
+	Song - check the SFX/MUS folder to see what you like.
 
 	*The spawn position will not be read for any file that isn't 
 	 the first level of the zone, but is still needed in the file
@@ -54,13 +55,16 @@ Parsing/Separating your numbers:
 	 and making that on it's own line.
 -----------------------------
 2) Backgrounds (8 arguments,  10 bytes)
-	Texture Number - there's currently 6 bgs to choose from:
+	Texture Number - there's currently 8 bgs to choose from:
 		"GFX/BG/bluesky.png",
 		"GFX/BG/snowmtn.png",
 		"GFX/BG/grasshills.png",
 		"GFX/BG/nightynight.png",
 		"GFX/BG/skyline.png",
 		"GFX/BG/redsky.png",
+		"GFX/BG/snow.png",
+		"GFX/BG/castlehill.png",
+		"GFX/BG/castlewall.png",
 	X position - is 16 bits, takes 2 bytes of memory
 		   - first part of X position is Coarse.
 		   - second part is fine position.
@@ -94,7 +98,7 @@ Parsing/Separating your numbers:
 		"16" will give you a 1x16 tile.
 		"255" will give you a 16x16 tile.
 -----------------------------
-4) Blocks (3 arguments, 3 bytes)
+4) Enemies (3 arguments, 3 bytes)
 	Enemy Type - there are currently two types of enemy:
 			0 - Robo Pirate
 			1 - Space Ghost

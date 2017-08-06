@@ -98,6 +98,9 @@ public:
 	/* Checks if the player has collided with any door, and if the player has, warp them to another dimension*/
 	void mCheckDoors();
 
+	/* Returns the curren level's song*/
+	Uint8 getSongCurrentLevel();
+
 private:
 	std::vector<Level> mLevels;
 	int mSize;

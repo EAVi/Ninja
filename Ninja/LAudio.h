@@ -53,6 +53,7 @@ public:
 private:
 	std::vector<Mix_Music*> mMusic;
 	std::vector<Mix_Chunk*> mSound;
+	Uint8 mCurrentSong;
 };
 
 #endif

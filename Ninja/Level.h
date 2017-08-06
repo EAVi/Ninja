@@ -156,8 +156,11 @@ public:
 	//Check Collision with door
 	Door* checkDoorCollision(SDL_Rect c);
 
+	Uint8 getSong();
+
 private:
 	Matrix<Uint8> mBlocks;
+	Uint8 mSong;//the song index that should be playing
 	static std::vector<LTexture*> mBGTextures;//the textures for the backgrounds
 	static LTexture* mBlockTextures;//the texture for the blocks
 	std::vector<Background> mBackgrounds;//the data representing the backgrounds

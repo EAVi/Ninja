@@ -102,7 +102,7 @@ bool Game::loadAssets()
 	tempLevel.setBlockTextures(&mBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 7;
+	Uint8 bgTexNum = 9;
 	string bgTexS[] =
 	{
 		"GFX/BG/bluesky.png",
@@ -112,6 +112,8 @@ bool Game::loadAssets()
 		"GFX/BG/skyline.png",
 		"GFX/BG/redsky.png",
 		"GFX/BG/snow.png",
+		"GFX/BG/castlehill.png",
+		"GFX/BG/castlewall.png",
 	};
 
 	for (Uint8 i = 0; i < bgTexNum; ++i)
@@ -175,8 +177,8 @@ bool Game::loadAssets()
 	//Load all the sounds and music
 	//Music
 	mSoundBox.loadSFX("SFX/MUS/00.wav", true);
-	mSoundBox.loadSFX("SFX/MUS/01.wav",true);
-	//mSoundBox.playMusic(1);
+	mSoundBox.loadSFX("SFX/MUS/01.wav", true);
+	mSoundBox.loadSFX("SFX/MUS/02.wav",true);
 	//Sounds
 
 	return true;
@@ -331,6 +333,9 @@ void Game::beginstep()
 	}
 	mPlayer.step();
 	mZone.stepEnemiesCurrentLevel();
+	
+	mSoundBox.playMusic(mZone.getSongCurrentLevel());
+	//since mCheckDoors is called in stepEnemies...
 }
 
 void Game::endstep()

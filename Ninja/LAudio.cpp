@@ -8,10 +8,14 @@ LAudio::LAudio()
 {
 	mMusic.clear();
 	mSound.clear();
+	mCurrentSong = 255;
 }
 
 void LAudio::playMusic(Uint8 a, int loop)
 {
+	if (mCurrentSong == a)//if song is already playing
+		return;
+
 	//check index to prevent segfault
 	if (a >= mMusic.size())
 	{
@@ -24,6 +28,10 @@ void LAudio::playMusic(Uint8 a, int loop)
 	if (Mix_PlayMusic(mMusic[a], loop) == -1)
 	{
 		cout << "Warning, Music channel failure for mMusic index " << a;
+	}
+	else
+	{
+		mCurrentSong = a;
 	}
 }
 
