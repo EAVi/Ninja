@@ -11,7 +11,9 @@ enum textCommand : Uint8
 {
 	kOff = 0,
 	kSuperImpose = 1,
-	kTypewriterStart = 2,
+	kTypewriter = 2,
+	kHighlight = 4,
+	kJiggle = 8
 };
 
 
@@ -94,8 +96,10 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 			pointy.y += mClipDimensions.y;
 		}
 		/*
-		To assign a color is a weird process, the best way (in my opinion) is to use a hex value escape character
-		These hex values begin at x80
+		There are a few ways to assign colors, the newest best way is to use the txt namespace
+		For example:
+			<< txt::Red << "Red";
+		The other ways involve using hex escape characters.
 		For example:
 			<< (char)0x80 << "RED";
 			<< '\x80'+(string)"RED";
@@ -112,10 +116,22 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 				mCommand &= ~kSuperImpose;
 				break;
 			case 3:
-				mCommand |= kTypewriterStart;
+				mCommand |= kTypewriter;
 				break;
 			case 4://turn off the typewriter
-				mCommand &= ~kTypewriterStart;
+				mCommand &= ~kTypewriter;
+				break;
+			case 5:
+				mCommand |= kHighlight;
+				break;
+			case 6://turn off the highlight
+				mCommand &= ~kHighlight;
+				break;
+			case 7:
+				mCommand |= kJiggle;
+				break;
+			case 8://turn off the jiggles
+				mCommand &= ~kJiggle;
 				break;
 			default: //Case 0
 				mCommand = kOff;
@@ -136,13 +152,16 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 		}
 		else//for rendering the font clip
 		{
-			if (!(mCommand & kTypewriterStart) //if typewriter is off
+			if (!(mCommand & kTypewriter) //if typewriter is off
 				|| mTypeMove < mTick/mTypeSpeed)			//or typewriter is on and hasn't advanced too much
 			{
-				//Superimpose condition
-				if (mCommand & kSuperImpose)
+				//Superimpose condition or highligh condition
+				if (mCommand & (kSuperImpose | kHighlight))
 				{
-					mTexture->colorMod(mColors[kBlack]);//set color to black
+					if (mCommand & kSuperImpose)
+						mTexture->colorMod(mColors[kBlack]);//set color to black
+					else 
+						mTexture->colorMod(mColors[kWhite]);//set color to white
 					mTexture->renderTexture(pointy.x + 1, pointy.y + 1, &mCharClips[clipnum]);//render the black
 					mTexture->colorMod(mColors[mColorNum]);//reset back to previous color, will re-render over the black
 				}
@@ -153,7 +172,7 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 				increments the typemove for every character that is drawn
 				in typewriter mode
 				*/
-				if (mCommand & kTypewriterStart)
+				if (mCommand & kTypewriter)
 					mTypeMove++;
 			}
 		}

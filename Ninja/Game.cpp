@@ -371,13 +371,14 @@ void Game::debugOptions()
 {
 	if (mDebug)//the debug stuff, shows some stats, and renders hurtboxes
 	{
-		gWriter << '\x8C'<< '\x86' + (string)"Ninja pos: (" << mPlayer.getX() << ",\x82 " << mPlayer.getY() << '\x86' << ")\n";
-		gWriter << '\x8A' << '\x88' + (string)"Enemy Count: " << (int)mZone.enemyCountCurrentLevel() << '\x8B' << '\n';
-		gWriter << '\x83' << mTimer.getFramerate() << " FPS\n";
-		gWriter << '\x86' << mTimer.getVSyncFramerate() << " FPS - VS\n" << '\x8D' <<  '\x8D';
+
+		gWriter << txt::TypeOn << txt::White  << "Ninja pos: (" << mPlayer.getX() << ',' << txt::Yellow << mPlayer.getY() << txt::White << ")\n";
+		gWriter << txt::SuperOn << txt::Rainbow  << "Enemy Count: " << (int)mZone.enemyCountCurrentLevel() << txt::SuperOff << '\n';
+		gWriter << txt::Green << mTimer.getFramerate() << " FPS\n";
+		gWriter << txt::White << mTimer.getVSyncFramerate() << " FPS - VS\n" << txt::TypeOff;
 		//if (rr != 0)
 		//{
-		gWriter << '\x84' << mRefreshRate << "Hz Monitor with dimensions " << mScreen.x << 'x' << mScreen.y << '\n';
+		gWriter << txt::HLightOn << txt::Blue << mRefreshRate << "Hz Monitor with dimensions " << mScreen.x << 'x' << mScreen.y << txt::HLightOff << '\n';
 		//}
 		//gWriter << '\x88' << "Frame #"<< mClock.getFrameCount() << '\n';
 

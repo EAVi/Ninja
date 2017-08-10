@@ -22,6 +22,31 @@ extern const int kScreenHeight;
 enum textColors : Uint8;
 enum textCommand : Uint8;
 
+
+namespace txt
+{
+	/*
+	a character enumeration does not work, so using a bunch of separate characters
+	another approach would use typecasting, and I don't want to do that
+	*/
+	static char Red = '\x80';
+	static char Orange = '\x81';
+	static char Yellow = '\x82';
+	static char Green = '\x83';
+	static char Blue = '\x84';
+	static char Purple = '\x85';
+	static char White = '\x86';
+	static char Black = '\x87';
+	static char Rainbow = '\x88';
+	static char OptionsOff = '\x89';
+	static char SuperOn = '\x8A';
+	static char SuperOff = '\x8B';
+	static char TypeOn = '\x8C';
+	static char TypeOff = '\x8D';
+	static char HLightOn = '\x8E';
+	static char HLightOff = '\x8F';
+}
+
 class TextWriter
 {
 public:
