@@ -55,16 +55,18 @@ Parsing/Separating your numbers:
 	 and making that on it's own line.
 -----------------------------
 2) Backgrounds (8 arguments,  10 bytes)
-	Texture Number - there's currently 8 bgs to choose from:
-		"GFX/BG/bluesky.png",
-		"GFX/BG/snowmtn.png",
-		"GFX/BG/grasshills.png",
-		"GFX/BG/nightynight.png",
-		"GFX/BG/skyline.png",
-		"GFX/BG/redsky.png",
-		"GFX/BG/snow.png",
-		"GFX/BG/castlehill.png",
-		"GFX/BG/castlewall.png",
+	Texture Number - there's currently 11 bgs to choose from:
+		 0 - "GFX/BG/bluesky.png",
+		 1 - "GFX/BG/snowmtn.png",
+		 2 - "GFX/BG/grasshills.png",
+		 3 - "GFX/BG/nightynight.png",
+		 4 - "GFX/BG/skyline.png",
+		 5 - "GFX/BG/redsky.png",
+		 6 - "GFX/BG/snow.png",
+		 7 - "GFX/BG/castlehill.png",
+		 8 - "GFX/BG/castlewall.png",
+		 9 - "GFX/BG/stormclouds.png",
+		10 - "GFX/BG/moonskull.png",
 	X position - is 16 bits, takes 2 bytes of memory
 		   - first part of X position is Coarse.
 		   - second part is fine position.
@@ -74,7 +76,8 @@ Parsing/Separating your numbers:
 		0 means the background does not follow at all.
 	X Velocity - Signed 8-bit integer, every frame will move this direction
 		   - will move that much regardless of depth
-	Y Velocity - ""
+	Y Velocity - "" 
+		   - Remember that positive y velocity will go downward 
 	TileX - 1 bit, second-rightmost bit, if true, the 
 		background will repeat on the x axis.
 	TileY - 1 bit, rightmost bit, y axis.
