@@ -87,12 +87,18 @@ private:
 	bool mAirborne;
 	Uint8 mHitStun;
 
+	bool mLeftKeyDown;//booleans to allow left and right press controls to be handled better
+	bool mRightKeyDown;
+	void mHandleDirection();
 	void mLeftPress();//the function for when the left key is pressed
 	void mJumpPress();//the function for when the jump key is pressed
 	void mRightPress();//the function for when the right key is pressed
 	void mAttackPress();//the function for when the attack key is pressed
 	void mLeftRelease();//the function for when the left key is released
 	void mRightRelease();//the function for when the right key is released
+	void mAxisLeft();//game controller alternative function to mLeft Press and Release
+	void mAxisRight();//game controller alternative function to mRight Press and Release
+	void mAxisNone();//when controller axis is in deadzone
 
 	//buncha things used to check collision
 	void mCheckClinging();//checks if clinging to a wall and changes mWallClinging

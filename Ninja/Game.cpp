@@ -6,6 +6,7 @@ Game::Game()
 {
 	mRenderer = NULL;
 	mWindow = NULL;
+	mController = NULL;
 	mColorKey = { 255, 0, 255 };
 	mQuit = false;
 	mCamera = { 0, 0, kScreenWidth, kScreenHeight };
@@ -17,7 +18,7 @@ bool Game::init()
 {
 	
 	//Initialize video
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 	{
 		cout << "Failed to initialize!\n" << SDL_GetError() << endl;
 		return false;
@@ -31,11 +32,8 @@ bool Game::init()
 
 	//Initialize window
 	mWindow = SDL_CreateWindow("ninja", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-#ifndef NDEBUG//(if not-not debug) Also known as (if debug)
-		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN /*| SDL_WINDOW_FULLSCREEN_DESKTOP*/);
-#else
 		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
-#endif
+
 	if (mWindow == NULL)
 	{
 		cout << "Window could not initialize!\n" << SDL_GetError() << endl;
@@ -75,6 +73,8 @@ bool Game::init()
 	else if (numChannels < LAudio::mChannels)
 		cout << "Warning: Less mixer channels than optimal: " << numChannels << endl;
 	LAudio::mChannels = numChannels;
+
+	mInitControllers();
 
 	return true;
 }
@@ -238,6 +238,10 @@ void Game::destroyAssets()
 		delete UIDrawer::gUITextures[i];//'new' memory was allocated for these textures
 	}
 
+	//close the controller
+	mDestroyControllers();
+
+
 	SDL_DestroyWindow(mWindow);
 	mWindow = NULL;
 
@@ -305,14 +309,28 @@ void Game::handleEvents()
 		if (mEvent.type == SDL_QUIT)//alt-f4 or clicking x on window
 			mQuit = true;
 
-		if (mEvent.key.keysym.sym == SDLK_BACKQUOTE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//press tilde key
+		if (mEvent.type == SDL_CONTROLLERBUTTONDOWN && mEvent.cbutton.button == SDL_CONTROLLER_BUTTON_BACK //back button on controller
+			|| mEvent.key.keysym.sym == SDLK_BACKQUOTE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//or press tilde key
 			mDebug = !mDebug;//toggle debug
 
 		if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//on keypress ESC
 		{
 			mZone.setLevel(1); //switch level
 		}
-	
+		
+		if (mEvent.key.keysym.sym == SDLK_RETURN && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0 && mEvent.key.keysym.mod & (KMOD_RALT | KMOD_LALT))// on alt+enter
+			mToggleFullScreen();
+
+		//Controller Disconnecting
+		if (mEvent.type == SDL_CONTROLLERDEVICEREMOVED)
+		{
+			mDestroyControllers();
+		}
+		//Controller Connecting
+		if (mEvent.type == SDL_CONTROLLERDEVICEADDED)
+		{
+			mInitControllers();
+		}
 		mPlayer.handleEvent(mEvent);
 	}
 }
@@ -386,4 +404,37 @@ void Game::debugOptions()
 
 		mZone.debugShowHitboxesCurrentLevel(*mRenderer);
 	}
+}
+
+void Game::mInitControllers()
+{
+	//if a controller is already connected, no need to init
+	if (mController != NULL) return;
+
+	for (int i = 0, j = SDL_NumJoysticks(); i < j; ++i)
+	//goes through all currently plugged in joysticks
+	{
+		if (SDL_IsGameController(i))
+		//if the joystick is a game controller, then initialize it as the controller
+		{
+			mController = SDL_GameControllerOpen(i);//sets the controller
+			return;//return to prevent many controllers from initializing, since only one will be used
+		}
+	}
+}
+
+void Game::mDestroyControllers()
+{
+	if (mController != NULL)
+		SDL_GameControllerClose(mController);
+	mController = NULL;
+}
+
+void Game::mToggleFullScreen()
+{
+	if (SDL_GetWindowFlags(mWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP)
+		//if already fullscreen, turn it off
+		SDL_SetWindowFullscreen(mWindow, 0);
+	else //else turn it on
+		SDL_SetWindowFullscreen(mWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 }

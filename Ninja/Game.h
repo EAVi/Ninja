@@ -71,22 +71,23 @@ private:
 
 	SDL_Renderer* mRenderer;
 	SDL_Window* mWindow;
-	SDL_Color mColorKey;
+	SDL_GameController *mController;
+	SDL_Color mColorKey;//the magenta color that will represent transparency
 	LTexture mNinjaTexture;
 	LTexture mBlockTexture;
 	LTexture mFontTexture;
 	LTexture mEnemyTexture;
 	LTexture mRobotTexture;
-	UIDrawer mUIDrawer;
+	UIDrawer mUIDrawer;//draws healthbar, lives, and other UI
 	std::vector<LTexture*> mBackgroundTextures;
 	Zone mZone;
 	Player mPlayer;
 	SDL_Rect mCamera;
-	int mRefreshRate;
-	SDL_Point mScreen;
-	SDL_Event mEvent;
-	Timer mTimer;
-	LAudio mSoundBox;
+	int mRefreshRate;//detected refresh rate of the monitor
+	SDL_Point mScreen;//screen dimensions, x and y -> w and h
+	SDL_Event mEvent;//events to be passed to the even handler
+	Timer mTimer;//calculates framerate and helps game run at 60 fps
+	LAudio mSoundBox;//loads and plays sound and music
 
 	//gets monitor refresh rate and screen dimensions
 	void screenAttrs();
@@ -105,5 +106,14 @@ private:
 
 	//the debug options
 	void debugOptions();
+
+	//initializes just one controller if possible
+	void mInitControllers();
+
+	//people usually do this after they play vs me in smash bros
+	void mDestroyControllers();
+
+	//toggles fullscreendesktop
+	void mToggleFullScreen();
 
 };

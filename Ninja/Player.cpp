@@ -14,6 +14,8 @@ Player::Player()
 	mY = 0;
 	mXVelocity = 0;
 	mYVelocityF = 0.0;
+	mLeftKeyDown = false;
+	mRightKeyDown = false;
 	mYVelocity = mYVelocityF;
 	mFlipType = SDL_FLIP_NONE;
 	mAnimationFrame = 0;
@@ -36,22 +38,53 @@ void Player::setTexture(LTexture* texture)
 
 void Player::handleEvent(SDL_Event& e)
 {
-	if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+	if (e.type == SDL_KEYDOWN && e.key.repeat == 0)//keyboard press
 	{
 		switch (e.key.keysym.sym)
 		{
-			case SDLK_d: mRightPress(); break;
-			case SDLK_a: mLeftPress();  break;
-			case SDLK_SPACE: mJumpPress(); break;
-			case SDLK_m: mAttackPress(); break;
+		case SDLK_d: mRightPress(); break;
+		case SDLK_a: mLeftPress();  break;
+		case SDLK_SPACE: mJumpPress(); break;
+		case SDLK_m: mAttackPress(); break;
 		}
 	}
-	else if (e.type == SDL_KEYUP)
+	else if (e.type == SDL_KEYUP)//keyboard release
 	{
 		switch (e.key.keysym.sym)
 		{
-			case SDLK_d: mRightRelease();  break;
-			case SDLK_a: mLeftRelease();  break;
+		case SDLK_d: mRightRelease();  break;
+		case SDLK_a: mLeftRelease();  break;
+		}
+	}
+	else if (e.type == SDL_CONTROLLERBUTTONDOWN)//controller press
+	{
+		switch (e.cbutton.button)
+		{
+		case SDL_CONTROLLER_BUTTON_A: mJumpPress(); break;
+		case SDL_CONTROLLER_BUTTON_X: mAttackPress(); break;
+		case SDL_CONTROLLER_BUTTON_B: mAttackPress(); break;
+		case SDL_CONTROLLER_BUTTON_DPAD_LEFT: mLeftPress(); break;
+		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: mRightPress(); break;
+		}
+
+	}
+	else if (e.type == SDL_CONTROLLERBUTTONUP)//controller release
+	{
+		switch (e.cbutton.button)
+		{
+		case SDL_CONTROLLER_BUTTON_DPAD_LEFT: mLeftRelease(); break;
+		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: mRightRelease(); break;
+		}
+	}
+	else if (e.type == SDL_CONTROLLERAXISMOTION )//controller analog (can include triggers)
+	{
+		if (e.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
+		{
+			if (e.caxis.value < -8000)//8000 is the deadzone, will have a variable for it soon
+				mAxisLeft();
+			else if (e.caxis.value > 8000)
+				mAxisRight();
+			else mAxisNone();
 		}
 	}
 }
@@ -296,9 +329,21 @@ bool Player::checkDead()
 }
 
 
+void Player::mHandleDirection()
+{
+	if (mLeftKeyDown && mRightKeyDown)
+		mXVelocity = 0;
+	else if (mLeftKeyDown)
+		mXVelocity = -kMovementSpeed;
+	else if (mRightKeyDown)
+		mXVelocity = kMovementSpeed;
+	else mXVelocity = 0;
+}
+
 void Player::mLeftPress()
 {
-	mXVelocity -= kMovementSpeed;
+	mLeftKeyDown = true;
+	mHandleDirection();
 }
 
 void Player::mJumpPress()
@@ -325,7 +370,8 @@ void Player::mJumpPress()
 
 void Player::mRightPress()
 {
-	mXVelocity += kMovementSpeed;
+	mRightKeyDown = true;
+	mHandleDirection();
 }
 
 void Player::mAddHurtbox()
@@ -485,10 +531,27 @@ void Player::mAttackPress()
 
 void Player::mLeftRelease()
 {
-	this->mXVelocity += kMovementSpeed;
+	mLeftKeyDown = false;
+	mHandleDirection();
 }
 
 void Player::mRightRelease()
 {
-	this->mXVelocity -= kMovementSpeed;
+	mRightKeyDown = false;
+	mHandleDirection();
+}
+
+void Player::mAxisLeft()
+{
+	mXVelocity = -kMovementSpeed;
+}
+
+void Player::mAxisRight()
+{
+	mXVelocity = kMovementSpeed;
+}
+
+void Player::mAxisNone()
+{
+	mXVelocity = 0;
 }
