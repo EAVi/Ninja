@@ -12,11 +12,12 @@ End Dumb legal stuff
     
     Debug Controls:
     (Tilde key) - enable debug features
-    ESC(while debug is active) - spawn a ghost
+    ESC(while debug is active) - Jump to level 1
     
     To compile on Linux:
     -Get the sdl2 development libraries.
     -Get the sdl2-image development libraries.
+    -Get the sdl2-mixer development libraries.
     -Use the makefile.
     
     To compile on Windows:
@@ -29,8 +30,7 @@ End Dumb legal stuff
     in the data folder. It has everything you need to know about making maps.
     
     This project was begun on 25 Aug, 2016 and has been worked on on/off since. 
-    As of 22 May, 2017, this project is ~3000 lines of code (and 1000 lines of comments/spacing)
+    As of 29 August, 2017, this project is ~3500 lines of code (and 1000 lines of comments/spacing)
     
     I've tested the files in both Windows, Debian. You'll need to download the 
-        SDL2 and SDL2-image libraries in order to compile. This game will eventually use SDL2-mixer, 
-        so you might be interested in that as well. 
+        SDL2, SDL2-image, and SDL2-mixer libraries in order to compile.
