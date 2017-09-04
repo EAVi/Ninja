@@ -102,7 +102,7 @@ bool Game::loadAssets()
 	tempLevel.setBlockTextures(&mBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 11;
+	Uint8 bgTexNum = 13;
 	string bgTexS[] =
 	{
 		"GFX/BG/bluesky.png",
@@ -116,6 +116,8 @@ bool Game::loadAssets()
 		"GFX/BG/castlewall.png",
 		"GFX/BG/stormclouds.png",
 		"GFX/BG/moonskull.png",
+		"GFX/BG/beachhill.png",
+		"GFX/BG/seasky.png",
 	};
 
 	for (Uint8 i = 0; i < bgTexNum; ++i)
@@ -180,7 +182,9 @@ bool Game::loadAssets()
 	//Music
 	mSoundBox.loadSFX("SFX/MUS/00.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/01.wav", true);
-	mSoundBox.loadSFX("SFX/MUS/02.wav",true);
+	mSoundBox.loadSFX("SFX/MUS/02.wav", true);
+	mSoundBox.loadSFX("SFX/MUS/03.wav", true);
+	Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
 	//Sounds
 
 	return true;

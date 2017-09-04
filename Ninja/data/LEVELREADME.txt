@@ -67,6 +67,8 @@ Parsing/Separating your numbers:
 		 8 - "GFX/BG/castlewall.png",
 		 9 - "GFX/BG/stormclouds.png",
 		10 - "GFX/BG/moonskull.png",
+		11 - "GFX/BG/beachhill.png",
+		12 - "GFX/BG/seasky.png",
 	X position - is 16 bits, takes 2 bytes of memory
 		   - first part of X position is Coarse.
 		   - second part is fine position.
