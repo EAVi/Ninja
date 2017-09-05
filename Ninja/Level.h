@@ -153,6 +153,9 @@ public:
 	//modifies the references given
 	void getSpawnPoint(Uint8 & x, Uint8 & y);
 
+	//overload using int
+	void getSpawnPoint(int & x, int & y);
+
 	//Check Collision with door
 	Door* checkDoorCollision(SDL_Rect c);
 

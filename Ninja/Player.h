@@ -64,7 +64,6 @@ public:
 	bool checkDead();
 private:
 	LTexture* mTexture;
-	SDL_Point mRestorePoint;
 	std::vector<SDL_Rect> mAnimationFrameRectangles;
 	SDL_Rect mCollisionBox;
 	SDL_RendererFlip mFlipType;

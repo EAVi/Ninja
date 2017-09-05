@@ -49,10 +49,8 @@ Parsing/Separating your numbers:
 	Player Spawn Y - ""
 	Song - check the SFX/MUS folder to see what you like.
 
-	*The spawn position will not be read for any file that isn't 
-	 the first level of the zone, but is still needed in the file
-	 so put some number in there, I personally prefer putting "255 255"
-	 and making that on it's own line.
+	*The spawn position is a respawn point if you fall off the map,
+	it is also the starting position for the first level.
 -----------------------------
 2) Backgrounds (8 arguments,  10 bytes)
 	Texture Number - there's currently 11 bgs to choose from:

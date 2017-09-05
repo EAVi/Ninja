@@ -303,6 +303,12 @@ void Level::getSpawnPoint(Uint8 & x, Uint8 & y)
 	y = mSpawnY;
 }
 
+void Level::getSpawnPoint(int & x, int & y)
+{
+	x = (int)mSpawnX * 16;
+	y = (int)mSpawnY * 16;
+}
+
 Door * Level::checkDoorCollision(SDL_Rect c)
 {
 	for (int i = 0, j = mDoors.size(); i < j; ++i)

@@ -120,13 +120,6 @@ void Player::step()
 		mAddHurtbox();//pushes a hurtbox into the mLevel->mPlayerHurtbox vector.
 	}
 	else --mHitStun;
-
-	if (mTouchIndex & kTouchingTop)
-	{
-		mJump = true;//replenishes doublejump if ground touched
-		if (mYVelocity == 0)//if touching floor and not moving vertically
-			mRestorePoint = { mX, mY };//sets the restore point in case of out of bounds, will replace when checkpoints are introduced
-	}
 }
 
 void Player::endstep()
@@ -439,13 +432,13 @@ void Player::mBoundPlayer()
 			mX = dimensions.w - mCollisionBox.x - mCollisionBox.w;
 		if (mY > dimensions.h)
 		{
-			mX = mRestorePoint.x;
-			mY = mRestorePoint.y;
+			mLevel->getSpawnPoint(mX, mY);//passes by reference, modifies x,y position
 			mY += kStandardCollisionBox.y + kStandardCollisionBox.h - kJumpingCollisionBox.y - kJumpingCollisionBox.h;
 			mYVelocityF = 0;
 			mYVelocity = mYVelocityF;
 			mTouchIndex |= kTouchingTop;
-			//should kill the player, but not now
+			//kill the player
+			mHealth = 0;
 		}
 	}
 }
