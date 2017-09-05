@@ -120,6 +120,11 @@ void Player::step()
 		mAddHurtbox();//pushes a hurtbox into the mLevel->mPlayerHurtbox vector.
 	}
 	else --mHitStun;
+
+	if (mTouchIndex & kTouchingTop)
+	{
+		mJump = true;//replenishes doublejump if ground touched
+	}
 }
 
 void Player::endstep()
