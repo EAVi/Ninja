@@ -4,6 +4,14 @@ using namespace std;
 
 const int tilesize = 16;
 
+int abs(int a)
+{
+	if (a < 0)//if negative
+		return -a;//return positive
+	//else
+	return a;//return positive
+}
+
 bool between(int a, int b, int c)
 {
 	if (b < c)
@@ -118,25 +126,20 @@ vector<SDL_Rect> getCollisionIndex(SDL_Rect& player, vector<SDL_Rect>& boxes)
 }
 
 
-/*
-*/
 SDL_Point optimizedMove(SDL_Rect& player, vector<SDL_Rect>& boxes, int& xV, int& yV, Uint8& touchIndex)
 {
 	SDL_Rect tempRect = player;
 	tempRect.x += xV;
 	tempRect.y += yV;
 
-	//to get a good index, expand all edges by 1 
-	//before getting the collision index, then unexpand
-	tempRect.x -= 1; tempRect.y -= 1;
-	tempRect.w += 2; tempRect.h += 2;
+	//to get a good index, stretch the collision box
+	stretchBox(tempRect, xV, yV);
 
 	//checks collision for intended movement
 	vector<SDL_Rect> colliders = getCollisionIndex(tempRect, boxes);
 
-	//unexpand
-	tempRect.x += 1; tempRect.y += 1;
-	tempRect.w -= 2; tempRect.h -= 2;
+	//undo the stretch for actual collision checking
+	stretchBoxUndo(tempRect, xV, yV);
 
 
 	//gets a touching index for the colliders, it's just a bunch of flags
@@ -396,4 +399,37 @@ std::vector<SDL_Rect> rectangleMerge(std::vector<SDL_Rect> rects)
 		origSize = temp.size();
 	}
 	return temp;
+}
+
+void stretchBox(SDL_Rect & a, int & xV, int & yV)
+{
+	//increase the box by 1 unit on every edge
+	a.x -= 1; a.w += 2;
+	a.y -= 1; a.h += 2;
+
+	//expand the box based on the x and y velocity
+	a.w += abs(xV);
+	a.h += abs(yV);
+
+	//negative velocities should make the rectangle
+	//longer toward the direction of movement
+	if (xV < 0)
+		a.x += xV;
+	if (yV < 0)
+		a.y += yV;
+}
+
+void stretchBoxUndo(SDL_Rect & a, int & xV, int & yV)
+{
+	//decrease the box by 1 unit on every edge
+	a.x += 1; a.w -= 2;
+	a.y += 1; a.h -= 2;
+
+	a.w -= abs(xV);
+	a.h -= abs(yV);
+
+	if (xV < 0)
+		a.x -= xV;
+	if (yV < 0)
+		a.y -= yV;
 }

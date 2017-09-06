@@ -61,13 +61,13 @@ void Enemy::step(vector<SDL_Rect>& colliders)
 		attack();//shouldn't attack in hitstun
 		checkHurt();//shouldn't get attacked in hitstun
 		moveEdge(colliders, kDefault_OffsetCollisionBox);
+		//Change direction when a wall is touched
+		if (mTouchIndex & (kTouchingLeft | kTouchingRight)) mDirectionRight = !mDirectionRight;
 	}
 	else --mHitStun;
 	
 	handleAnimation();
 
-	//Change direction when a wall is touched
-	if (mTouchIndex & (kTouchingLeft | kTouchingRight)) mDirectionRight = !mDirectionRight;
 }
 
 void Enemy::step()

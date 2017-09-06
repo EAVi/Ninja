@@ -14,9 +14,12 @@
 #include <iostream>
 #include <bitset>
 
+//returns the absolute value of a given value
+int abs(int a);
 
 //checks a is greater than b and less than c
 bool between(int a, int b, int c);
+
 
 //Checks if collision happens
 bool checkCollision(SDL_Rect& a, SDL_Rect& b);
@@ -77,7 +80,12 @@ meaning more efficient collision detection
 */
 std::vector<SDL_Rect> rectangleMerge(std::vector<SDL_Rect> rects);
 
+//before checking for collision indexes, you need to stretch the collision boxes
+//to get a valid index. Using the velocities will allow a better index
+void stretchBox(SDL_Rect & a, int & xV, int & yV);
 
+//undoes the stretchBox operation, assuming the same parameters are given
+void stretchBoxUndo(SDL_Rect & a, int & xV, int & yV);
 
 
 #endif

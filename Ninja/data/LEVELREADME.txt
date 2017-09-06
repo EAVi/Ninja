@@ -52,7 +52,7 @@ Parsing/Separating your numbers:
 	*The spawn position is a respawn point if you fall off the map,
 	it is also the starting position for the first level.
 -----------------------------
-2) Backgrounds (8 arguments,  10 bytes)
+2) Backgrounds (8 arguments,  9 bytes)
 	Texture Number - there's currently 11 bgs to choose from:
 		 0 - "GFX/BG/bluesky.png",
 		 1 - "GFX/BG/snowmtn.png",
