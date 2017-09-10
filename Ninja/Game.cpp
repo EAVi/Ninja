@@ -74,6 +74,8 @@ bool Game::init()
 		cout << "Warning: Less mixer channels than optimal: " << numChannels << endl;
 	LAudio::mChannels = numChannels;
 
+	//controller mapping courtesy of https://github.com/gabomdq/SDL_GameControllerDB
+	SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
 	mInitControllers();
 
 	return true;
