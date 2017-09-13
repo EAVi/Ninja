@@ -53,7 +53,7 @@ Parsing/Separating your numbers:
 	it is also the starting position for the first level.
 -----------------------------
 2) Backgrounds (8 arguments,  9 bytes)
-	Texture Number - there's currently 11 bgs to choose from:
+	Texture Number - there's currently 14 bgs to choose from:
 		 0 - "GFX/BG/bluesky.png",
 		 1 - "GFX/BG/snowmtn.png",
 		 2 - "GFX/BG/grasshills.png",
@@ -65,8 +65,9 @@ Parsing/Separating your numbers:
 		 8 - "GFX/BG/castlewall.png",
 		 9 - "GFX/BG/stormclouds.png",
 		10 - "GFX/BG/moonskull.png",
-		11 - "GFX/BG/beachhill.png",
-		12 - "GFX/BG/seasky.png",
+		11 - "GFX/BG/castleinterior.png",
+		12 - "GFX/BG/beachhill.png",
+		13 - "GFX/BG/seasky.png",
 	X position - is 16 bits, takes 2 bytes of memory
 		   - first part of X position is Coarse.
 		   - second part is fine position.
@@ -98,7 +99,8 @@ Parsing/Separating your numbers:
 		You can tile up to 16x16 blocks. 
 		"0" will give you a 1x1 tile
 		"15" will give you a 16x1 tile.
-		"16" will give you a 1x16 tile.
+		"16" will give you a 1x2 tile.
+		"240" will give you a 1x16 tile
 		"255" will give you a 16x16 tile.
 -----------------------------
 4) Enemies (3 arguments, 3 bytes)
@@ -137,8 +139,3 @@ CLOSING NOTES:
 	debug_4.txt
  Since debug_2.txt is missing, 3 and 4 will 
 	not be counted.
-	
-
-Alright, have fun making maps!
-Aww who am I kidding, I wrote this for myself, not for some nonexistant audience.
-Alright, have fun making maps!

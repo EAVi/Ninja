@@ -53,6 +53,9 @@ public:
 	/* When the Ninja needs to switch levels, this function will need to be called*/
 	void setLevel(int i);
 
+	/* Returns the current level number*/
+	Uint8 getCurrentLevel();
+
 	/* Call stepEnemies for the curent level*/
 	void stepEnemiesCurrentLevel();
 

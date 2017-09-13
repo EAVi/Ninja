@@ -12,7 +12,7 @@ End Dumb legal stuff
     
     Debug Controls:
     (Tilde key) - enable debug features
-    ESC(while debug is active) - Jump to level 1
+    ESC(while debug is active) - skip level
     
     To compile on Linux:
     -Get the sdl2 development libraries.

@@ -104,7 +104,7 @@ bool Game::loadAssets()
 	tempLevel.setBlockTextures(&mBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 13;
+	Uint8 bgTexNum = 14;
 	string bgTexS[] =
 	{
 		"GFX/BG/bluesky.png",
@@ -118,8 +118,10 @@ bool Game::loadAssets()
 		"GFX/BG/castlewall.png",
 		"GFX/BG/stormclouds.png",
 		"GFX/BG/moonskull.png",
+		"GFX/BG/castleinterior.png",
 		"GFX/BG/beachhill.png",
 		"GFX/BG/seasky.png",
+
 	};
 
 	for (Uint8 i = 0; i < bgTexNum; ++i)
@@ -321,7 +323,9 @@ void Game::handleEvents()
 
 		if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//on keypress ESC
 		{
-			mZone.setLevel(1); //switch level
+			if (mZone.getCurrentLevel() == (mZone.getLevelSize() - 1))//skip level, and if at max level, set to 0
+				mZone.setLevel(0);
+			else mZone.setLevel(mZone.getCurrentLevel() + 1); //skip level
 		}
 		
 		if (mEvent.key.keysym.sym == SDLK_RETURN && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0 && mEvent.key.keysym.mod & (KMOD_RALT | KMOD_LALT))// on alt+enter

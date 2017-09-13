@@ -99,6 +99,11 @@ void Zone::setLevel(int i)
 	}
 }
 
+Uint8 Zone::getCurrentLevel()
+{
+	return mCurrentLevel;
+}
+
 void Zone::stepEnemiesCurrentLevel()
 {
 	mCheckDoors();
