@@ -4,7 +4,7 @@ using namespace std;
 
 const int tilesize = 16;
 
-int abs(int a)
+int absValue(int a)
 {
 	if (a < 0)//if negative
 		return -a;//return positive
@@ -408,8 +408,8 @@ void stretchBox(SDL_Rect & a, int & xV, int & yV)
 	a.y -= 1; a.h += 2;
 
 	//expand the box based on the x and y velocity
-	a.w += abs(xV);
-	a.h += abs(yV);
+	a.w += absValue(xV);
+	a.h += absValue(yV);
 
 	//negative velocities should make the rectangle
 	//longer toward the direction of movement
@@ -425,8 +425,8 @@ void stretchBoxUndo(SDL_Rect & a, int & xV, int & yV)
 	a.x += 1; a.w -= 2;
 	a.y += 1; a.h -= 2;
 
-	a.w -= abs(xV);
-	a.h -= abs(yV);
+	a.w -= absValue(xV);
+	a.h -= absValue(yV);
 
 	if (xV < 0)
 		a.x -= xV;

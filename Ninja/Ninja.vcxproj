@@ -30,6 +30,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="LAudio.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UIDrawer.h" />
@@ -43,6 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\Desktop\Ninja\Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Ninja.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\Ninja Project\UI\Ninja.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DAE75D72-BBE3-4070-A1A0-0B8EB5AB4B59}</ProjectGuid>
@@ -110,7 +117,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

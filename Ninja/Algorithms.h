@@ -15,7 +15,7 @@
 #include <bitset>
 
 //returns the absolute value of a given value
-int abs(int a);
+int absValue(int a);
 
 //checks a is greater than b and less than c
 bool between(int a, int b, int c);

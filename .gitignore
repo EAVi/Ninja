@@ -241,3 +241,5 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /Ninja_v0_6.zip
+/Ninja/Ninja.rc
+/Ninja/resource.h
