@@ -31,7 +31,6 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="LAudio.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="resource1.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UIDrawer.h" />
