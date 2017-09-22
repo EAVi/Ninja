@@ -38,10 +38,10 @@ public:
 	//*arg 2 is number of loops
 	//	-1 will loop indefinitely
 	//	0 will only play once
-	void playMusic(Uint8 a, int loop = -1);
+	static void playMusic(Uint8 a, int loop = -1);
 
 	//Plays a sound of given mSound index
-	void playSound(Uint8 a, int loop = 0);
+	static void playSound(Uint8 a, int loop = 0);
 
 	//Loads a given song or sound and throws it onto respective vector
 	bool loadSFX(std::string a, bool isSong = false);
@@ -51,9 +51,9 @@ public:
 
 	static Uint8 mChannels;
 private:
-	std::vector<Mix_Music*> mMusic;
-	std::vector<Mix_Chunk*> mSound;
-	Uint8 mCurrentSong;
+	static std::vector<Mix_Music*> mMusic;
+	static std::vector<Mix_Chunk*> mSound;
+	static Uint8 mCurrentSong;
 };
 
 #endif

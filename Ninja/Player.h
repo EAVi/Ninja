@@ -15,6 +15,7 @@
 #include "Algorithms.h"
 #include "Level.h"
 #include "Hitbox.h"
+#include "LAudio.h"
 
 class Player
 {

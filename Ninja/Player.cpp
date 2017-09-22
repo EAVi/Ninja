@@ -353,6 +353,7 @@ void Player::mJumpPress()
 		mJump = false;
 		mYVelocityF = -kJumpVelocity;
 		mYVelocity = mYVelocityF;
+		LAudio::playSound(2);
 	}
 	//NO FUN ALLOWED MODE, FINITE JUMPS
 
@@ -522,6 +523,7 @@ void Player::mAttackPress()
 	if (mHealth <= 0) return;
 	if (mAttackCoolDown == 0)
 	{
+		LAudio::playSound(1);//sword sound effect
 		mAttackCoolDown = kSwordLag;
 	}
 }

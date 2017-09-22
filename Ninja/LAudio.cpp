@@ -3,6 +3,9 @@
 using namespace std;
 
 Uint8 LAudio::mChannels = 16;
+std::vector<Mix_Music*> LAudio::mMusic = vector<Mix_Music*>();
+std::vector<Mix_Chunk*> LAudio::mSound = vector<Mix_Chunk*>();
+Uint8 LAudio::mCurrentSong = 255;
 
 LAudio::LAudio()
 {
