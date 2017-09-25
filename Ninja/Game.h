@@ -29,6 +29,7 @@
 #include "Timer.h"
 #include "Zone.h"
 #include "LAudio.h"
+#include "Cutscene.h"
 
 class Game
 {
@@ -88,6 +89,18 @@ private:
 	SDL_Event mEvent;//events to be passed to the even handler
 	Timer mTimer;//calculates framerate and helps game run at 60 fps
 	LAudio mSoundBox;//loads and plays sound and music
+	Cutscene mCutscene;//draw the cutscenes when needed
+	Uint8 mCurrentMenu;//the menutype that the game is currently at
+
+	enum MenuType : Uint8
+	{
+		kMainMenu = 0,
+		kMainOptions,
+		kPauseMenu,
+		kPauseOptions,
+		kCutscene,
+		kInGame,
+	};
 
 	//gets monitor refresh rate and screen dimensions
 	void screenAttrs();
@@ -115,5 +128,10 @@ private:
 
 	//toggles fullscreendesktop
 	void mToggleFullScreen();
+
+	//function that sets the slides of a cutscene
+	void mSetCutscene();
+
+	void mCutSceneLoop();
 
 };

@@ -12,6 +12,7 @@ Game::Game()
 	mCamera = { 0, 0, kScreenWidth, kScreenHeight };
 	mDebug = false;
 	mTimer.setFrameDelay(kFramePeriod);
+	mCurrentMenu = kCutscene;	
 }
 
 bool Game::init()
@@ -31,8 +32,13 @@ bool Game::init()
 	}
 
 	//Initialize window
+#ifdef NDEBUG
 	mWindow = SDL_CreateWindow("ninja", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+#else
+	mWindow = SDL_CreateWindow("ninja", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		kScreenWidth, kScreenHeight, SDL_WINDOW_SHOWN);
+#endif
 
 	if (mWindow == NULL)
 	{
@@ -156,6 +162,27 @@ bool Game::loadAssets()
 		UIDrawer::gUITextures.push_back(tempptr);
 	}
 
+	//UI texture loader
+	Uint8 cutTexNum = 4;
+	string cutTexS[] =
+	{
+		"GFX/CUT/ninjaclose.png",
+		"GFX/CUT/ninjaforward.png",
+		"GFX/CUT/karl.png",
+		"GFX/CUT/goldfish.png",
+	};
+	for (Uint8 i = 0; i < cutTexNum; ++i)
+	{
+		LTexture* tempptr = new LTexture;
+		//tempptr->setRenderer(gRenderer);
+		if (!tempptr->loadTextureFile(cutTexS[i], &mColorKey))
+		{
+			cout << SDL_GetError() << endl;
+			return false;
+		}
+		Cutscene::mSlideTextures.push_back(tempptr);
+	}
+
 
 	//gFontTexture.setRenderer(gRenderer);
 	if (!mFontTexture.loadTextureFile("GFX/font.png", &mColorKey))
@@ -210,6 +237,7 @@ void Game::prepare()
 	mZone.init();
 	mZone.setSpawn();
 	screenAttrs();
+	mSetCutscene();
 }
 
 bool Game::fullInit()
@@ -250,6 +278,13 @@ void Game::destroyAssets()
 		delete UIDrawer::gUITextures[i];//'new' memory was allocated for these textures
 	}
 
+	//cutscene textures
+	for (Uint8 i = 0, j = Cutscene::mSlideTextures.size(); i < j; ++i)
+	{
+		Cutscene::mSlideTextures[i]->freeTexture();
+		delete Cutscene::mSlideTextures[i];//'new' memory was allocated for these textures
+	}
+
 	//close the controller
 	mDestroyControllers();
 
@@ -269,11 +304,18 @@ void Game::destroyAssets()
 
 void Game::gameLoop()
 {
-	mZone.clearHitboxesCurrentLevel();
-	handleEvents();
-	beginstep();
-	endstep();
-	render();
+	if (mCurrentMenu == kCutscene)
+	{
+		mCutSceneLoop();
+	}
+	if (mCurrentMenu == kInGame)
+	{
+		mZone.clearHitboxesCurrentLevel();
+		handleEvents();
+		beginstep();
+		endstep();
+		render();
+	}
 }
 
 void Game::setRefreshRate(int rr)
@@ -451,4 +493,40 @@ void Game::mToggleFullScreen()
 		SDL_SetWindowFullscreen(mWindow, 0);
 	else //else turn it on
 		SDL_SetWindowFullscreen(mWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+}
+
+void Game::mSetCutscene()
+{
+	mCutscene.clearCutscene();
+	mCutscene.addSlide(2, (string)"\x89\x8C\x86" + " test cutscene\nI am Karl Marx, I've come to bring you my\nCommunist manifesto of doom.");
+	mCutscene.addSlide(0, (string)"\x89\x8C\x86" + " I'm the ninja man");
+	mCutscene.addSlide(3, (string)"\x89\x8C\x86" + " And I'm the goldfish in charge");
+	mCutscene.addSlide(1, (string)"\x89\x8C\x86" + " test cutscene");
+	mCutscene.addSlide(0, (string)"\x89\x8C\x86" + " test cutscene");
+	gWriter.ClearTicks();
+}
+
+void Game::mCutSceneLoop()
+{
+	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xFF);
+	SDL_RenderClear(mRenderer);
+	//event handler
+	while (SDL_PollEvent(&mEvent))
+	{
+		if (mEvent.type == SDL_QUIT)//alt-f4 or clicking x on window
+			mQuit = true;
+		if (mEvent.key.keysym.sym == SDLK_RETURN && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0 && mEvent.key.keysym.mod & (KMOD_RALT | KMOD_LALT))// on alt+enter
+			mToggleFullScreen();
+		mCutscene.handleEvent(mEvent);
+
+		if (mCutscene.checkComplete())//no need to poll if done
+		{
+			mCurrentMenu = kInGame;
+			return;
+		}
+	}
+
+	//Draw the slide
+	mCutscene.renderCurrentSlide();
+	SDL_RenderPresent(mRenderer);
 }

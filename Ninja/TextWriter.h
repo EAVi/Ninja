@@ -99,6 +99,9 @@ public:
 	*/
 	void ClearBuffer();
 
+	/*
+	Empties the ticks, clearing the screen of text if typewriter is on
+	*/
 	void ClearTicks();
 
 private:
