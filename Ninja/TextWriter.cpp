@@ -225,3 +225,13 @@ void TextWriter::ClearTicks()
 {
 	mTick = 0;
 }
+
+int TextWriter::getTypePosition()
+{
+	return mTick / mTypeSpeed;
+}
+
+void TextWriter::setTypePosition(int a)
+{
+	mTick = mTypeSpeed * a;
+}

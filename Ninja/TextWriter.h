@@ -104,6 +104,17 @@ public:
 	*/
 	void ClearTicks();
 
+	/*
+	Get the number of characters printed in the previous frame
+	*/
+	int getTypePosition();
+
+	/*
+	Set the ticks such that a given number of characters are printed
+	*/
+	void setTypePosition(int a);
+
+
 private:
 	LTexture* mTexture;
 	Uint8 mColorNum;

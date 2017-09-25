@@ -67,6 +67,11 @@ void Cutscene::clearCutscene()
 
 void Cutscene::mSkipPress()
 {
-	mCurrentSlide++;
-	gWriter.ClearTicks();
+	if (gWriter.getTypePosition() >= mSlides[mCurrentSlide].text.size())//if all the characters have been printed onscreen
+	{
+		mCurrentSlide++;
+		gWriter.ClearTicks();
+	}
+	else //if the typewriter effect wasn't complete, show all the text
+		gWriter.setTypePosition(mSlides[mCurrentSlide].text.size() + 1);
 }
