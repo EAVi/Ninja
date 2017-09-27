@@ -1,4 +1,7 @@
 #include "Player.h"
+#include "TextWriter.h"
+
+extern TextWriter gWriter;
 
 using namespace std;
 SDL_Rect Player::kStandardCollisionBox = { 10,0,12,32 };
@@ -20,7 +23,8 @@ Player::Player()
 	mFlipType = SDL_FLIP_NONE;
 	mAnimationFrame = 0;
 	mAttackCoolDown = 0;
-	mSwordHitbox = { {6,-1,24,27}, 3 };
+	mSwordHitbox = { { 6,-1,24,27 }, 3 };
+	mStarHitbox = { { 13,14,6,4 }, 3 };
 	mMaxHealth = kMaxHealth;
 	mHealth = mMaxHealth;
 	mLives = 6;
@@ -46,6 +50,7 @@ void Player::handleEvent(SDL_Event& e)
 		case SDLK_a: mLeftPress();  break;
 		case SDLK_SPACE: mJumpPress(); break;
 		case SDLK_m: mAttackPress(); break;
+		case SDLK_n: mProjectilePress(); break;
 		}
 	}
 	else if (e.type == SDL_KEYUP)//keyboard release
@@ -188,7 +193,7 @@ void Player::render(int x, int y)
 		)
 		return;
 
-
+	//Render the Player
 	mTexture->renderTexture(this->mX - x, this->mY - y, 
 		&mAnimationFrameRectangles[mAnimationFrame], 0.0, NULL, mFlipType);
 	
@@ -204,6 +209,13 @@ void Player::render(int x, int y)
 		mTexture->renderTexture(this->mX - x, this->mY - y,
 			&mAnimationFrameRectangles[kEffectSlice], 0.0, NULL, mFlipType);
 	}
+
+	//Renders Ninja stars
+	for (int i = 0, j = mStarPositions.size(); i < j; ++i)
+	{
+		mTexture->renderTexture(mX - x, mY - y, &mAnimationFrameRectangles[kStarEffectStart]);
+	}
+	gWriter << "number of stars: " << mStarPositions.size();
 }
 
 void Player::handleAnimation()
@@ -451,6 +463,15 @@ void Player::mBoundPlayer()
 
 void Player::mAttack()
 {
+	//Shuriken handling
+	for (int i = 0; i < mStarPositions.size(); ++i)
+	{
+		Hitbox temp = mStarHitbox;
+		temp.hitbox.x += mStarPositions[i].w;
+		mLevel->addHitbox(temp, true, true, false);
+	}
+
+	//Sword handling
 	if (mAttackCoolDown >= kSwordLag - kSwordFrames)
 	{
 		if (mFlipType == SDL_FLIP_NONE)
@@ -525,6 +546,25 @@ void Player::mAttackPress()
 	{
 		LAudio::playSound(1);//sword sound effect
 		mAttackCoolDown = kSwordLag;
+	}
+}
+
+void Player::mProjectilePress()
+{
+	//Not allowed to use shuriken while wallclinging or in hitstun
+	if (mHitStun > 0) return;
+	if (mWallClinging) return;
+	if (mHealth <= 0) return;
+
+	cout << "conditions meeting";
+
+	if (mFlipType == SDL_FLIP_NONE)//if facing right, spawn a ninja star with a rightward trajectory
+	{
+		mStarPositions.push_back({ mX,mY,mStarSpeed,0 });
+	}
+	else if (mFlipType == SDL_FLIP_HORIZONTAL)//if facing left, spawn a ninja star with a leftward trajectory
+	{
+		mStarPositions.push_back({ mX,mY,-mStarSpeed,0 });
 	}
 }
 

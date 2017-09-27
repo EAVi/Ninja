@@ -82,6 +82,8 @@ private:
 	Uint8 mAttackCoolDown;
 	Uint8 mInvincibilityFrames;
 	Hitbox mSwordHitbox;
+	Hitbox mStarHitbox;
+	std::vector<SDL_Rect> mStarPositions; //x,y for the position w,h for the velocity
 	bool mWallClinging;
 	bool mJump;
 	bool mAirborne;
@@ -94,6 +96,7 @@ private:
 	void mJumpPress();//the function for when the jump key is pressed
 	void mRightPress();//the function for when the right key is pressed
 	void mAttackPress();//the function for when the attack key is pressed
+	void mProjectilePress();//the function for when the ninja star key is pressed
 	void mLeftRelease();//the function for when the left key is released
 	void mRightRelease();//the function for when the right key is released
 	void mAxisLeft();//game controller alternative function to mLeft Press and Release
@@ -113,6 +116,7 @@ private:
 	static const int kJumpVelocity = 9;//velocity gained during jump
 	static const int kMovementSpeed = 5;
 	static const Uint8 kSwordLag = 24;
+	static const Uint8 mStarSpeed = 5;//the speed that a ninja star will travel
 	static const Uint8 kSwordFrames = 4;
 	static const Uint8 kHitStunFrames = 5;
 	static const Uint8 kInvincibilityFrames = 20;
@@ -142,7 +146,9 @@ enum NinjaAnimationFrames
 	kStandStunSword = 63,
 	kLogDeathStart = 64,
 	kLogDeathEnd = 79,
-	kAirStun = 16
+	kAirStun = 16,
+	kStarEffectStart = 80,//A SHURIKEN of DOOM
+	kStarEffectEnd = 83,
 
 };
 
