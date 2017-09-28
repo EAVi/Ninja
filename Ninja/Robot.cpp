@@ -31,6 +31,7 @@ Robot::Robot(Uint8 x, Uint8 y, bool right, Level * level)
 
 void Robot::step(vector<SDL_Rect>& colliders)
 {
+	if (!checkActive()) return; //if you want the enemy to only start "existing" when it collides with the camera, have this line of code
 	if (mHitStun <= 0 && mHealth > 0)//cant move if you're stunned
 	{
 		mXV = mDirectionRight ? kDefault_WalkSpeed : -kDefault_WalkSpeed;

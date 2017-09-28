@@ -20,6 +20,7 @@ Enemy::Enemy()
 	mYV = 0;
 	mX = 0;
 	mY = 0;
+	mActive = false;
 	mDirectionRight = false;
 	mRewindAnimation = false;
 	//mOddFrame = false;
@@ -45,15 +46,21 @@ Enemy::Enemy(Uint8 x, Uint8 y, bool right, Level* level)
 	mYV = 0;
 	mX = x * 16;
 	mY = y * 16;
+	mActive = false;
 	mDirectionRight = right;
 	mRewindAnimation = false;
 	//mOddFrame = false;
 	mLevel = level;
 	mHitStun = 0;
+	mCollisionBox = kDefault_OffsetCollisionBox;//set the collision box;
+	mCollisionBox.x += mX;
+	mCollisionBox.y += mY;
 }
 
 void Enemy::step(vector<SDL_Rect>& colliders)
 {	
+	if (!checkActive()) return; //if you want the enemy to only start "existing" when it collides with the camera, have this line of code
+
 	if (mHitStun <= 0 && mHealth > 0)//cant move if you're stunned
 	{
 		//mYV += kDefault_Gravity;
@@ -109,6 +116,16 @@ void Enemy::moveEdge(std::vector<SDL_Rect>& colliders, SDL_Rect & offBox)
 	if (checkEdges(enemy, colliders))
 	{
 		mTouchIndex = 255;
+	}
+}
+
+bool Enemy::checkActive()
+{
+	if (mActive) return true;
+	else
+	{
+		mActive = checkCollision(mCollisionBox,mLevel->getCamera());
+		return mActive;
 	}
 }
 

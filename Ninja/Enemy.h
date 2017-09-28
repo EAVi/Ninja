@@ -42,6 +42,7 @@ public:
 	void moveEdge(std::vector<SDL_Rect>& colliders, SDL_Rect& offBox);
 	//movement function, checks for collision, but doesn't do optimal-move(for enemies that won't be affected by gravity, intended for red-koopa-like enemies)
 	//it's also to reduce overhead, not sure if it will actually help
+	bool checkActive();//returns whether the enemy has collided with the camera yet
 	void setLevel(Level* level);//sets the level for the enemy
 	virtual void attack();//virtual attack function
 	virtual void render(int xD, int yD);//render relative to camera
@@ -51,6 +52,7 @@ public:
 	virtual bool checkLiving();//for the level to know when to delete an enemy
 protected:
 	bool mBoss;
+	bool mActive;//the enemy will be inactive until colliding with the camera (IE until appearing onscreen)
 	int mHealth;
 	int mMaxHealth;
 	Uint16 mAnimationFrame;

@@ -1,7 +1,4 @@
 #include "Player.h"
-#include "TextWriter.h"
-
-extern TextWriter gWriter;
 
 using namespace std;
 SDL_Rect Player::kStandardCollisionBox = { 10,0,12,32 };
@@ -23,7 +20,8 @@ Player::Player()
 	mFlipType = SDL_FLIP_NONE;
 	mAnimationFrame = 0;
 	mAttackCoolDown = 0;
-	mSwordHitbox = { { 6,-1,24,27 }, 3 };
+	mStarCooldown = 0;
+	mSwordHitbox = { { 6,-1,24,27 }, 7 };
 	mStarHitbox = { { 13,14,6,4 }, 3 };
 	mMaxHealth = kMaxHealth;
 	mHealth = mMaxHealth;
@@ -67,7 +65,7 @@ void Player::handleEvent(SDL_Event& e)
 		{
 		case SDL_CONTROLLER_BUTTON_A: mJumpPress(); break;
 		case SDL_CONTROLLER_BUTTON_X: mAttackPress(); break;
-		case SDL_CONTROLLER_BUTTON_B: mAttackPress(); break;
+		case SDL_CONTROLLER_BUTTON_B: mProjectilePress(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_LEFT: mLeftPress(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: mRightPress(); break;
 		}
@@ -109,9 +107,9 @@ void Player::step()
 		mCheckClinging();
 		move(mLevel->getRects());
 
-		//makes character face the right way
-		if (mHealth > 0)
+		if (mHealth > 0)//you shouldn't turn around if you're dying
 		{
+			//makes character face the right way
 			if (mXVelocity > 0) mFlipType = SDL_FLIP_NONE;
 			else if (mXVelocity < 0) mFlipType = SDL_FLIP_HORIZONTAL;
 		}
@@ -201,21 +199,21 @@ void Player::render(int x, int y)
 	//Note that it would be overlapped if rendered during move()
 	if (mAttackCoolDown >= kSwordLag - kSwordFrames)
 	{
+		int tx = x;
 		if (mFlipType == SDL_FLIP_NONE)
-			x -= kStandardCollisionBox.x + kStandardCollisionBox.w / 2;
+			tx -= kStandardCollisionBox.x + kStandardCollisionBox.w / 2;
 		else 
-			x += kStandardCollisionBox.x + kStandardCollisionBox.w / 2;
+			tx += kStandardCollisionBox.x + kStandardCollisionBox.w / 2;
 
-		mTexture->renderTexture(this->mX - x, this->mY - y,
+		mTexture->renderTexture(this->mX - tx, this->mY - y,
 			&mAnimationFrameRectangles[kEffectSlice], 0.0, NULL, mFlipType);
 	}
 
 	//Renders Ninja stars
 	for (int i = 0, j = mStarPositions.size(); i < j; ++i)
 	{
-		mTexture->renderTexture(mX - x, mY - y, &mAnimationFrameRectangles[kStarEffectStart]);
+		mTexture->renderTexture(mStarPositions[i].x - x, mStarPositions[i].y - y, &mAnimationFrameRectangles[kStarEffectStart + absValue(mStarCooldown % 4)]);
 	}
-	gWriter << "number of stars: " << mStarPositions.size();
 }
 
 void Player::handleAnimation()
@@ -466,9 +464,23 @@ void Player::mAttack()
 	//Shuriken handling
 	for (int i = 0; i < mStarPositions.size(); ++i)
 	{
-		Hitbox temp = mStarHitbox;
-		temp.hitbox.x += mStarPositions[i].w;
-		mLevel->addHitbox(temp, true, true, false);
+		Hitbox tempr = mStarHitbox;
+		tempr.hitbox.x += mStarPositions[i].x;
+		tempr.hitbox.y += mStarPositions[i].y;
+		mStarPositions[i].x += mStarPositions[i].w;
+		mStarPositions[i].y += mStarPositions[i].h;
+
+		//checking destruction conditions
+		if (checkCollision(tempr.hitbox, mLevel->getRects())
+			|| !checkCollision(tempr.hitbox, mLevel->getLevelDimensions()))
+		{
+		
+			mStarPositions.erase(mStarPositions.begin() + i);
+			--i;//decrement since the vector was reduced by 1
+		}
+		//destroy the shuriken if outside the map
+		mLevel->addHitbox(tempr, true, true, false);
+
 	}
 
 	//Sword handling
@@ -492,6 +504,7 @@ void Player::mAttack()
 		}
 	}
 	mAttackCoolDown = (mAttackCoolDown > 0) ? mAttackCoolDown - 1 : mAttackCoolDown; //lowers the mAttackCoolDown if greater than 0
+	mStarCooldown = (mStarCooldown > -3) ? mStarCooldown - 1 : 0; //the star cooldown may be below 0, but will cycle from -3 to 0 for animation purposes
 }
 
 void Player::mCheckHurt()
@@ -555,16 +568,17 @@ void Player::mProjectilePress()
 	if (mHitStun > 0) return;
 	if (mWallClinging) return;
 	if (mHealth <= 0) return;
-
-	cout << "conditions meeting";
+	if (mStarCooldown > 0) return; //the star cooldown may be below 0, but will cycle from -3 to 0 for animation purposes
 
 	if (mFlipType == SDL_FLIP_NONE)//if facing right, spawn a ninja star with a rightward trajectory
 	{
 		mStarPositions.push_back({ mX,mY,mStarSpeed,0 });
+		mStarCooldown = kStarLag;
 	}
 	else if (mFlipType == SDL_FLIP_HORIZONTAL)//if facing left, spawn a ninja star with a leftward trajectory
 	{
 		mStarPositions.push_back({ mX,mY,-mStarSpeed,0 });
+		mStarCooldown = kStarLag;
 	}
 }
 

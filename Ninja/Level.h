@@ -150,6 +150,9 @@ public:
 	//set mCamera
 	void setCamera(SDL_Rect* camera);
 
+	//get mCamera, by value
+	SDL_Rect getCamera();
+
 	//modifies the references given
 	void getSpawnPoint(Uint8 & x, Uint8 & y);
 

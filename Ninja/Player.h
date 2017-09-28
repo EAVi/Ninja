@@ -80,6 +80,7 @@ private:
 	Uint8 mTouchIndex;
 	Uint16 mAnimationFrame;
 	Uint8 mAttackCoolDown;
+	Sint8 mStarCooldown; //attack cooldown for the shuriken, signed because negative numbers will be for the animation frame
 	Uint8 mInvincibilityFrames;
 	Hitbox mSwordHitbox;
 	Hitbox mStarHitbox;
@@ -109,14 +110,16 @@ private:
 	void mBoundPlayer();//Bounds player velocity and character within the level
 	void mAddHurtbox();//Puts a player hurtbox into the mLevel's vector
 	void mAttack();//Attacks if currently attacking
+				   //NOTE that this is not the attack event handler, that would be mAttackPress()
 	void mCheckHurt();//checks for collision with hurtboxes and hitboxes
 
 	static float kGravityF;//SOON TO REPLACE INTEGER GRAVITY
 	static const int kTerminalVelocity = 7;//player terminal velocity
 	static const int kJumpVelocity = 9;//velocity gained during jump
-	static const int kMovementSpeed = 5;
-	static const Uint8 kSwordLag = 24;
-	static const Uint8 mStarSpeed = 5;//the speed that a ninja star will travel
+	static const int kMovementSpeed = 4;
+	static const Uint8 kSwordLag = 24;//amount of frames after using the sword before the sword may be used again
+	static const Uint8 kStarLag = 12;//"" star may be used again
+	static const Uint8 mStarSpeed = 6;//the speed that a ninja star will travel
 	static const Uint8 kSwordFrames = 4;
 	static const Uint8 kHitStunFrames = 5;
 	static const Uint8 kInvincibilityFrames = 20;

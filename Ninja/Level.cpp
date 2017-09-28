@@ -297,6 +297,11 @@ void Level::setCamera(SDL_Rect * camera)
 		mCamera = camera;
 }
 
+SDL_Rect Level::getCamera()
+{
+	return *mCamera;
+}
+
 void Level::getSpawnPoint(Uint8 & x, Uint8 & y)
 {
 	x = mSpawnX;
