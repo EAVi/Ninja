@@ -11,6 +11,7 @@ struct Hitbox
 {
 	SDL_Rect hitbox;
 	int damage;
+	int hitstun;
 };
 
 #endif

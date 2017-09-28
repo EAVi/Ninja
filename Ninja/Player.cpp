@@ -21,8 +21,8 @@ Player::Player()
 	mAnimationFrame = 0;
 	mAttackCoolDown = 0;
 	mStarCooldown = 0;
-	mSwordHitbox = { { 6,-1,24,27 }, 7 };
-	mStarHitbox = { { 13,14,6,4 }, 3 };
+	mSwordHitbox = { { 6,-1,24,27 }, 7, 13 };
+	mStarHitbox = { { 13,14,6,4 }, 3, 7 };
 	mMaxHealth = kMaxHealth;
 	mHealth = mMaxHealth;
 	mLives = 6;
@@ -386,7 +386,7 @@ void Player::mRightPress()
 void Player::mAddHurtbox()
 {
 	//Makes a hurtbox and throws it into the level's hurtbox vector
-	Hitbox hurtbox = { mCollisionBox , 0 };
+	Hitbox hurtbox = { mCollisionBox , 0, 0 };
 	hurtbox.hitbox.x += mX;
 	hurtbox.hitbox.y += mY;
 	mLevel->addHitbox(hurtbox, true, false, true);
@@ -517,7 +517,7 @@ void Player::mCheckHurt()
 	hurtbox.y += mY;
 	
 	int hdamage = 0;//highest damage
-	int hhitstun = 0;//highest stun(DNE yet)
+	int hhitstun = 0;//highest stun
 
 	vector<Hitbox>& temp = mLevel->getEnemyHitboxes();
 	for (int i = 0, j = temp.size(); i < j; ++i)
@@ -526,8 +526,8 @@ void Player::mCheckHurt()
 		{
 			if (temp[i].damage > hdamage)
 				hdamage = temp[i].damage;
-			if (kHitStunFrames > hhitstun)//will change the hitbox data structure to have hitstun
-				hhitstun = kHitStunFrames;
+			if (temp[i].hitstun > hhitstun)
+				hhitstun = temp[i].hitstun;
 		}
 	}
 

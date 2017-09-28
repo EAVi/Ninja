@@ -10,6 +10,8 @@
 #include <vector>
 #include "Algorithms.h"
 #include "LTexture.h"
+#include "Hitbox.h"
+
 class Level;
 class Enemy
 {
@@ -24,7 +26,7 @@ public:
 	static const int kDefault_MaxHealth = 1;//max health for base class enemy
 	static std::vector<SDL_Rect> kDefault_AnimationClips;//vector containing the sprite animation rectangles
 	static SDL_Rect kDefault_OffsetCollisionBox;//collisionBox to be added with mX, mY in order to check optimal position
-	static SDL_Rect kDefault_OffsetHitbox;
+	static Hitbox kDefault_OffsetHitbox;
 	static const int kDefault_ClipW = 32, kDefault_ClipH = 32;
 	static const Uint8 kDefault_HitStunFrames = 5;
 	enum DefaultAnimationFrames

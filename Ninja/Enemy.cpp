@@ -7,7 +7,7 @@ using namespace std;
 LTexture* Enemy::kDefault_Texture = NULL;
 vector<SDL_Rect> Enemy::kDefault_AnimationClips = vector<SDL_Rect>(0);
 SDL_Rect Enemy::kDefault_OffsetCollisionBox = { 0,0,32,32 };
-SDL_Rect Enemy::kDefault_OffsetHitbox = { 10,0,12,32 };
+Hitbox Enemy::kDefault_OffsetHitbox = {{ 10,0,12,32 },4,5};
 
 
 
@@ -138,12 +138,12 @@ void Enemy::attack()
 {
 	if (mLevel == NULL) return; //Enemies aren't always bound to a level
 	//does nothing so far
-	Hitbox hurtbox = { kDefault_OffsetCollisionBox , 0};
+	Hitbox hurtbox = { kDefault_OffsetCollisionBox , 0, 0};
 	hurtbox.hitbox.x += mX;
 	hurtbox.hitbox.y += mY;
 	mHurtbox = hurtbox.hitbox;
 
-	Hitbox hitbox = { kDefault_OffsetHitbox, 4 };
+	Hitbox hitbox = kDefault_OffsetHitbox;
 	hitbox.hitbox.x += mX;
 	hitbox.hitbox.y += mY;
 
@@ -179,7 +179,7 @@ void Enemy::checkHurt()
 		if (checkCollision(mHurtbox, temp[i].hitbox))
 		{
 			mHealth -= temp[i].damage;
-			mHitStun = kDefault_HitStunFrames;
+			mHitStun = temp[i].hitstun;
 		}
 	}
 

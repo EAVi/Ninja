@@ -120,7 +120,7 @@ private:
 	static const Uint8 kSwordLag = 24;//amount of frames after using the sword before the sword may be used again
 	static const Uint8 kStarLag = 12;//"" star may be used again
 	static const Uint8 mStarSpeed = 6;//the speed that a ninja star will travel
-	static const Uint8 kSwordFrames = 4;
+	static const Uint8 kSwordFrames = 6;
 	static const Uint8 kHitStunFrames = 5;
 	static const Uint8 kInvincibilityFrames = 20;
 	static const Uint8 kBlinkingFrequency = 3;
