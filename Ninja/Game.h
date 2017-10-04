@@ -30,6 +30,7 @@
 #include "Zone.h"
 #include "LAudio.h"
 #include "Cutscene.h"
+#include "Menu.h"
 
 class Game
 {
@@ -92,16 +93,7 @@ private:
 	LAudio mSoundBox;//loads and plays sound and music
 	Cutscene mCutscene;//draw the cutscenes when needed
 	Uint8 mCurrentMenu;//the menutype that the game is currently at
-
-	enum MenuType : Uint8
-	{
-		kMainMenu = 0,
-		kMainOptions,
-		kPauseMenu,
-		kPauseOptions,
-		kCutscene,
-		kInGame,
-	};
+	std::vector<Menu> mMenu;//all posible menus
 
 	//gets monitor refresh rate and screen dimensions
 	void screenAttrs();
@@ -133,6 +125,15 @@ private:
 	//function that sets the slides of a cutscene
 	void mSetCutscene();
 
+	//loop which handles cutscenes
 	void mCutSceneLoop();
+
+	//sets up the menus
+	void mSetMenu();
+
+	//loop which handles menus
+	void mMenuLoop();
+
+	void mButtonOptionHandler(ButtonOption & a);
 
 };

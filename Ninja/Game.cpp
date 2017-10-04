@@ -13,6 +13,7 @@ Game::Game()
 	mDebug = false;
 	mTimer.setFrameDelay(kFramePeriod);
 	mCurrentMenu = kCutscene;	
+	mMenu = vector<Menu>(kTotalMenus);
 }
 
 bool Game::init()
@@ -314,13 +315,17 @@ void Game::gameLoop()
 	{
 		mCutSceneLoop();
 	}
-	if (mCurrentMenu == kInGame)
+	else if (mCurrentMenu == kInGame)
 	{
 		mZone.clearHitboxesCurrentLevel();
 		handleEvents();
 		beginstep();
 		endstep();
 		render();
+	}
+	else
+	{
+		mMenuLoop();//else, it's a menu object we need to take care of
 	}
 }
 
@@ -410,7 +415,7 @@ void Game::beginstep()
 		}
 		else
 		{
-			//GAME OVER
+			mCurrentMenu = kGameOver;
 		}
 	}
 	mPlayer.step();
@@ -537,4 +542,44 @@ void Game::mCutSceneLoop()
 	//Draw the slide
 	mCutscene.renderCurrentSlide();
 	SDL_RenderPresent(mRenderer);
+}
+
+void Game::mSetMenu()
+{
+	mMenu[kMainMenu] = Menu(kMainMenu, "Ninja (working title)");
+	mMenu[kMainOptions] = Menu(kMainOptions, "Ninja (working title)");
+	mMenu[kPauseMenu] = Menu(kPauseMenu, "Ninja (working title)");
+	mMenu[kPauseOptions] = Menu(kPauseOptions, "Ninja (working title)");
+
+	//Game Over Screen
+	mMenu[kGameOver] = Menu(kGameOver, "GAME OVER");
+	mMenu[kGameOver].addButton("Continue", kRestartZone, { 128, 32 }, (string)"\x82\x8E", (string)"\x80");
+	mMenu[kGameOver].addButton("Quit", kSetQuit, {128, 32}, (string)"\x82\x8E", (string)"\x80");
+}
+
+void Game::mMenuLoop()
+{
+	if (mMenu.size() <= mCurrentMenu)
+	{
+		cout << "Menu Loop segfault\n";
+		return;
+	}
+	while (SDL_PollEvent(&mEvent))
+	{
+		ButtonOption a = mMenu[mCurrentMenu].handleEvent(mEvent);
+		mButtonOptionHandler(a);
+	}
+
+	mMenu[mCurrentMenu].renderMenu();
+}
+
+void Game::mButtonOptionHandler(ButtonOption & a)
+{
+	switch (a)
+	{
+	case kRestartZone:
+		break;
+	case kUnPause:
+		break;
+	}
 }
