@@ -45,7 +45,19 @@ namespace txt
 	static char TypeOff = '\x8D';
 	static char HLightOn = '\x8E';
 	static char HLightOff = '\x8F';
+
+	//note that there is no option for large text, you'll need 
+	//to set the current buffer to the Large buffer
+	//using the operator()
 }
+
+enum textbuffers : Uint8
+{
+	Debug = 0,//the debug buffer will always be oriented to the bottom-left corner of the screen
+	Small = 1,//the small buffer is just for small text, non-debug purposes
+	Large = 2,//the large buffer is for big text, intended for menus and stuff
+	TotalBuffers = 3,
+};
 
 class TextWriter
 {
@@ -60,10 +72,10 @@ public:
 	~TextWriter();
 
 	//-Overload with LTexture, and dimensions for clipping
-	TextWriter(LTexture* texture, int w, int h);
+	TextWriter(LTexture* texture, int w, int h, LTexture* largetexture, int wl, int hl);
 
 	//-Renders string at position
-	void RenderString(std::string text, int x, int y, SDL_Color* color = NULL);
+	void RenderString(std::string text, int x, int y, SDL_Color* color = NULL, bool large = false);
 
 	//-Renders string at position, overload using textcolors
 	void RenderString(std::string text, int x, int y, textColors color, textCommand comm = (textCommand)0);
@@ -76,8 +88,8 @@ public:
 
 	/*
 	*Allows the Writer to act like the "cout <<" object function,
-	*Note that this will only throw a bunch of strings onto the buffer,
-	*it will only render the strings in the buffer when the function ClearBuffer() is called
+	*Note that this will only throw a bunch of strings onto the buffer, without rendering them
+	*To render the strings in the buffer, use ClearBuffer();
 	Example usage:
 		TextWriter gout;
 		gout << "Magnar is #" << 1 << " at Melee";
@@ -88,10 +100,24 @@ public:
 	{
 		std::stringstream s;
 		s << x;
-		mWriteBuffer += s.str();
+		mWriteBuffer[mCurrentBuffer] += s.str();
 		return *this;
 	}
-	
+
+	/*
+	set the buffer which strings will be written to
+	it may also be followed by a << operator
+	-parameter 1: set the buffer
+	-parameter 2: set the x position of the buffer (will not affect Debug)
+	-parameter 3: set the y position of the buffer (will not affect Debug)
+	Example usage:
+		TextWriter gout;
+		gout(textbuffers::Large, 8, 8) << "I'm Large\n";
+		gout << "Still Large\n";
+		gout.ClearBuffer();
+	*/
+	TextWriter & operator() (textbuffers a, int x = 0, int y = 0);
+
 	/*
 	Writes all the strings on the mWriteBuffer queue from top to bottom
 	(front-to-back of queue) while clearing the buffer
@@ -117,15 +143,23 @@ public:
 
 private:
 	LTexture* mTexture;
+	LTexture* mLargeTexture;
+	textbuffers mCurrentBuffer; //the textbuffers enum is Uint8
 	Uint8 mColorNum;
 	Uint8 mCommand;
 	std::vector<SDL_Color> mColors;
-	std::vector<SDL_Rect> mCharClips;
-	SDL_Point mClipDimensions;
-	std::string mWriteBuffer;
+	std::vector<SDL_Rect> mCharClips;//the character clippings for the small characters
+	std::vector<SDL_Rect> mLargeCharClips;//larger characters
+	SDL_Point mClipDimensions;//smaller characters
+	SDL_Point mLargeClipDimensions;//larger characters
+	std::vector<SDL_Point> mBufferPosition;
+	std::vector<std::string> mWriteBuffer;
 	int mTick;//number of times that clearbuffer has been called
 	int mTypeMove;//number of characters that have been rendered past the current character
 	Uint8 mTypeSpeed;
+
+	//Get position such that the lowest character of the string touches the bottom of the screen
+	SDL_Point mDebugPosition(std::string& s);
 };
 
 #endif

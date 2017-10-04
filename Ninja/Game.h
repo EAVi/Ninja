@@ -77,6 +77,7 @@ private:
 	LTexture mNinjaTexture;
 	LTexture mBlockTexture;
 	LTexture mFontTexture;
+	LTexture mLargeFontTexture;
 	LTexture mEnemyTexture;
 	LTexture mRobotTexture;
 	UIDrawer mUIDrawer;//draws healthbar, lives, and other UI

@@ -47,6 +47,10 @@ int main(int argc, char* args[])
 	if (!theGame.fullInit())//failure to initialize
 	{
 		theGame.destroyAssets();
+#ifdef _WIN32
+		system("pause");
+		//so you can see the error if it fails on windows
+#endif
 		return 1;
 	}
 

@@ -29,7 +29,9 @@ void Cutscene::renderCurrentSlide()
 		return;
 	
 	mSlideTextures[mSlides[mCurrentSlide].texture]->renderTexture(0, 32);
-	gWriter.RenderString(mSlides[mCurrentSlide].text, 0, 160);
+
+	gWriter(textbuffers::Small, 6, 168) << txt::White << txt::OptionsOff << txt::TypeOn;//set position of buffer and the default color and options
+	gWriter << mSlides[mCurrentSlide].text;//write the text
 	gWriter.ClearBuffer();
 }
 

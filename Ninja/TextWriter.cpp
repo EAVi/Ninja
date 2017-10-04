@@ -18,32 +18,20 @@ enum textCommand : Uint8
 
 
 
-TextWriter::TextWriter()
+TextWriter::TextWriter() 
+	: TextWriter(NULL, 0, 0, NULL, 0, 0)
 {
-	mTexture = NULL;
-	mClipDimensions = { 0,0 };
-
-	mColorNum = 0;
-	mColors.push_back({ 255, 0, 0 });//red
-	mColors.push_back({ 255, 127, 0 });//orange
-	mColors.push_back({ 255, 255, 0 });//yellow
-	mColors.push_back({ 0, 255, 0 });//green
-	mColors.push_back({ 0, 0, 255 });//blue
-	mColors.push_back({ 255, 0, 255 });//purple
-	mColors.push_back({ 255, 255, 255 });//white
-	mColors.push_back({ 0, 0, 0 });//black
-
-	//fills the rectangle vector
-	SDL_Rect clipsize = { 0, 0, 0, 0 };
-	mCharClips.clear();
-	mTick = 0;
-	mTypeSpeed = 3;
 }
 
-TextWriter::TextWriter(LTexture* texture, int w, int h)
+TextWriter::TextWriter(LTexture* texture, int w, int h, LTexture* largetexture, int wl, int hl)
 {
+	mCurrentBuffer = Debug;//default to buffer 0
+
 	mTexture = texture;
+	mLargeTexture = largetexture;
+
 	mClipDimensions = { w, h };
+	mLargeClipDimensions = {wl, hl};
 
 	mColorNum = 0;
 	mColors.push_back({ 255, 0, 0 });//red
@@ -55,11 +43,21 @@ TextWriter::TextWriter(LTexture* texture, int w, int h)
 	mColors.push_back({ 255, 255, 255 });//white
 	mColors.push_back({ 0, 0, 0 });//black
 
+	mWriteBuffer = vector<string>(TotalBuffers);
+	mBufferPosition = vector<SDL_Point>(TotalBuffers);
+
 	
 	//fills the rectangle vector
 	SDL_Rect clipsize = { 0, 0, w, h };
 	mCharClips.clear();
-	mCharClips = spriteClipper(mTexture->getWidth(),mTexture->getHeight(),clipsize);
+	if( (w > 0 ) && (h > 0))
+		mCharClips = spriteClipper(mTexture->getWidth(),mTexture->getHeight(),clipsize);
+
+	clipsize = { 0, 0, wl, hl };
+	mLargeCharClips.clear();
+	if ((wl > 0) && (hl > 0))
+		mLargeCharClips = spriteClipper(mLargeTexture->getWidth(), mLargeTexture->getHeight(), clipsize);
+
 	mTick = 0;
 	mTypeSpeed = 3;
 }
@@ -69,7 +67,7 @@ TextWriter::~TextWriter()
 	mTexture = NULL;
 }
 
-void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
+void TextWriter::RenderString(string text, int x, int y, SDL_Color* color, bool large)
 {
 	if (color == NULL)//this initializes the colornum to 0, because NULL means RAINBOW TIME BAYBEEE
 		mColorNum = 0;
@@ -93,7 +91,10 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 		if (clipnum == (int)'\n')//NEWLINE symbol
 		{
 			pointy.x = x;
-			pointy.y += mClipDimensions.y;
+			if (!large)
+				pointy.y += mClipDimensions.y;
+			else 
+				pointy.y += mLargeClipDimensions.y;
 		}
 		/*
 		There are a few ways to assign colors, the newest best way is to use the txt namespace
@@ -159,14 +160,34 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color)
 				if (mCommand & (kSuperImpose | kHighlight))
 				{
 					if (mCommand & kSuperImpose)
+					{
 						mTexture->colorMod(mColors[kBlack]);//set color to black
-					else 
+						mLargeTexture->colorMod(mColors[kBlack]);//set color to black
+					}
+					else//highlight
+					{
 						mTexture->colorMod(mColors[kWhite]);//set color to white
-					mTexture->renderTexture(pointy.x + 1, pointy.y + 1, &mCharClips[clipnum]);//render the black
+						mLargeTexture->colorMod(mColors[kWhite]);//set color to white
+					}
+
+					if(!large)
+						mTexture->renderTexture(pointy.x + 1, pointy.y + 1, &mCharClips[clipnum]);//render the black or white
+					else
+						mLargeTexture->renderTexture(pointy.x + 2, pointy.y + 2, &mLargeCharClips[clipnum]);//render the black or white
 					mTexture->colorMod(mColors[mColorNum]);//reset back to previous color, will re-render over the black
+					mLargeTexture->colorMod(mColors[mColorNum]);//reset back to previous color, will re-render over the black
 				}
-				mTexture->renderTexture(pointy.x, pointy.y, &mCharClips[clipnum]);
-				pointy.x += mClipDimensions.x;
+				//render a single character
+				if (!large)
+					mTexture->renderTexture(pointy.x, pointy.y, &mCharClips[clipnum]);
+				else 
+					mLargeTexture->renderTexture(pointy.x, pointy.y, &mLargeCharClips[clipnum]);
+
+				//move position to the right
+				if (!large)
+					pointy.x += mClipDimensions.x;
+				else
+					pointy.x += mLargeClipDimensions.x;
 
 				/*
 				increments the typemove for every character that is drawn
@@ -204,21 +225,33 @@ void TextWriter::RenderString(int val, int x, int y, SDL_Color* color)
 }
 
 
+TextWriter & TextWriter::operator()(textbuffers a, int x, int y)
+{
+	//set the current buffer
+	mCurrentBuffer = a;
+
+	//set the position for the selected buffer
+	mBufferPosition[a] = { x, y };
+
+	//return reference to current object, in order to allow << operator afterwards
+	return *this;
+}
+
 void TextWriter::ClearBuffer()
 {
-	//x position doesn't matter, it'll be 0
-	int y = kScreenHeight - mClipDimensions.y;//the text will be drawn in the bottom left corner.
+	//set the position for the debug buffer
+	mBufferPosition[Debug] = mDebugPosition(mWriteBuffer[Debug]);
 
-	for (int i = 0; i < mWriteBuffer.size(); ++i)
+	//render every buffer (string)
+	for (int i = 0, j = (int)TotalBuffers; i < j; ++i)
 	{
-		//count the number of endlines there are, and move the topmost text upwards to accomodate
-		if (mWriteBuffer[i] == '\n')
-			y -= mClipDimensions.y;
+		RenderString(mWriteBuffer[i], mBufferPosition[i].x, mBufferPosition[i].y, NULL, i == Large);//draw it using the renderstring function
 	}
 
-	RenderString(mWriteBuffer, 0, y);//draw it using the renderstring function
 	mTick++;//advance the ticks
-	mWriteBuffer = "";
+
+	for (int i = 0, j = (int)TotalBuffers; i < j; ++i)
+		mWriteBuffer[i] = "";
 }
 
 void TextWriter::ClearTicks()
@@ -234,4 +267,19 @@ int TextWriter::getTypePosition()
 void TextWriter::setTypePosition(int a)
 {
 	mTick = mTypeSpeed * a;
+}
+
+SDL_Point TextWriter::mDebugPosition(std::string & s)
+{
+	//x position doesn't matter, it'll be 0
+	int y = kScreenHeight - mClipDimensions.y;//the text will be drawn in the bottom left corner.
+
+	for (int i = 0; i < mWriteBuffer[Debug].size(); ++i)
+	{
+		//count the number of endlines there are, and move the topmost text upwards to accomodate
+		if (mWriteBuffer[Debug].at(i) == '\n')
+			y -= mClipDimensions.y;
+	}
+	
+	return { 0,y };
 }

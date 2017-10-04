@@ -190,7 +190,12 @@ bool Game::loadAssets()
 		cout << SDL_GetError() << endl;
 		return false;
 	}
-	gWriter = TextWriter(&mFontTexture, 6, 8);
+	if (!mLargeFontTexture.loadTextureFile("GFX/largefont.png", &mColorKey))
+	{
+		cout << SDL_GetError() << endl;
+		return false;
+	}
+	gWriter = TextWriter(&mFontTexture, 6, 8, &mLargeFontTexture, 16, 24);
 
 	//Set the default enemy texture
 	Enemy tempEnemy;
@@ -263,6 +268,7 @@ void Game::destroyAssets()
 	mRobotTexture.freeTexture();
 	mBlockTexture.freeTexture();
 	mFontTexture.freeTexture();
+	mLargeFontTexture.freeTexture();
 
 	//deallocate the background textures
 	for (Uint8 i = 0, j = mBackgroundTextures.size(); i < j; ++i)
@@ -448,7 +454,7 @@ void Game::debugOptions()
 	if (mDebug)//the debug stuff, shows some stats, and renders hurtboxes
 	{
 
-		gWriter << txt::TypeOn << txt::White  << "Ninja pos: (" << mPlayer.getX() << ',' << txt::Yellow << mPlayer.getY() << txt::White << ")\n";
+		gWriter(textbuffers::Debug) << txt::TypeOn << txt::White  << "Ninja pos: (" << mPlayer.getX() << ',' << txt::Yellow << mPlayer.getY() << txt::White << ")\n";
 		gWriter << txt::SuperOn << txt::Rainbow  << "Enemy Count: " << (int)mZone.enemyCountCurrentLevel() << txt::SuperOff << '\n';
 		gWriter << txt::Green << mTimer.getFramerate() << " FPS\n";
 		gWriter << txt::White << mTimer.getVSyncFramerate() << " FPS - VS\n" << txt::TypeOff;
@@ -457,6 +463,8 @@ void Game::debugOptions()
 		gWriter << txt::HLightOn << txt::Blue << mRefreshRate << "Hz Monitor with dimensions " << mScreen.x << 'x' << mScreen.y << txt::HLightOff << '\n';
 		//}
 		//gWriter << '\x88' << "Frame #"<< mClock.getFrameCount() << '\n';
+
+		gWriter(textbuffers::Large, 16 , 32) << txt::TypeOn << txt::Blue << txt::HLightOn << "(" << mPlayer.getX() << ',' << txt::Yellow << mPlayer.getY() << txt::White << ")" << txt::HLightOff;
 
 		mZone.debugShowHitboxesCurrentLevel(*mRenderer);
 	}
