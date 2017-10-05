@@ -61,7 +61,7 @@ public:
 	Menu();
 
 	//overloaded constructor
-	Menu(MenuType m, std::string s);
+	Menu(MenuType m, std::string s, SDL_Point p = {0,0});
 
 	//adds a button structure to the vector
 	void addButton(Button a);

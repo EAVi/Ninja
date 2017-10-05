@@ -25,7 +25,7 @@ Player::Player()
 	mStarHitbox = { { 13,14,6,4 }, 3, 7 };
 	mMaxHealth = kMaxHealth;
 	mHealth = mMaxHealth;
-	mLives = 0;
+	resetLives();
 	mInvincibilityFrames = 0;
 }
 
@@ -336,6 +336,20 @@ bool Player::checkDead()
 		&& mInvincibilityFrames <= 0);
 }
 
+void Player::resetLives()
+{
+	mLives = kStartingLives;
+}
+
+void Player::respawn()
+{
+	mLevel->getSpawnPoint(mX, mY);//passes by reference, modifies x,y position
+
+	//if kStartingLives is zero, you would get a second game over screen, this will prevent that by making the player stand up
+	if (mAnimationFrame == kDeathEnd) mAnimationFrame = kStanding;
+
+}
+
 
 void Player::mHandleDirection()
 {
@@ -448,7 +462,7 @@ void Player::mBoundPlayer()
 			mX = dimensions.w - mCollisionBox.x - mCollisionBox.w;
 		if (mY > dimensions.h)
 		{
-			mLevel->getSpawnPoint(mX, mY);//passes by reference, modifies x,y position
+			respawn();
 			mY += kStandardCollisionBox.y + kStandardCollisionBox.h - kJumpingCollisionBox.y - kJumpingCollisionBox.h;
 			mYVelocityF = 0;
 			mYVelocity = mYVelocityF;

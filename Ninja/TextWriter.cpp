@@ -150,6 +150,7 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color, bool 
 			else
 				color = &mColors[0];//just gives color a value to prevent rainbowing
 			this->mTexture->colorMod(mColors[mColorNum]);
+			this->mLargeTexture->colorMod(mColors[mColorNum]);
 		}
 		else//for rendering the font clip
 		{

@@ -244,6 +244,7 @@ void Game::prepare()
 	mZone.setSpawn();
 	screenAttrs();
 	mSetCutscene();
+	mSetMenu();
 }
 
 bool Game::fullInit()
@@ -371,34 +372,39 @@ void Game::handleEvents()
 {
 	while (SDL_PollEvent(&mEvent))
 	{
-		if (mEvent.type == SDL_QUIT)//alt-f4 or clicking x on window
-			mQuit = true;
-
-		if (mEvent.type == SDL_CONTROLLERBUTTONDOWN && mEvent.cbutton.button == SDL_CONTROLLER_BUTTON_BACK //back button on controller
-			|| mEvent.key.keysym.sym == SDLK_BACKQUOTE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//or press tilde key
-			mDebug = !mDebug;//toggle debug
-
-		if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//on keypress ESC
-		{
-			if (mZone.getCurrentLevel() == (mZone.getLevelSize() - 1))//skip level, and if at max level, set to 0
-				mZone.setLevel(0);
-			else mZone.setLevel(mZone.getCurrentLevel() + 1); //skip level
-		}
-		
-		if (mEvent.key.keysym.sym == SDLK_RETURN && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0 && mEvent.key.keysym.mod & (KMOD_RALT | KMOD_LALT))// on alt+enter
-			mToggleFullScreen();
-
-		//Controller Disconnecting
-		if (mEvent.type == SDL_CONTROLLERDEVICEREMOVED)
-		{
-			mDestroyControllers();
-		}
-		//Controller Connecting
-		if (mEvent.type == SDL_CONTROLLERDEVICEADDED)
-		{
-			mInitControllers();
-		}
+		handleGeneralEvents();
 		mPlayer.handleEvent(mEvent);
+	}
+}
+
+void Game::handleGeneralEvents()
+{
+	if (mEvent.type == SDL_QUIT)//alt-f4 or clicking x on window
+		mQuit = true;
+
+	if (mEvent.type == SDL_CONTROLLERBUTTONDOWN && mEvent.cbutton.button == SDL_CONTROLLER_BUTTON_BACK //back button on controller
+		|| mEvent.key.keysym.sym == SDLK_BACKQUOTE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//or press tilde key
+		mDebug = !mDebug;//toggle debug
+
+	if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//on keypress ESC
+	{
+		if (mZone.getCurrentLevel() == (mZone.getLevelSize() - 1))//skip level, and if at max level, set to 0
+			mZone.setLevel(0);
+		else mZone.setLevel(mZone.getCurrentLevel() + 1); //skip level
+	}
+
+	if (mEvent.key.keysym.sym == SDLK_RETURN && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0 && mEvent.key.keysym.mod & (KMOD_RALT | KMOD_LALT))// on alt+enter
+		mToggleFullScreen();
+
+	//Controller Disconnecting
+	if (mEvent.type == SDL_CONTROLLERDEVICEREMOVED)
+	{
+		mDestroyControllers();
+	}
+	//Controller Connecting
+	if (mEvent.type == SDL_CONTROLLERDEVICEADDED)
+	{
+		mInitControllers();
 	}
 }
 
@@ -449,6 +455,7 @@ void Game::render()
 		{
 			mTimer.delayRender();
 		}
+
 		SDL_RenderPresent(mRenderer);
 		mTimer.tick();
 	}
@@ -526,10 +533,7 @@ void Game::mCutSceneLoop()
 	//event handler
 	while (SDL_PollEvent(&mEvent))
 	{
-		if (mEvent.type == SDL_QUIT)//alt-f4 or clicking x on window
-			mQuit = true;
-		if (mEvent.key.keysym.sym == SDLK_RETURN && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0 && mEvent.key.keysym.mod & (KMOD_RALT | KMOD_LALT))// on alt+enter
-			mToggleFullScreen();
+		handleGeneralEvents();
 		mCutscene.handleEvent(mEvent);
 
 		if (mCutscene.checkComplete())//no need to poll if done
@@ -546,40 +550,87 @@ void Game::mCutSceneLoop()
 
 void Game::mSetMenu()
 {
+	
+	//Main Menu
 	mMenu[kMainMenu] = Menu(kMainMenu, "Ninja (working title)");
+
+	//Main Options
 	mMenu[kMainOptions] = Menu(kMainOptions, "Ninja (working title)");
+
+	//Pause Menu
 	mMenu[kPauseMenu] = Menu(kPauseMenu, "Ninja (working title)");
+
+	//Pause Options
 	mMenu[kPauseOptions] = Menu(kPauseOptions, "Ninja (working title)");
 
 	//Game Over Screen
-	mMenu[kGameOver] = Menu(kGameOver, "GAME OVER");
-	mMenu[kGameOver].addButton("Continue", kRestartZone, { 128, 32 }, (string)"\x82\x8E", (string)"\x80");
-	mMenu[kGameOver].addButton("Quit", kSetQuit, {128, 32}, (string)"\x82\x8E", (string)"\x80");
+	mMenu[kGameOver] = Menu(kGameOver, "\x89\x80"+(string)"GAME OVER", {56,16});
+	mMenu[kGameOver].addButton("Continue", kRestartZone, { 64, 160 }, (string)"\x82\x8E", (string)"\x80");
+	mMenu[kGameOver].addButton("Quit", kSetQuit, {144, 160}, (string)"\x82\x8E", (string)"\x80");
 }
 
 void Game::mMenuLoop()
 {
+	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xFF);
+	SDL_RenderClear(mRenderer);
 	if (mMenu.size() <= mCurrentMenu)
 	{
-		cout << "Menu Loop segfault\n";
+		cout << "Game::MenuLoop segfault\n";
 		return;
 	}
 	while (SDL_PollEvent(&mEvent))
 	{
+		//in case the menu was switched inside mButtonOptionHandler
+		if (mCurrentMenu >= kTotalMenus)
+			return;
+
 		ButtonOption a = mMenu[mCurrentMenu].handleEvent(mEvent);
+		handleGeneralEvents();
 		mButtonOptionHandler(a);
 	}
 
+	//render the player's corpse
+	//mPlayer.render(mCamera.x, mCamera.y);
+
 	mMenu[mCurrentMenu].renderMenu();
+	SDL_RenderPresent(mRenderer);
 }
 
 void Game::mButtonOptionHandler(ButtonOption & a)
 {
 	switch (a)
 	{
+	case kSetZone1: break;
+	case kSetZone2: break;
+	case kSetZone3: break;
+	case kSetZone4: break;
+	case kSetZone5: break;
+	case kSetZone6: break;
+	case kSetZone7:	break;
+	case kSetZone8: break;
+	case kSetMainMenu: break;
+	case kSetMainOptions: break;
+
+	case kSetQuit: mQuit = true; break;
+
+	case kSetPauseMenu: break;
+	case kSetPauseOption: break;
+
 	case kRestartZone:
+		mPlayer.getHealth() = mPlayer.getMaxHealth();
+		mPlayer.resetLives();
+		mZone.setLevel(0);
+		mPlayer.respawn();
+		mCurrentMenu = kInGame;
 		break;
-	case kUnPause:
-		break;
+
+	case kUnPause: break;
+	case kMusicDecrease: break;
+	case kMusicIncrease: break;
+	case kSFXDecrease: break;
+	case kSFXIncrease: break;
+
+	case kToggleFullscreen: mToggleFullScreen(); break;
+
 	}
 }

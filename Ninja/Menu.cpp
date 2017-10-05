@@ -5,13 +5,14 @@ extern TextWriter gWriter;
 using namespace std;
 
 Menu::Menu()
-	: Menu(kMainMenu,std::string())//call the overloaded constructor, initialize with empty string
+	: Menu(kMainMenu, std::string(), {0,0})//call the overloaded constructor, initialize with empty string
 {}
 
-Menu::Menu(MenuType m, std::string s)
+Menu::Menu(MenuType m, std::string s, SDL_Point p)
 {
 	mMenuType = m;
 	mTitle = s;
+	mTitlePosition = p;
 	mCurrentButton = 0;
 }
 
@@ -29,6 +30,7 @@ void Menu::addButton(std::string s, ButtonOption o, SDL_Point p, std::string pre
 void Menu::renderMenu()
 {
 	gWriter(Large, mTitlePosition.x, mTitlePosition.y) << mTitle;
+	gWriter.ClearBuffer();
 
 	for (int i = 0, j = mButton.size(); i < j; ++i)
 	{
@@ -70,22 +72,35 @@ ButtonOption Menu::handleEvent(SDL_Event & e)
 		case SDL_CONTROLLER_BUTTON_DPAD_LEFT: return mPressPrev(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: return mPressNext(); break;
 		}
-
 	}
+	return kNoOption;
 }
 
 ButtonOption Menu::mPressYes()
 {
+	if (mCurrentButton >= mButton.size())
+	{
+		cout << "Menu::mPressYes() segfault\n";
+		return kNoOption;
+	}
 	return mButton[mCurrentButton].option;
 }
 
 ButtonOption Menu::mPressNext()
 {
+	++mCurrentButton;
+	if (mCurrentButton >= mButton.size())
+		mCurrentButton = 0;
 	return kNoOption;
 }
 
 ButtonOption Menu::mPressPrev()
 {
+	//since Uint8 cannot be below 0, need to check for this first
+	if (mCurrentButton == 0)
+		mCurrentButton = (Uint8)mButton.size();
+
+	--mCurrentButton;
 	return kNoOption;
 }
 

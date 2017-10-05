@@ -101,6 +101,9 @@ private:
 	//polling and event handling
 	void handleEvents();
 
+	//handle quit, fullscreen toggle, etc.
+	void handleGeneralEvents();
+
 	//the begin step for the zone and the player
 	void beginstep();
 

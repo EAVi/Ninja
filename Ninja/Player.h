@@ -63,6 +63,12 @@ public:
 	SDL_Rect& getCollisionBox();
 
 	bool checkDead();
+
+	//set the number of lives to the const value
+	void resetLives();
+
+	//set the players position to spawn point
+	void respawn();
 private:
 	LTexture* mTexture;
 	std::vector<SDL_Rect> mAnimationFrameRectangles;
@@ -127,6 +133,7 @@ private:
 	static SDL_Rect kStandardCollisionBox;
 	static SDL_Rect kJumpingCollisionBox;
 	static const int kMaxHealth = 50;
+	static const int kStartingLives = 0;
 };
 
 enum NinjaAnimationFrames
