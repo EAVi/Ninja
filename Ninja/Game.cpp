@@ -221,6 +221,7 @@ bool Game::loadAssets()
 	mSoundBox.loadSFX("SFX/MUS/01.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/02.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/03.wav", true);
+	mSoundBox.loadSFX("SFX/MUS/04.wav", true);
 	Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
 	//Sounds
 	mSoundBox.loadSFX("SFX/00.wav");

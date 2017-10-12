@@ -59,6 +59,7 @@
     <ProjectGuid>{DAE75D72-BBE3-4070-A1A0-0B8EB5AB4B59}</ProjectGuid>
     <RootNamespace>Ninja</RootNamespace>
     <ProjectName>Ninja</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
