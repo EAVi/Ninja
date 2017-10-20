@@ -12,6 +12,7 @@ Player::Player()
 	mCollisionBox = kStandardCollisionBox;
 	mX = 0;
 	mY = 0;
+	mWallJumpNumber = 0;
 	mXVelocity = 0;
 	mYVelocityF = 0.0;
 	mLeftKeyDown = false;
@@ -127,6 +128,7 @@ void Player::step()
 	if (mTouchIndex & kTouchingTop)
 	{
 		mJump = true;//replenishes doublejump if ground touched
+		mWallJumpNumber = 0;
 	}
 }
 
@@ -370,14 +372,18 @@ void Player::mLeftPress()
 
 void Player::mJumpPress()
 {
+
+	if (mWallJumpNumber == kJumpVelocity) return;
+
 	//Can't jump if in hitstun or dead
 	if (mHitStun > 0 || mHealth <= 0) return;
 	if (mJump && !(mTouchIndex & kTouchingBottom))//if you can jump, you will jump
 	{
 		mJump = false;
-		mYVelocityF = -kJumpVelocity;
+		mYVelocityF = -kJumpVelocity + (int)(mWallJumpNumber * 0.70); // as you keep jumping off walls, your jumps will get wimpier
 		mYVelocity = mYVelocityF;
 		LAudio::playSound(2);
+		++mWallJumpNumber;
 	}
 	//NO FUN ALLOWED MODE, FINITE JUMPS
 
@@ -479,20 +485,21 @@ void Player::mAttack()
 	for (int i = 0; i < mStarPositions.size(); ++i)
 	{
 		Hitbox tempr = mStarHitbox;
-		tempr.hitbox.x += mStarPositions[i].x;
-		tempr.hitbox.y += mStarPositions[i].y;
 		mStarPositions[i].x += mStarPositions[i].w;
 		mStarPositions[i].y += mStarPositions[i].h;
+		tempr.hitbox.x += mStarPositions[i].x;
+		tempr.hitbox.y += mStarPositions[i].y;
 
 		//checking destruction conditions
 		if (checkCollision(tempr.hitbox, mLevel->getRects())
 			|| !checkCollision(tempr.hitbox, mLevel->getLevelDimensions()))
 		{
+
+		//destroy the shuriken if touching a collision box, or outside the map
 		
 			mStarPositions.erase(mStarPositions.begin() + i);
 			--i;//decrement since the vector was reduced by 1
 		}
-		//destroy the shuriken if outside the map
 		mLevel->addHitbox(tempr, true, true, false);
 
 	}

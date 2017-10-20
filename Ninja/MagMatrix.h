@@ -22,6 +22,7 @@ public:
 private:
 	int mX;//X, the width of the matrix
 	int mY;//Y, the height of the matrix
+	long mSize;
 	T* mData;
 };
 
@@ -61,8 +62,9 @@ void Matrix<T>::setDimensions(int x, int y)
 	//use the given arguments to replace the current size 
 	mX = x;
 	mY = y;
+	mSize = x * y;
 	
-	if (this->size() > 0)//data will only be allocated if it is of non-zero size
+	if (mSize > 0)//data will only be allocated if it is of non-zero size
 		mData = new T[x * y];	//new, more like neo, amirite? 
 								//get it? matrix? ehehehehe
 	else 
@@ -86,13 +88,31 @@ void Matrix<T>::clear()
 template <typename T>
 T& Matrix<T>::get(int x, int y)
 {
-	return mData[(x + (mX * y))];
+	long i = x + (mX * y);
+
+	//exception handling
+	if (i >= size())
+	{
+		throw "MagMatrix segmentation fault";
+	}
+	if (x > mX)
+	{
+		throw "Magmatrix X dimension out of bounds";
+	}
+	if (y > mY)
+	{
+		throw "Magmatrix Y dimension out of bounds";
+	}
+
+	return mData[i];
 }
 
 template <typename T>
 long int Matrix<T>::size()
 {
-	return (mX * mY);
+	if (mData == NULL)
+		return 0;
+	else return mSize;
 }
 
 template<typename T>

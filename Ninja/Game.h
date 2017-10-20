@@ -22,6 +22,7 @@
 #include "Algorithms.h"
 #include "Level.h"
 #include "TextWriter.h"
+#include "Demon.h"
 #include "Enemy.h"
 #include "Robot.h"
 #include "MagMatrix.h"
@@ -81,6 +82,7 @@ private:
 	LTexture mLargeFontTexture;
 	LTexture mEnemyTexture;
 	LTexture mRobotTexture;
+	LTexture mDemonTexture;
 	UIDrawer mUIDrawer;//draws healthbar, lives, and other UI
 	std::vector<LTexture*> mBackgroundTextures;
 	Zone mZone;

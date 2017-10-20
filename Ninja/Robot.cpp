@@ -60,6 +60,9 @@ void Robot::attack()
 
 void Robot::render(int xD, int yD)
 {
+	//do note render on inactive frames
+	if (!mActive) return;
+
 	SDL_RendererFlip ftype = SDL_FLIP_NONE;
 	if (!mDirectionRight)
 		ftype = SDL_FLIP_HORIZONTAL;

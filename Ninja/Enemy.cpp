@@ -137,7 +137,8 @@ void Enemy::setLevel(Level * level)
 void Enemy::attack()
 {
 	if (mLevel == NULL) return; //Enemies aren't always bound to a level
-	//does nothing so far
+	
+	//this function does passive hitstun
 	Hitbox hurtbox = { kDefault_OffsetCollisionBox , 0, 0};
 	hurtbox.hitbox.x += mX;
 	hurtbox.hitbox.y += mY;

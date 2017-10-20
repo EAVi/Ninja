@@ -5,7 +5,7 @@
 #Executable name
 EXEC=Ninja
 #Source files
-SRCS=Algorithms.cpp Cutscene.cpp Enemy.cpp Game.cpp LAudio.cpp Level.cpp LTexture.cpp main.cpp Player.cpp Robot.cpp TextWriter.cpp Timer.cpp UIDrawer.cpp Zone.cpp
+SRCS=Algorithms.cpp Cutscene.cpp Demon.cpp Enemy.cpp Game.cpp LAudio.cpp Level.cpp LTexture.cpp main.cpp Player.cpp Robot.cpp TextWriter.cpp Timer.cpp UIDrawer.cpp Zone.cpp
 #Create object files from sources
 OBJS=$(SRCS:.cpp=.o)
 #libraries and stuff

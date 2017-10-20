@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="Algorithms.cpp" />
     <ClCompile Include="Cutscene.cpp" />
+    <ClCompile Include="Demon.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="LAudio.cpp" />
@@ -32,6 +33,7 @@
     <ClInclude Include="Cutscene.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Demon.h" />
     <ClInclude Include="LAudio.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="resource.h" />

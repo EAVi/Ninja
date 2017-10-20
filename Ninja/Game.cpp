@@ -215,6 +215,14 @@ bool Game::loadAssets()
 	}
 	tempRobot.setTexture(&mRobotTexture);
 
+	Demon tempDemon;
+	if (!mDemonTexture.loadTextureFile("GFX/AllDemon.png", &mColorKey))
+	{
+		cout << SDL_GetError() << endl;
+		return false;
+	}
+	tempDemon.setTexture(&mDemonTexture);
+
 	//Load all the sounds and music
 	//Music
 	mSoundBox.loadSFX("SFX/MUS/00.wav", true);
@@ -269,6 +277,7 @@ void Game::destroyAssets()
 	mNinjaTexture.freeTexture();
 	mEnemyTexture.freeTexture();
 	mRobotTexture.freeTexture();
+	mDemonTexture.freeTexture();
 	mBlockTexture.freeTexture();
 	mFontTexture.freeTexture();
 	mLargeFontTexture.freeTexture();
@@ -477,8 +486,8 @@ void Game::debugOptions()
 		//}
 		//gWriter << '\x88' << "Frame #"<< mClock.getFrameCount() << '\n';
 
-		gWriter(textbuffers::Large, 16 , 32) << txt::TypeOn << txt::Blue << txt::HLightOn << "(" << mPlayer.getX() << ',' << txt::Yellow << mPlayer.getY() << txt::White << ")" << txt::HLightOff;
-
+		//gWriter(textbuffers::Large, 16 , 32) << txt::TypeOn << txt::Blue << txt::HLightOn << "(" << mPlayer.getX() << ',' << txt::Yellow << mPlayer.getY() << txt::White << ")" << txt::HLightOff;
+		SDL_Delay(60);
 		mZone.debugShowHitboxesCurrentLevel(*mRenderer);
 	}
 }

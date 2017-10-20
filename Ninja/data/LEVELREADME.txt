@@ -1,7 +1,7 @@
 How to make a level, by Magnar
 
 Note that when I use the word "currently",
-I mean "as of 1:25 AM 5/22/2017"
+I mean "as of 10:29 PM 10/18/2017"
 ------------------------------
 
 Creating a level has 5 parts:
@@ -45,7 +45,7 @@ Parsing/Separating your numbers:
 	Ambient Red - will adjust lighting, does not work yet
 	Ambient Green - ""
 	Ambient Blue - ""
-	Player Spawn X - Only required on the first level of the zone*
+	Player Spawn X - spawn and respawn point*
 	Player Spawn Y - ""
 	Song - check the SFX/MUS folder to see what you like.
 
@@ -82,9 +82,13 @@ Parsing/Separating your numbers:
 	TileX - 1 bit, second-rightmost bit, if true, the 
 		background will repeat on the x axis.
 	TileY - 1 bit, rightmost bit, y axis.
+
+**If you have multiple backgrounds
+  the line closest to the top of the 
+  document will be at the top layer
 ------------------------------
 3) Blocks (5 arguments, 4 bytes)
-	Block Number - there are currently 9 blocks that have 
+	Block Number - there are currently 27 blocks that have 
 			been textured, to see which block represents 
 			what number, look at the GFX/BlockSheet.png
 	Block X - This will be the X position of the block, 

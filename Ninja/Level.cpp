@@ -87,8 +87,7 @@ void Level::renderBlocks()
 
 	for (; i < j; ++i)//x position
 		for (k = kReset; k < l; ++k)//y position
-			if (mBlocks.valid(i, k)//checks for validity, I'm confident that this is no longer needed, but keeping it for safe measures
-				&& (mBlocks.get(i, k) != 255))//ensures it is not a default block
+			if (mBlocks.get(i, k) != 255)//ensures it is not a default block (will not draw block with #255)
 			{
 				drawBlock(i,k);
 			}
@@ -247,9 +246,11 @@ void Level::addEnemy(Uint8 eType, Uint8 x, Uint8 y)
 
 	switch (eType)
 	{
-	case 0:
+	case 1:
 		mEnemies[slot] = new Robot(x, y, false, this);	break;
-	default:
+	case 2:
+		mEnemies[slot] = new Demon(x, y, false, this);	break;
+	default://0 
 		mEnemies[slot] = new Enemy(x, y, false, this);	break;
 	}
 

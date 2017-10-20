@@ -77,6 +77,7 @@ private:
 	Level* mLevel;
 	int mX;
 	int mY;
+	int mWallJumpNumber;//number of times the Ninja has jumped without touching the ground, diminishing walljump power
 	int mXVelocity;
 	int mYVelocity;//reminder that negatives go upwards on screen
 	float mYVelocityF;//precise gravity, is truncated to mYVelocity so collision math can be done
@@ -133,7 +134,7 @@ private:
 	static SDL_Rect kStandardCollisionBox;
 	static SDL_Rect kJumpingCollisionBox;
 	static const int kMaxHealth = 50;
-	static const int kStartingLives = 0;
+	static const int kStartingLives = 4;
 };
 
 enum NinjaAnimationFrames

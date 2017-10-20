@@ -14,6 +14,7 @@
 #include "Hitbox.h"
 #include "Enemy.h"
 #include "Robot.h"
+#include "Demon.h"
 #include "MagMatrix.h"
 
 
