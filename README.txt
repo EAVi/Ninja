@@ -13,7 +13,7 @@ End Dumb legal stuff
     
     Debug Controls:
     (Tilde key) - enable debug features
-    ESC(while debug is active) - skip level
+    ESC - skip level
     
     To compile on Linux:
     -Get the sdl2 development libraries.
@@ -30,7 +30,7 @@ End Dumb legal stuff
     in the data folder. It has everything you need to know about making maps.
     
     This project was begun on 25 Aug, 2016 and has been worked on on/off since. 
-    As of 27 September, 2017, this project is ~3800 lines of code (and 1300 lines of comments/spacing)
+    As of 22 October, 2017, this project is ~4400 lines of code (and 1500 lines of comments/spacing)
     
     I've tested the files in both Windows, Debian. You'll need to download the 
     SDL2, SDL2-image, and SDL2-mixer libraries in order to compile.
