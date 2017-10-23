@@ -95,11 +95,11 @@ T& Matrix<T>::get(int x, int y)
 	{
 		throw "MagMatrix segmentation fault";
 	}
-	if (x > mX)
+	if (x >= mX)
 	{
 		throw "Magmatrix X dimension out of bounds";
 	}
-	if (y > mY)
+	if (y >= mY)
 	{
 		throw "Magmatrix Y dimension out of bounds";
 	}
