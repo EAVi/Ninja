@@ -111,7 +111,7 @@ bool Game::loadAssets()
 	tempLevel.setBlockTextures(&mBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 14;
+	Uint8 bgTexNum = 15;
 	string bgTexS[] =
 	{
 		"GFX/BG/bluesky.png",
@@ -128,6 +128,7 @@ bool Game::loadAssets()
 		"GFX/BG/castleinterior.png",
 		"GFX/BG/beachhill.png",
 		"GFX/BG/seasky.png",
+		"GFX/BG/castlesky.png",
 
 	};
 
@@ -164,13 +165,16 @@ bool Game::loadAssets()
 	}
 
 	//UI texture loader
-	Uint8 cutTexNum = 4;
+	Uint8 cutTexNum = 7;
 	string cutTexS[] =
 	{
 		"GFX/CUT/ninjaclose.png",
 		"GFX/CUT/ninjaforward.png",
 		"GFX/CUT/karl.png",
 		"GFX/CUT/goldfish.png",
+		"GFX/CUT/ninjadark.png",
+		"GFX/CUT/demonoutline.png",
+		"GFX/CUT/paper.png",
 	};
 	for (Uint8 i = 0; i < cutTexNum; ++i)
 	{
