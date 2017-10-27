@@ -1,9 +1,3 @@
-Begin Dumb legal stuff
-               -Don't steal my stuff. Everything here is my stuff -> Dont steal anything here.
-               -Give credit where it is due, reused code and other work should link back to this page:
-                  https://github.com/EAVi/Ninja
-End Dumb legal stuff
-    
     Controls:
     A - move left
     D - move right
