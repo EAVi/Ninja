@@ -330,6 +330,17 @@ Uint8 Level::getSong()
 	return mSong;
 }
 
+SDL_Point Level::getPlayerPosition()
+{
+	//need to use the first element to find the center of the Ninja
+	if (mPlayerHurtboxes.size() == 0) return { 0,0 };
+
+	SDL_Point a;
+	a.x = mPlayerHurtboxes[0].hitbox.x + mPlayerHurtboxes[0].hitbox.w / 2;
+	a.y = mPlayerHurtboxes[0].hitbox.y + mPlayerHurtboxes[0].hitbox.h / 2;
+	return a;
+}
+
 void Level::mDeleteEnemy(Uint8 slot)
 {
 	if (mEnemies[slot] != NULL)

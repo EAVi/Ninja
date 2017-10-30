@@ -26,6 +26,7 @@ public:
 	void handleAnimation();
 	void setTexture(LTexture* texture);//sets texture for all default enemy
 	bool checkLiving();//for the level to know when to delete an enemy
+	void flyMove(std::vector<SDL_Rect>& colliders, SDL_Rect& offBox);
 
 	enum DemonAnimationFrames
 	{
@@ -79,6 +80,8 @@ private:
 	DemonStyles mStyle;
 
 	void mCheckStyle();
+
+	bool mFlyWall;//demon will fly along the ground until 
 
 };
 
