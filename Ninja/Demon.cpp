@@ -15,6 +15,7 @@ Demon::Demon()
 	mProjectiles = vector<SDL_Rect>();
 	mFireballCooldown = 0;
 	mStyle = kRun;
+	mFlyWall = false;
 }
 
 Demon::~Demon()
@@ -29,6 +30,7 @@ Demon::Demon(Uint8 x, Uint8 y, bool right, Level * level)
 	mProjectiles = vector<SDL_Rect>();
 	mFireballCooldown = 0;
 	mStyle = kRun;
+	mFlyWall = false;
 }
 
 void Demon::step(std::vector<SDL_Rect>& colliders)
@@ -40,9 +42,22 @@ void Demon::step(std::vector<SDL_Rect>& colliders)
 		mXV = mDirectionRight ? kDefault_WalkSpeed : -kDefault_WalkSpeed;
 		attack();//shouldn't attack in hitstun
 		checkHurt();//shouldn't get attacked in hitstun
-		move(colliders, kDefault_OffsetCollisionBox);
-		//Change direction when a wall is touched
-		if (mTouchIndex & (kTouchingLeft | kTouchingRight)) mDirectionRight = !mDirectionRight;
+		if (mFlyWall && mStyle == kFly)
+			flyMove(colliders, kDefault_OffsetCollisionBox);
+		else
+		{
+			move(colliders, kDefault_OffsetCollisionBox);
+			//increment mYV
+			if (mTouchIndex & kTouchingTop)
+				mYV = 0;
+			else if (mYV < kDefault_TerminalVelocity)
+				mYV++;
+		}
+
+		//when a wall is touched
+		if (mTouchIndex & (kTouchingLeft | kTouchingRight))
+			if (mStyle == kRun) mDirectionRight = !mDirectionRight;//if running, turn around
+			else mFlyWall = true;//if flying, ride the wall
 	}
 	else --mHitStun;
 
@@ -176,8 +191,9 @@ void Demon::checkHurt()
 			temp.x += mProjectiles[i].x;
 			temp.y += mProjectiles[i].y;
 
-			if (checkCollision(mHurtbox, temp))//if the fireball collides with self
+			if (checkCollision(mHurtbox, temp))//if the deflected fireball collides with self
 			{
+				mFlyWall = false;
 				//Destroy the fireball and hurt the Demon
 				mProjectiles.erase(mProjectiles.begin() + i);
 				--i;//decrement since the vector was reduced by 1
@@ -253,6 +269,22 @@ void Demon::setTexture(LTexture * texture)
 bool Demon::checkLiving()
 {
 	return true;
+}
+
+void Demon::flyMove(std::vector<SDL_Rect>& colliders, SDL_Rect & offBox)
+{
+	mXV = 0;
+	Uint8 ycenter = mY + kDefault_ClipH / 2;
+	if (mLevel != NULL)
+	{
+		if (ycenter < mLevel->getPlayerPosition().y)
+			mYV = kDefault_WalkSpeed;
+		else if (ycenter > mLevel->getPlayerPosition().y)
+			mYV = -kDefault_WalkSpeed;
+		else if (ycenter == mLevel->getPlayerPosition().y)
+			mYV = 0;
+	}
+	moveRocket();
 }
 
 void Demon::mCheckStyle()

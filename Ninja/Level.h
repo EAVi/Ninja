@@ -165,6 +165,7 @@ public:
 
 	Uint8 getSong();
 
+	SDL_Point getPlayerPosition();
 private:
 	Matrix<Uint8> mBlocks;
 	Uint8 mSong;//the song index that should be playing
