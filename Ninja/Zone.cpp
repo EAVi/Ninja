@@ -269,8 +269,8 @@ void Zone::countFiles()
 	mLevelCount = tcount;
 }
 
-inline bool operator==(LevelID a, LevelID b)
+bool operator==(LevelID& a, LevelID& b)
 {
-	return ( a.LevelNo == b.LevelNo &&
-		a.ZoneNo == b.ZoneNo);
+	return ( (a.LevelNo == b.LevelNo) &&
+		(a.ZoneNo == b.ZoneNo));
 }

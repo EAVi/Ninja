@@ -340,8 +340,11 @@ void Game::gameLoop()
 		mZone.clearHitboxesCurrentLevel();
 		handleEvents();
 		beginstep();
-		endstep();
-		render();
+		if (mCurrentMenu == kInGame)//menu may change at the beginstep or handleEvents, this will prevent a 1 frame flicker
+		{
+			endstep();
+			render();
+		}
 	}
 	else
 	{
@@ -444,7 +447,10 @@ void Game::beginstep()
 		}
 	}
 	mPlayer.step();
-	mZone.stepEnemiesCurrentLevel();
+	if (mZone.stepEnemiesCurrentLevel())//stepenemies returns true if player touched a door
+	{
+		mGetCutSceneCurrentLevel();
+	}
 	
 	mSoundBox.playMusic(mZone.getSongCurrentLevel());
 	//since mCheckDoors is called in stepEnemies...
@@ -536,27 +542,34 @@ void Game::mToggleFullScreen()
 
 void Game::mSetCutscene()
 {
+	Cutscene temp;
+	temp.clearCutscene();
+	//first cutscene at the first door
+	temp.setTrigger({1,255});
+	temp.addSlide(0, " Oh no, the developer of this game \nmade a portal to another world, you can\nfind it if you jump down that hole to\nthe right!");
+	mCutscene.push_back(temp);
 
-	mCutscene.clearCutscene();
-	mCutscene.addSlide(2, "test cutscene\nI am Karl Marx, I've come to bring you my\nCommunist manifesto of doom.");
-	mCutscene.addSlide(0, " I'm the ninja man");
-	mCutscene.addSlide(3, " And I'm the goldfish in charge");
-	mCutscene.addSlide(1, " test cutscene");
-	mCutscene.addSlide(0, " test cutscene");
-	gWriter.ClearTicks();
+	//second cutscene before the boss
+	temp.clearCutscene();
+	temp.setTrigger({ 6,255 });
+	temp.addSlide(5, "BEWARE!!!, there be a baddy\nup ahead\n\n!!!\n!!!");
+	mCutscene.push_back(temp);
 }
 
 void Game::mCutSceneLoop()
 {
+	if (mCurrentCutScene == 255) mCurrentMenu = kInGame;
+
 	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(mRenderer);
 	//event handler
 	while (SDL_PollEvent(&mEvent))
 	{
 		handleGeneralEvents();
-		mCutscene.handleEvent(mEvent);
+		mPlayer.handleEvent(mEvent);//because the player could release the movement key/button and it would otherwise not register.
+		mCutscene[mCurrentCutScene].handleEvent(mEvent);
 
-		if (mCutscene.checkComplete())//no need to poll if done
+		if (mCutscene[mCurrentCutScene].checkComplete())//no need to poll if done
 		{
 			mCurrentMenu = kInGame;
 			return;
@@ -564,7 +577,7 @@ void Game::mCutSceneLoop()
 	}
 
 	//Draw the slide
-	mCutscene.renderCurrentSlide();
+	mCutscene[mCurrentCutScene].renderCurrentSlide();
 	SDL_RenderPresent(mRenderer);
 }
 
@@ -659,7 +672,12 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 void Game::mGetCutSceneCurrentLevel()
 {
 	LevelID id = mZone.getLevelID();
-	for(int i = 0, j = mCutscene.size(); i < j; ++i)
-		if ()
-
+	for (int i = 0, j = mCutscene.size(); i < j; ++i)
+		if (mCutscene[i].checkTrigger(mZone.getLevelID()))
+		{
+			if (mCutscene[i].checkComplete()) return; //would result in black flicker when switching to a completed cutscene
+			mCurrentCutScene = i;
+			mCurrentMenu = kCutscene;
+			gWriter.ClearTicks();
+		}
 }

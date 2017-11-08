@@ -29,7 +29,7 @@ struct LevelID
 	Uint8 ZoneNo;//255 will represent debug
 };
 
-inline bool operator== (LevelID a, LevelID b);
+bool operator== (LevelID& a, LevelID& b);
 
 class Zone
 {
