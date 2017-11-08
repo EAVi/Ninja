@@ -93,7 +93,8 @@ private:
 	SDL_Event mEvent;//events to be passed to the even handler
 	Timer mTimer;//calculates framerate and helps game run at 60 fps
 	LAudio mSoundBox;//loads and plays sound and music
-	Cutscene mCutscene;//draw the cutscenes when needed
+	std::vector<Cutscene> mCutscene;//draw the cutscenes when needed
+	Uint8 mCurrentCutScene;//the current index of the cutscene
 	Uint8 mCurrentMenu;//the menutype that the game is currently at
 	std::vector<Menu> mMenu;//all posible menus
 
@@ -139,6 +140,10 @@ private:
 	//loop which handles menus
 	void mMenuLoop();
 
+	//if a button is pressed in a menu, handles the option
 	void mButtonOptionHandler(ButtonOption & a);
+
+	//sets the mCurrentCutScene according to current level if there is any
+	void mGetCutSceneCurrentLevel();
 
 };

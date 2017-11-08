@@ -12,8 +12,10 @@ Game::Game()
 	mCamera = { 0, 0, kScreenWidth, kScreenHeight };
 	mDebug = false;
 	mTimer.setFrameDelay(kFramePeriod);
-	mCurrentMenu = kCutscene;	
+	mCurrentMenu = kInGame;	
 	mMenu = vector<Menu>(kTotalMenus);
+	mCutscene = vector<Cutscene>();
+	mCurrentCutScene = 255;
 }
 
 bool Game::init()
@@ -175,6 +177,8 @@ bool Game::loadAssets()
 		"GFX/CUT/ninjadark.png",
 		"GFX/CUT/demonoutline.png",
 		"GFX/CUT/paper.png",
+		"GFX/CUT/macho.png",
+		"GFX/CUT/ninjadying.png",
 	};
 	for (Uint8 i = 0; i < cutTexNum; ++i)
 	{
@@ -247,6 +251,7 @@ bool Game::loadAssets()
 void Game::prepare()
 {
 	//load zone
+	mZone.setZoneID(255);
 	mZone.setPrefix("data/debug");
 	mZone.setSuffix(".txt");
 	mZone.setCamera(&mCamera);
@@ -531,12 +536,13 @@ void Game::mToggleFullScreen()
 
 void Game::mSetCutscene()
 {
+
 	mCutscene.clearCutscene();
-	mCutscene.addSlide(2, (string)"\x89\x8C\x86" + " test cutscene\nI am Karl Marx, I've come to bring you my\nCommunist manifesto of doom.");
-	mCutscene.addSlide(0, (string)"\x89\x8C\x86" + " I'm the ninja man");
-	mCutscene.addSlide(3, (string)"\x89\x8C\x86" + " And I'm the goldfish in charge");
-	mCutscene.addSlide(1, (string)"\x89\x8C\x86" + " test cutscene");
-	mCutscene.addSlide(0, (string)"\x89\x8C\x86" + " test cutscene");
+	mCutscene.addSlide(2, "test cutscene\nI am Karl Marx, I've come to bring you my\nCommunist manifesto of doom.");
+	mCutscene.addSlide(0, " I'm the ninja man");
+	mCutscene.addSlide(3, " And I'm the goldfish in charge");
+	mCutscene.addSlide(1, " test cutscene");
+	mCutscene.addSlide(0, " test cutscene");
 	gWriter.ClearTicks();
 }
 
@@ -633,6 +639,7 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 	case kRestartZone:
 		mPlayer.getHealth() = mPlayer.getMaxHealth();
 		mPlayer.resetLives();
+		mZone.reloadZone();
 		mZone.setLevel(0);
 		mPlayer.respawn();
 		mCurrentMenu = kInGame;
@@ -647,4 +654,12 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 	case kToggleFullscreen: mToggleFullScreen(); break;
 
 	}
+}
+
+void Game::mGetCutSceneCurrentLevel()
+{
+	LevelID id = mZone.getLevelID();
+	for(int i = 0, j = mCutscene.size(); i < j; ++i)
+		if ()
+
 }

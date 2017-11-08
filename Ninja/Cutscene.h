@@ -2,12 +2,12 @@
 #define CUTSCENE_H
 
 #include "TextWriter.h"
+#include "Zone.h"//for LevelID
 
 /*
 A Cutscene will be made up of slides
 A slide will be one picture and text
 */
-
 
 struct Slide
 {
@@ -36,6 +36,11 @@ public:
 	//Event handler allowing skipping
 	void handleEvent(SDL_Event & e);
 
+	//sets the trigger for the cutscene, eg "the cutscene will play at zone 1 level 3"
+	void setTrigger(LevelID a);
+
+	bool checkTrigger(LevelID& a);
+
 	//Returns whether the last slide has been skipped
 	bool checkComplete();
 
@@ -45,6 +50,7 @@ private:
 	std::vector<Slide> mSlides;
 	Uint8 mCurrentSlide;
 	void mSkipPress();
+	LevelID mTrigger;
 };
 
 #endif

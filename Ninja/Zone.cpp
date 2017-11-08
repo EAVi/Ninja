@@ -12,7 +12,9 @@ Zone::Zone()
 	mLevelCount = 0;
 	mCamera = NULL;
 	mBGTextures = vector<LTexture*>();
-
+	mLevelCount = 0;
+	mCurrentLevel = 0;
+	mZoneID = 0;
 }
 
 Zone::Zone(SDL_Rect* camera, Player* player, string prefix, string suffix, std::vector<LTexture*>& textures)
@@ -26,6 +28,7 @@ Zone::Zone(SDL_Rect* camera, Player* player, string prefix, string suffix, std::
 	mBGTextures = textures;
 	mLevelCount = 0;
 	mCurrentLevel = 0;
+	mZoneID = 0;
 }
 
 Zone::~Zone()
@@ -104,10 +107,12 @@ Uint8 Zone::getCurrentLevel()
 	return mCurrentLevel;
 }
 
-void Zone::stepEnemiesCurrentLevel()
+bool Zone::stepEnemiesCurrentLevel()
 {
-	mCheckDoors();
+	bool a = mCheckDoors();//returns true if door touched
 	mLevels[mCurrentLevel].stepEnemies();
+	return a;
+
 }
 
 void Zone::clearHitboxesCurrentLevel()
@@ -179,6 +184,12 @@ void Zone::release()
 	}
 }
 
+void Zone::reloadZone()
+{
+	release();
+	init();
+}
+
 Uint8 Zone::enemyCountCurrentLevel()
 {
 	return mLevels[mCurrentLevel].enemyCount();
@@ -195,7 +206,7 @@ void Zone::setSpawn()
 	}
 }
 
-void Zone::mCheckDoors()
+bool Zone::mCheckDoors()
 {
 	SDL_Rect coll = mPlayer->getCollisionBox();
 	coll.x += mPlayer->getX();
@@ -215,13 +226,24 @@ void Zone::mCheckDoors()
 			mPlayer->getX() = door->x * 16;
 		if (door->y != 255)
 			mPlayer->getY() = door->y * 16;
+		return true;
 	}
-
+	return false;
 }
 
 Uint8 Zone::getSongCurrentLevel()
 {
 	return mLevels[mCurrentLevel].getSong();
+}
+
+LevelID Zone::getLevelID()
+{
+	return {mCurrentLevel, mZoneID};
+}
+
+void Zone::setZoneID(Uint8 a)
+{
+	mZoneID = a;
 }
 
 void Zone::countFiles()
@@ -245,4 +267,10 @@ void Zone::countFiles()
 		ifile.close();
 	}
 	mLevelCount = tcount;
+}
+
+inline bool operator==(LevelID a, LevelID b)
+{
+	return ( a.LevelNo == b.LevelNo &&
+		a.ZoneNo == b.ZoneNo);
 }

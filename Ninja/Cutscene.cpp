@@ -57,6 +57,16 @@ void Cutscene::handleEvent(SDL_Event & e)
 	}
 }
 
+void Cutscene::setTrigger(LevelID a)
+{
+	mTrigger = a;
+}
+
+bool Cutscene::checkTrigger(LevelID & a)
+{
+	return (a == mTrigger);
+}
+
 bool Cutscene::checkComplete()
 {
 	return (mCurrentSlide >= mSlides.size()); //if you're beyond the amount of slides

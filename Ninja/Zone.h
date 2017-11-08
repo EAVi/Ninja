@@ -19,6 +19,18 @@
 #include "Player.h"
 #include "MagMatrix.h"
 
+/*
+this structure will return the current level number and zone number
+zone 7, level 1 will be represented as {1,7}
+*/
+struct LevelID
+{
+	Uint8 LevelNo;
+	Uint8 ZoneNo;//255 will represent debug
+};
+
+inline bool operator== (LevelID a, LevelID b);
+
 class Zone
 {
 public:
@@ -56,8 +68,9 @@ public:
 	/* Returns the current level number*/
 	Uint8 getCurrentLevel();
 
-	/* Call stepEnemies for the curent level*/
-	void stepEnemiesCurrentLevel();
+	/* Call stepEnemies for the curent level
+	returns true if the player has switched level*/
+	bool stepEnemiesCurrentLevel();
 
 	/* Call clearHitboxes for current level*/
 	void clearHitboxesCurrentLevel();
@@ -92,6 +105,9 @@ public:
 	/* Clears the vector of maps*/
 	void release();
 
+	/* Delete allocated memory and reload the maps*/
+	void reloadZone();
+
 	/* Returns enemyCount() of current level*/
 	Uint8 enemyCountCurrentLevel();
 
@@ -99,22 +115,30 @@ public:
 	void setSpawn();
 
 	/* Checks if the player has collided with any door, and if the player has, warp them to another dimension*/
-	void mCheckDoors();
+	bool mCheckDoors();
 
 	/* Returns the curren level's song*/
 	Uint8 getSongCurrentLevel();
+
+	/* Returns the current zone and level number, e.g. 1,1*/
+	LevelID getLevelID();
+
+	/* Sets value for mZoneID*/
+	void setZoneID(Uint8 a);
 
 private:
 	std::vector<Level> mLevels;
 	int mSize;
 	bool mInit;
 	Uint8 mCurrentLevel;
+	Uint8 mZoneID;
 	std::string mPrefix;
 	std::string mSuffix;
 	Player* mPlayer;
 	Uint8 mLevelCount;
 	SDL_Rect* mCamera;
 	std::vector<LTexture*> mBGTextures;
+
 
 
 	/* Counts the number of files in your folders with the prefix and suffix*/
