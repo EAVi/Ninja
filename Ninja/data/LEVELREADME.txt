@@ -53,7 +53,7 @@ Parsing/Separating your numbers:
 	it is also the starting position for the first level.
 -----------------------------
 2) Backgrounds (8 arguments,  9 bytes)
-	Texture Number - there's currently 14 bgs to choose from:
+	Texture Number - there's currently 16 bgs to choose from:
 		 0 - "GFX/BG/bluesky.png",
 		 1 - "GFX/BG/snowmtn.png",
 		 2 - "GFX/BG/grasshills.png",
@@ -68,6 +68,8 @@ Parsing/Separating your numbers:
 		11 - "GFX/BG/castleinterior.png",
 		12 - "GFX/BG/beachhill.png",
 		13 - "GFX/BG/seasky.png",
+		14 - "GFX/BG/castlesky.png",
+		15 - "GFX/BG/beanstalk.png",
 	X position - is 16 bits, takes 2 bytes of memory
 		   - first part of X position is Coarse.
 		   - second part is fine position.

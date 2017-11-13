@@ -115,7 +115,7 @@ bool Game::loadAssets()
 	tempLevel.setBlockTextures(&mBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 15;
+	Uint8 bgTexNum = 16;
 	string bgTexS[] =
 	{
 		"GFX/BG/bluesky.png",
@@ -133,6 +133,7 @@ bool Game::loadAssets()
 		"GFX/BG/beachhill.png",
 		"GFX/BG/seasky.png",
 		"GFX/BG/castlesky.png",
+		"GFX/BG/beanstalk.png",
 
 	};
 
@@ -149,10 +150,11 @@ bool Game::loadAssets()
 	}
 
 	//background texture loader
-	Uint8 doorTexNum = 1;
+	Uint8 doorTexNum = 2;
 	string doorTexS[] =
 	{
 		"GFX/DOOR/caveenter.png",
+		"GFX/DOOR/caveexit.png",
 	};
 
 	for (Uint8 i = 0; i < doorTexNum; ++i)
