@@ -195,7 +195,7 @@ void Demon::checkHurt()
 			{
 				mFlyWall = false;
 				//Destroy the fireball and hurt the Demon
-				mProjectiles.erase(mProjectiles.begin() + i);
+				mProjectiles.clear();
 				--i;//decrement since the vector was reduced by 1
 				mHealth -= kDemon_ProjectileCollision.damage;
 				mHitStun += kDemon_PowerupTime;

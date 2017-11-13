@@ -45,6 +45,7 @@ void Player::handleEvent(SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_w: mUpPress(); break;
 		case SDLK_d: mRightPress(); break;
 		case SDLK_a: mLeftPress();  break;
 		case SDLK_SPACE: mJumpPress(); break;
@@ -56,6 +57,7 @@ void Player::handleEvent(SDL_Event& e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_w: mUpRelease();  break;
 		case SDLK_d: mRightRelease();  break;
 		case SDLK_a: mLeftRelease();  break;
 		}
@@ -67,6 +69,7 @@ void Player::handleEvent(SDL_Event& e)
 		case SDL_CONTROLLER_BUTTON_A: mJumpPress(); break;
 		case SDL_CONTROLLER_BUTTON_X: mAttackPress(); break;
 		case SDL_CONTROLLER_BUTTON_B: mProjectilePress(); break;
+		case SDL_CONTROLLER_BUTTON_DPAD_UP: mUpPress(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_LEFT: mLeftPress(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: mRightPress(); break;
 		}
@@ -76,19 +79,27 @@ void Player::handleEvent(SDL_Event& e)
 	{
 		switch (e.cbutton.button)
 		{
+		case SDL_CONTROLLER_BUTTON_DPAD_UP: mUpRelease(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_LEFT: mLeftRelease(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: mRightRelease(); break;
 		}
 	}
 	else if (e.type == SDL_CONTROLLERAXISMOTION )//controller analog (can include triggers)
 	{
+		Sint16 deadzone = 14000;
 		if (e.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
 		{
-			if (e.caxis.value < -8000)//8000 is the deadzone, will have a variable for it soon
+			if (e.caxis.value < -deadzone)
 				mAxisLeft();
-			else if (e.caxis.value > 8000)
+			else if (e.caxis.value > deadzone)
 				mAxisRight();
 			else mAxisNone();
+		}
+		if (e.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
+		{
+			if (e.caxis.value < -deadzone)
+				mUpPress();
+			else mUpRelease();
 		}
 	}
 }
@@ -350,6 +361,12 @@ void Player::respawn()
 	//if kStartingLives is zero, you would get a second game over screen, this will prevent that by making the player stand up
 	if (mAnimationFrame == kDeathEnd) mAnimationFrame = kStanding;
 
+}
+
+bool Player::checkUpPressed()
+{
+
+	return mUpPressed;
 }
 
 
@@ -629,4 +646,14 @@ void Player::mAxisRight()
 void Player::mAxisNone()
 {
 	mXVelocity = 0;
+}
+
+void Player::mUpPress()
+{
+	mUpPressed = true;
+}
+
+void Player::mUpRelease()
+{
+	mUpPressed = false;
 }

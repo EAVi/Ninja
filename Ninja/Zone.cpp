@@ -161,6 +161,7 @@ void Zone::loadZone()
 		ss << mPrefix << '_' << i << mSuffix;//make the string that will read the map
 		mLevels[i].setCamera(mCamera);
 		mLevels[i].setBGTextures(mBGTextures);
+		mLevels[i].setDoorTextures(mDoorTextures);
 		mLevels[i].Loadmap(ss.str().c_str());
 	}
 }
@@ -168,6 +169,11 @@ void Zone::loadZone()
 void Zone::setBGTextures(vector<LTexture*>& textures)
 {
 	mBGTextures = textures;
+}
+
+void Zone::setDoorTextures(std::vector<LTexture*>& textures)
+{
+	mDoorTextures = textures;
 }
 
 Uint8 Zone::getLevelSize()
@@ -212,7 +218,7 @@ bool Zone::mCheckDoors()
 	coll.x += mPlayer->getX();
 	coll.y += mPlayer->getY();
 
-	Door* door = mLevels[mCurrentLevel].checkDoorCollision(coll);
+	Door* door = mLevels[mCurrentLevel].checkDoorCollision(coll, mPlayer->checkUpPressed());
 	if (door != NULL)
 	{
 		//the door will change the level and the position in the level

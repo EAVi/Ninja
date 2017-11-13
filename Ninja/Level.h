@@ -37,6 +37,7 @@ struct Door
 	Uint8 level;//which level in the zone to warp to
 	Uint8 x;//position to warp to, x
 	Uint8 y;//position to warp to, y
+	Uint8 texturenum;
 };
 
 inline bool operator==(const Background& a, const Background& b)
@@ -92,8 +93,11 @@ public:
 	void boundCamera();
 
 	//-Imports all the background textures, goes to a static vector
-	void setBGTextures(std::vector<LTexture>& textures);
+	void setBGTextures(std::vector<LTexture>& textures);//useless function, I'll keep it
 	void setBGTextures(std::vector<LTexture*>& textures);//-Overload using pointers
+
+	//-Imports all the Door textures, goes to a static vector
+	void setDoorTextures(std::vector<LTexture*>& textures);
 
 	//set the block textures
 	void setBlockTextures(LTexture* textures);
@@ -106,6 +110,9 @@ public:
 
 	//Does the math and renders the backgrounds
 	void renderBg();
+
+	//renders the UpDoors
+	void renderDoors();
 
 	//sets the death barrier
 	void setDeathBarrier(bool barrier);
@@ -128,7 +135,7 @@ public:
 	//returns the Player hitbox vector
 	std::vector<Hitbox>& getPlayerHitboxes();
 
-	//render function: boundcamera, renderbg, renderblocks
+	//render function: boundcamera, renderbg, renderblocks, renderDoors
 	void renderLevel();
 
 	//nullifies all enemy pointers
@@ -161,7 +168,7 @@ public:
 	void getSpawnPoint(int & x, int & y);
 
 	//Check Collision with door
-	Door* checkDoorCollision(SDL_Rect c);
+	Door* checkDoorCollision(SDL_Rect c, bool up = false);
 
 	Uint8 getSong();
 
@@ -170,10 +177,12 @@ private:
 	Matrix<Uint8> mBlocks;
 	Uint8 mSong;//the song index that should be playing
 	static std::vector<LTexture*> mBGTextures;//the textures for the backgrounds
+	static std::vector<LTexture*> mDoorTextures;//the textures for the Doors
 	static LTexture* mBlockTextures;//the texture for the blocks
 	std::vector<Background> mBackgrounds;//the data representing the backgrounds
 	std::vector<SDL_Rect> mRects;//the collision rectangles
 	std::vector<Door> mDoors;//all the warpy doors
+	std::vector<Door> mUpDoors;//all the warpy doors, need to press Up key to go through these
 	static std::vector<SDL_Rect> mBlockClipRects;//the render target rectangles for the block textures
 	SDL_Color mAmbient;//unused, the ambient lighting will be implemented someday
 	SDL_Rect* mCamera;

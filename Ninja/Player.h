@@ -69,6 +69,8 @@ public:
 
 	//set the players position to spawn point
 	void respawn();
+
+	bool checkUpPressed();
 private:
 	LTexture* mTexture;
 	std::vector<SDL_Rect> mAnimationFrameRectangles;
@@ -95,6 +97,7 @@ private:
 	bool mWallClinging;
 	bool mJump;
 	bool mAirborne;
+	bool mUpPressed;
 	Uint8 mHitStun;
 
 	bool mLeftKeyDown;//booleans to allow left and right press controls to be handled better
@@ -110,6 +113,8 @@ private:
 	void mAxisLeft();//game controller alternative function to mLeft Press and Release
 	void mAxisRight();//game controller alternative function to mRight Press and Release
 	void mAxisNone();//when controller axis is in deadzone
+	void mUpPress();//the function for when the up key is pressed
+	void mUpRelease();//the function for when the up key is pressed
 
 	//buncha things used to check collision
 	void mCheckClinging();//checks if clinging to a wall and changes mWallClinging

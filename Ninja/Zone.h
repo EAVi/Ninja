@@ -99,6 +99,9 @@ public:
 	/* Sets the BGTextures that will be used by the levels*/
 	void setBGTextures(std::vector<LTexture*>& textures);
 
+	/* Sets the Door textures that will be used by the levels*/
+	void setDoorTextures(std::vector<LTexture*>& textures);
+
 	/* Returns the mLevel.size()*/
 	Uint8 getLevelSize();
 
@@ -138,6 +141,7 @@ private:
 	Uint8 mLevelCount;
 	SDL_Rect* mCamera;
 	std::vector<LTexture*> mBGTextures;
+	std::vector<LTexture*> mDoorTextures;
 
 
 

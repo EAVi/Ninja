@@ -13,6 +13,8 @@ Game::Game()
 	mDebug = false;
 	mTimer.setFrameDelay(kFramePeriod);
 	mCurrentMenu = kInGame;	
+	mBackgroundTextures.clear();
+	mDoorTextures.clear();
 	mMenu = vector<Menu>(kTotalMenus);
 	mCutscene = vector<Cutscene>();
 	mCurrentCutScene = 255;
@@ -146,6 +148,25 @@ bool Game::loadAssets()
 		mBackgroundTextures.push_back(tempptr);
 	}
 
+	//background texture loader
+	Uint8 doorTexNum = 1;
+	string doorTexS[] =
+	{
+		"GFX/DOOR/caveenter.png",
+	};
+
+	for (Uint8 i = 0; i < doorTexNum; ++i)
+	{
+		LTexture* tempptr = new LTexture;
+		//tempptr->setRenderer(gRenderer);
+		if (!tempptr->loadTextureFile(doorTexS[i], &mColorKey))
+		{
+			cout << SDL_GetError() << endl;
+			return false;
+		}
+		mDoorTextures.push_back(tempptr);
+	}
+
 	//UI texture loader
 	Uint8 uiTexNum = 3;
 	string uiTexS[] =
@@ -257,6 +278,7 @@ void Game::prepare()
 	mZone.setCamera(&mCamera);
 	mZone.setPlayer(&mPlayer);
 	mZone.setBGTextures(mBackgroundTextures);
+	mZone.setDoorTextures(mDoorTextures);
 	//(&mCamera, &mPlayer, "data/debug", ".txt", mBackgroundTextures);
 	mZone.init();
 	mZone.setSpawn();
@@ -296,6 +318,13 @@ void Game::destroyAssets()
 	{
 		mBackgroundTextures[i]->freeTexture();
 		delete mBackgroundTextures[i];//'new' memory was allocated for these textures
+	}
+
+	//deallocate the door textures
+	for (Uint8 i = 0, j = mDoorTextures.size(); i < j; ++i)
+	{
+		mDoorTextures[i]->freeTexture();
+		delete mDoorTextures[i];//'new' memory was allocated for these textures
 	}
 
 	//rinse and repeat for the UI textures
@@ -542,6 +571,7 @@ void Game::mToggleFullScreen()
 
 void Game::mSetCutscene()
 {
+	mCutscene.clear();
 	Cutscene temp;
 	temp.clearCutscene();
 	//first cutscene at the first door
@@ -653,6 +683,7 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 		mPlayer.getHealth() = mPlayer.getMaxHealth();
 		mPlayer.resetLives();
 		mZone.reloadZone();
+		mSetCutscene();//reload the cutscenes every game over
 		mZone.setLevel(0);
 		mPlayer.respawn();
 		mCurrentMenu = kInGame;

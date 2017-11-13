@@ -7,6 +7,7 @@ using namespace std;
 int Level::tilesize = 16;
 vector<SDL_Rect> Level::mBlockClipRects = spriteClipper(256, 256, {0,0,16,16});
 std::vector<LTexture*> Level::mBGTextures = vector<LTexture*>();
+std::vector<LTexture*> Level::mDoorTextures = vector<LTexture*>();
 LTexture* Level::mBlockTextures = NULL;
 
 Level::Level()
@@ -17,6 +18,7 @@ Level::Level()
 	mDeathBarrier = false;
 	mBlocks.clear();
 	mDoors.clear();
+	mUpDoors.clear();
 	mBGTextures.clear();
 	mBackgrounds.clear();
 	mRects.clear();
@@ -38,6 +40,7 @@ Level::Level(int width, int height, SDL_Rect* camera)
 	mDeathBarrier = false;
 	mBlocks.clear();
 	mDoors.clear();
+	mUpDoors.clear();
 	mBGTextures.clear();
 	mBackgrounds.clear();
 	mRects.clear();
@@ -220,6 +223,7 @@ void Level::renderLevel()
 	boundCamera();
 	renderBg();
 	renderBlocks();
+	renderDoors();
 }
 
 void Level::initEnemyArray()
@@ -315,13 +319,19 @@ void Level::getSpawnPoint(int & x, int & y)
 	y = (int)mSpawnY * 16;
 }
 
-Door * Level::checkDoorCollision(SDL_Rect c)
+Door * Level::checkDoorCollision(SDL_Rect c, bool up)
 {
 	for (int i = 0, j = mDoors.size(); i < j; ++i)
 	{
 		if (checkCollision(mDoors[i].coll, c))
 			return &mDoors[i];
 	}
+	if (up)
+		for (int i = 0, j = mUpDoors.size(); i < j; ++i)
+		{
+			if (checkCollision(mUpDoors[i].coll, c))
+				return &mUpDoors[i];
+		}
 	return NULL;
 }
 
@@ -494,9 +504,8 @@ bool Level::Loadmap(string filename)
 	
 	//background loader
 	attrs = 9;//(8, 16, 16, 8, 1,< 1, 8, 8) //there's leftover 6 bits
-	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); i = i + attrs)
+	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); loadPoint = i = i + attrs)
 	{
-		loadPoint = i;
 		//gotta stop making backgrounds eventually, if the texture number is at maximum, go to next part
 		if (idata[i] == 255)
 		{
@@ -521,7 +530,7 @@ bool Level::Loadmap(string filename)
 	//block loader
 	mBlocks.setDimensions((mLevelWidth + (tilesize - 1)) / tilesize, (mLevelHeight + (tilesize - 1)) / tilesize);
 	mClearBlocks();
-	for (Uint16 i = loadPoint, j = idata.size(); i < (j - attrs + 1); i = i + attrs, loadPoint = i)
+	for (Uint16 i = loadPoint, j = idata.size(); i < (j - attrs + 1); loadPoint = i = i + attrs)
 	{
 		if (idata[i] == 255)
 		{
@@ -554,7 +563,7 @@ bool Level::Loadmap(string filename)
 
 	 //Enemy Loader
 	attrs = 3;//(8, 16, 16, 8, 1,< 1) //there's leftover 6 bits
-	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); i = i + attrs)
+	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); loadPoint = i = i + attrs)
 	{
 		loadPoint = i;
 		//gotta stop making backgrounds eventually, if the texture number is at maximum, go to next part
@@ -572,7 +581,7 @@ bool Level::Loadmap(string filename)
 
 	//Door loader
 	attrs = 7;//{8, 8, 8, 8}, 8, 8, 8
-	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); i = i + attrs)
+	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); loadPoint = i = i + attrs)
 	{
 		loadPoint = i;
 		if (idata[i] == 255)
@@ -593,8 +602,36 @@ bool Level::Loadmap(string filename)
 			{x, y, w, h},
 			(Uint8)idata[i + 4],
 			(Uint8)idata[i + 5],
-			(Uint8)idata[i + 6]});
+			(Uint8)idata[i + 6],
+			0});
 	}//Door loader
+
+	//UpDoor loader
+	attrs = 8;//{8, 8, 8, 8}, 8, 8, 8, 8
+	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); loadPoint = i = i + attrs)
+	{
+		loadPoint = i;
+		if (idata[i] == 255)
+		{
+			++loadPoint;
+			break;
+		}
+
+		int x, y, w, h;
+
+		x = ((int)idata[i]) * tilesize;
+		y = ((int)idata[i + 1]) * tilesize;
+		w = ((int)idata[i + 2]) * tilesize;
+		h = ((int)idata[i + 3]) * tilesize;
+
+		mUpDoors.push_back
+		({
+			{ x, y, w, h },
+			(Uint8)idata[i + 4],
+			(Uint8)idata[i + 5],
+			(Uint8)idata[i + 6],
+			(Uint8)idata[i + 7]});
+	}//UpDoor loader
 
 	return true;
 }/*Loadmap*/
@@ -611,6 +648,11 @@ void Level::setBGTextures(vector<LTexture>& textures)
 void Level::setBGTextures(vector<LTexture*>& textures)
 {
 	mBGTextures = textures;
+}
+
+void Level::setDoorTextures(std::vector<LTexture*>& textures)
+{
+	mDoorTextures = textures;
 }
 
 void Level::setBlockTextures(LTexture * textures)
@@ -684,5 +726,19 @@ void Level::renderBg()
 
 
 		mBGTileRender(i, coll, mBackgrounds[i].tileX, mBackgrounds[i].tileY);//calls the tilerender command to do the rest of the dirtywork
+	}
+}
+
+void Level::renderDoors()
+{
+	for (int i = 0, j = mUpDoors.size(); i < j; ++i)
+	{		
+		//render every door 
+		Door* d = &mUpDoors[i]; 
+
+		//no need to multiply by tilesize, d.coll is an SDL_Rect {int,int,int,int}
+		//and the door has been initialized with the tilesize already multiplied
+		mDoorTextures[d->texturenum]->renderTexture(d->coll.x - mCamera->x, d->coll.y - mCamera->y);
+		
 	}
 }

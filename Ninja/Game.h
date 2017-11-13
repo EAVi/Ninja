@@ -85,6 +85,7 @@ private:
 	LTexture mDemonTexture;
 	UIDrawer mUIDrawer;//draws healthbar, lives, and other UI
 	std::vector<LTexture*> mBackgroundTextures;
+	std::vector<LTexture*> mDoorTextures;
 	Zone mZone;
 	Player mPlayer;
 	SDL_Rect mCamera;
