@@ -289,7 +289,11 @@ void Player::handleAnimation()
 			}
 		}
 		else if (mAttackCoolDown == 0)
-			mAnimationFrame = kStanding;
+		{
+			if (mUpPressed)//if looking up
+				mAnimationFrame = kLookUp;
+			else mAnimationFrame = kStanding;//else, standing
+		}
 		else mAnimationFrame = kStandSlash;
 	}
 	else if (mWallClinging)

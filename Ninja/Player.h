@@ -159,6 +159,7 @@ enum NinjaAnimationFrames
 	kWalkSlashEnd = 60,
 	kWallCling = 61,
 	kStandStun = 62,
+	kLookUp = 62,
 	kStandStunSword = 63,
 	kLogDeathStart = 64,
 	kLogDeathEnd = 79,
