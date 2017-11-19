@@ -54,7 +54,7 @@ public:
 	};
 
 	//health
-	static const int kDemon_MaxHealth = 10;
+	static const int kDemon_MaxHealth = 120;
 	
 	//texture
 	static LTexture* kDemon_Texture;

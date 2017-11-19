@@ -319,13 +319,15 @@ void Game::introSequence()
 	mSoundBox.playMusic(0, 0);
 
 	string thanks = "Thank you:\n\n";
-	thanks += "Old Man Jackson\n";
+	thanks += "Dr. Turner\n";
+	thanks += "Old Man Jackson\n\n";
 	thanks += "Spindrift\n";
 	thanks += "Wuffa\n";
 	thanks += "Dankes\n"; 
 	thanks += "Badong\n";
-	thanks += "Fashobro\n\n";
-	thanks += "Dr. Turner\n\n";
+	thanks += "Dad\n";
+	thanks += "Fashobro\n";
+	thanks += "LeSwegDoge\n\n";
 	thanks += "My Friends\n\n\n";
 	thanks += "   & you\nThank You <3\n\n";
 
@@ -342,6 +344,7 @@ void Game::introSequence()
 		}
 		switch (i)//modify the text based on the frame number
 		{
+		case 0: s = txt::Rainbow + (string)"MAGNAR"; break;
 		case 16: s = (string)"M" + txt::Rainbow + (string)"AGNAR"; break;//first note at .2712s = 16.2 frames
 		case 79: s = (string)"MA" + txt::Rainbow + (string)"GNAR"; break;//second note at 1.328s = 79.6 frames
 		case 104: s = (string)"MAG" + txt::Rainbow + (string)"NAR"; break;//third note at 1.7420s = 104.5 frames

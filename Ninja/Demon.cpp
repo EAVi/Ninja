@@ -40,7 +40,7 @@ void Demon::step(std::vector<SDL_Rect>& colliders)
 	{
 		mCheckStyle();
 		mXV = mDirectionRight ? kDefault_WalkSpeed : -kDefault_WalkSpeed;
-		attack();//shouldn't attack in hitstun
+		attack();
 		checkHurt();//shouldn't get attacked in hitstun
 		if (mFlyWall && mStyle == kFly)
 			flyMove(colliders, kDefault_OffsetCollisionBox);
@@ -61,8 +61,23 @@ void Demon::step(std::vector<SDL_Rect>& colliders)
 	}
 	else
 	{
+
 		if (mHitStun > 0)
 			--mHitStun;
+
+		if (mHealth > 0)
+			attack();
+
+		if (((mHitStun == 1) || (mHitStun == 9) || (mHitStun == 17)) && mHealth)//condition for a triple shot
+		{
+			mProjectiles.push_back({ mX, mY, -kDemon_ProjectileSpeed, 0 });
+			mProjectiles.push_back({ mX, mY, -kDemon_ProjectileSpeed, -1 });
+			mProjectiles.push_back({ mX, mY, -kDemon_ProjectileSpeed, -2 });
+			mProjectiles.push_back({ mX, mY, kDemon_ProjectileSpeed, 0 });
+			mProjectiles.push_back({ mX, mY, kDemon_ProjectileSpeed, -1 });
+			mProjectiles.push_back({ mX, mY, kDemon_ProjectileSpeed, -2 });
+		}
+
 		mXV = 0;
 		mYV++;
 		move(colliders, kDefault_OffsetCollisionBox);
@@ -90,7 +105,8 @@ void Demon::attack()
 		else
 			mProjectiles.push_back({ mX, mY, kDemon_ProjectileSpeed, 0 });//shoot a fireball to the right if facing to the left
 
-		mFireballCooldown = kDemon_ProjectileCooldown;
+		//cooldown will be a function of health, the lower health will increase firing rate by a maximum of 5
+		mFireballCooldown = kDemon_ProjectileCooldown - (8 * kDemon_ProjectileCooldown * (kDemon_MaxHealth - mHealth) / kDemon_MaxHealth / 10);
 	}
 
 	for (int i = 0; i < (int)mProjectiles.size(); ++i)
