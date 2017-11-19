@@ -50,6 +50,8 @@ public:
 	//Init and load assets and other preparations
 	bool fullInit();
 
+	void introSequence();
+
 	//deallocate assets, window and renderer
 	void destroyAssets();
 

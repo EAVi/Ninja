@@ -304,6 +304,86 @@ bool Game::fullInit()
 	}
 }
 
+void Game::introSequence()
+{
+	LTexture tempLogo;//the logo for magnar games
+
+	tempLogo.loadTextureFile("GFX/magnarlogo.png", &mColorKey);//load the texture
+
+	int logox = 64, logoy = 64;//x and y position of the logo
+	int fade = 20;//number of frames it takes for the logo to fade in and out
+	int fadein = 191;
+	int fadeout = 235;
+	int introframes = 577;//the intro tune is 9.62 seconds, or 577 frames
+	int thanksframes = 280;
+	mSoundBox.playMusic(0, 0);
+
+	string thanks = "Thank you:\n\n";
+	thanks += "Old Man Jackson\n";
+	thanks += "Spindrift\n";
+	thanks += "Wuffa\n";
+	thanks += "Dankes\n"; 
+	thanks += "Badong\n";
+	thanks += "Fashobro\n\n";
+	thanks += "Dr. Turner\n\n";
+	thanks += "My Friends\n\n\n";
+	thanks += "   & you\nThank You <3\n\n";
+
+	string s = "MAGNAR";
+
+
+	for (int i = 0; i < introframes; ++i)
+	{
+		SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xFF);
+		SDL_RenderClear(mRenderer);
+		while (SDL_PollEvent(&mEvent))//simple event polling
+		{
+			handleGeneralEvents();
+		}
+		switch (i)//modify the text based on the frame number
+		{
+		case 16: s = (string)"M" + txt::Rainbow + (string)"AGNAR"; break;//first note at .2712s = 16.2 frames
+		case 79: s = (string)"MA" + txt::Rainbow + (string)"GNAR"; break;//second note at 1.328s = 79.6 frames
+		case 104: s = (string)"MAG" + txt::Rainbow + (string)"NAR"; break;//third note at 1.7420s = 104.5 frames
+		case 132: s = (string)"MAGN" + txt::Rainbow + (string)"AR"; break;//fourth note at 2.211S = 132.7 frames
+		case 167: s = (string)"MAGNA" + txt::Rainbow + (string)"R"; break;//fifth note at 2.785s = 167.1 frames
+		case 191: s = "MAGNAR"; break;//sixth note at 3.195s = 191.7 frames
+		case 230: s = ""; break;//the logo is fully visible at 211, and disapears at 235
+		}
+
+		/* fading logic for the magnar logo*/
+		if (i > fadein
+			&& i < fadein + fade)//if the logo is fading in
+		{
+			Uint8 A;
+			A = (255 * (i - fadein) / (fade));
+			tempLogo.setAlpha(A);
+		}
+		else if (i >= fadein + fade && i <= fadeout)//in the middle where the logo is visible 
+			tempLogo.setAlpha(255);
+		else if (i > fadeout
+			&& i < fadeout + fade)//if the logo is fading out
+		{
+			Uint8 A;
+			A = (255 * (fadeout - i) / (fade));
+			tempLogo.setAlpha(A);
+		}
+		else tempLogo.setAlpha(0);
+
+		if (i >= thanksframes)
+			gWriter(textbuffers::Debug) << txt::White << thanks;
+
+		tempLogo.renderTexture(logox, logoy);
+		gWriter(textbuffers::Large, 78, 82) << txt::White << s;
+		gWriter.ClearBuffer();
+		SDL_RenderPresent(mRenderer);
+
+		if (mQuit) break;
+	}
+	
+	tempLogo.freeTexture();
+}
+
 void Game::destroyAssets()
 {
 	mZone.release();
@@ -598,7 +678,7 @@ void Game::mCutSceneLoop()
 	while (SDL_PollEvent(&mEvent))
 	{
 		handleGeneralEvents();
-		mPlayer.handleEvent(mEvent);//because the player could release the movement key/button and it would otherwise not register.
+		mPlayer.handleEvent(mEvent, true);//because the player could release the movement key/button and it would otherwise not register.
 		mCutscene[mCurrentCutScene].handleEvent(mEvent);
 
 		if (mCutscene[mCurrentCutScene].checkComplete())//no need to poll if done

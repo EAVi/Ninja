@@ -28,7 +28,8 @@ public:
 	void setTexture(LTexture* texture);
 
 	//Reads keyboard input
-	void handleEvent(SDL_Event& e);
+	//the bool ensures that only movement handling is done, that attacks and jumps will be ignored
+	void handleEvent(SDL_Event& e, bool movementOnly = false);
 
 	//handles everything that should be done within a frame
 	void step();

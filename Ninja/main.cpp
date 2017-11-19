@@ -54,6 +54,8 @@ int main(int argc, char* args[])
 		return 1;
 	}
 
+	theGame.introSequence();
+
 	while (!theGame.getQuit())
 	{
 		theGame.gameLoop();

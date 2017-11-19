@@ -83,6 +83,7 @@ void TextWriter::RenderString(string text, int x, int y, SDL_Color* color, bool 
 			if (mColorNum > kPurple)
 				mColorNum = 0;
 			this->mTexture->colorMod(mColors[mColorNum]);
+			this->mLargeTexture->colorMod(mColors[mColorNum]);
 			mColorNum++;
 		}
 

@@ -39,7 +39,7 @@ void Player::setTexture(LTexture* texture)
 		spriteClipper(mTexture->getWidth(), mTexture->getHeight(), { 0, 0, kClipWidth, kClipHeight });
 }
 
-void Player::handleEvent(SDL_Event& e)
+void Player::handleEvent(SDL_Event& e, bool movementOnly)
 {
 	if (e.type == SDL_KEYDOWN && e.key.repeat == 0)//keyboard press
 	{
@@ -48,9 +48,9 @@ void Player::handleEvent(SDL_Event& e)
 		case SDLK_w: mUpPress(); break;
 		case SDLK_d: mRightPress(); break;
 		case SDLK_a: mLeftPress();  break;
-		case SDLK_SPACE: mJumpPress(); break;
-		case SDLK_m: mAttackPress(); break;
-		case SDLK_n: mProjectilePress(); break;
+		case SDLK_SPACE: if(!movementOnly) mJumpPress(); break;
+		case SDLK_m: if (!movementOnly) mAttackPress(); break;
+		case SDLK_n: if (!movementOnly) mProjectilePress(); break;
 		}
 	}
 	else if (e.type == SDL_KEYUP)//keyboard release
@@ -66,9 +66,9 @@ void Player::handleEvent(SDL_Event& e)
 	{
 		switch (e.cbutton.button)
 		{
-		case SDL_CONTROLLER_BUTTON_A: mJumpPress(); break;
-		case SDL_CONTROLLER_BUTTON_X: mAttackPress(); break;
-		case SDL_CONTROLLER_BUTTON_B: mProjectilePress(); break;
+		case SDL_CONTROLLER_BUTTON_A: if (!movementOnly) mJumpPress(); break;
+		case SDL_CONTROLLER_BUTTON_X: if (!movementOnly) mAttackPress(); break;
+		case SDL_CONTROLLER_BUTTON_B:  if (!movementOnly) mProjectilePress(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_UP: mUpPress(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_LEFT: mLeftPress(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: mRightPress(); break;

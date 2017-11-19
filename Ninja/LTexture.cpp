@@ -26,7 +26,7 @@ void LTexture::freeTexture()
 		this->mTexture = NULL;
 		this->mWidth = 0;
 		this->mHeight = 0;
-		mRenderer = NULL;
+		//mRenderer = NULL;
 	}
 }
 void LTexture::freeTexture(bool freeRenderer)

@@ -40,6 +40,8 @@ public:
 		kChargeEnd = 51,
 		kFireballStart = 52,
 		kFireballEnd= 59,
+		kDeathStart = 60,
+		kDeathEnd = 83
 	};
 
 	//modes of movement and attack
@@ -52,7 +54,7 @@ public:
 	};
 
 	//health
-	static const int kDemon_MaxHealth = 100;
+	static const int kDemon_MaxHealth = 10;
 	
 	//texture
 	static LTexture* kDemon_Texture;

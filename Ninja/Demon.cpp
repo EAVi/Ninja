@@ -59,9 +59,17 @@ void Demon::step(std::vector<SDL_Rect>& colliders)
 			if (mStyle == kRun) mDirectionRight = !mDirectionRight;//if running, turn around
 			else mFlyWall = true;//if flying, ride the wall
 	}
-	else --mHitStun;
+	else
+	{
+		if (mHitStun > 0)
+			--mHitStun;
+		mXV = 0;
+		mYV++;
+		move(colliders, kDefault_OffsetCollisionBox);
+	}
 
-	handleAnimation();
+	if (mHealth > 0 || mHitStun <= 0)
+		handleAnimation();
 }
 
 void Demon::step()
@@ -206,8 +214,13 @@ void Demon::checkHurt()
 	}
 
 	//some checks to prevent under/overflow
-	if (mHealth < 0) mHealth = 0;
+	if (mHealth <= 0)
+	{
+		mHealth = 0;
+		mAnimationFrame = kDeathStart;
+	}
 	if (mHealth > mMaxHealth) mHealth = mMaxHealth;
+
 }
 
 void Demon::handleAnimation()
@@ -268,7 +281,7 @@ void Demon::setTexture(LTexture * texture)
 
 bool Demon::checkLiving()
 {
-	return true;
+	return (mAnimationFrame != kDeathEnd);
 }
 
 void Demon::flyMove(std::vector<SDL_Rect>& colliders, SDL_Rect & offBox)
