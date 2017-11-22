@@ -321,13 +321,6 @@ void Game::introSequence()
 	string thanks = "Thank you:\n\n";
 	thanks += "Dr. Turner\n";
 	thanks += "Old Man Jackson\n\n";
-	thanks += "Spindrift\n";
-	thanks += "Wuffa\n";
-	thanks += "Dankes\n"; 
-	thanks += "Badong\n";
-	thanks += "Dad\n";
-	thanks += "Fashobro\n";
-	thanks += "LeSwegDoge\n\n";
 	thanks += "My Friends\n\n\n";
 	thanks += "   & you\nThank You <3\n\n";
 
@@ -745,6 +738,8 @@ void Game::mMenuLoop()
 		ButtonOption a = mMenu[mCurrentMenu].handleEvent(mEvent);
 		handleGeneralEvents();
 		mButtonOptionHandler(a);
+		mPlayer.handleEvent(mEvent,true);
+
 	}
 
 	//render the player's corpse
