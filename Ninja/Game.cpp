@@ -12,7 +12,7 @@ Game::Game()
 	mCamera = { 0, 0, kScreenWidth, kScreenHeight };
 	mDebug = false;
 	mTimer.setFrameDelay(kFramePeriod);
-	mCurrentMenu = kInGame;	
+	mCurrentMenu = kMainMenu;	
 	mBackgroundTextures.clear();
 	mDoorTextures.clear();
 	mMenu = vector<Menu>(kTotalMenus);
@@ -522,11 +522,12 @@ void Game::handleGeneralEvents()
 		|| mEvent.key.keysym.sym == SDLK_BACKQUOTE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//or press tilde key
 		mDebug = !mDebug;//toggle debug
 
-	if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//on keypress ESC
+	if (mCurrentMenu == kInGame)
 	{
-		if (mZone.getCurrentLevel() == (mZone.getLevelSize() - 1))//skip level, and if at max level, set to 0
-			mZone.setLevel(0);
-		else mZone.setLevel(mZone.getCurrentLevel() + 1); //skip level
+		if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//on keypress ESC
+		{
+			mCurrentMenu = kPauseMenu;
+		}
 	}
 
 	if (mEvent.key.keysym.sym == SDLK_RETURN && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0 && mEvent.key.keysym.mod & (KMOD_RALT | KMOD_LALT))// on alt+enter
@@ -700,21 +701,30 @@ void Game::mSetMenu()
 {
 	
 	//Main Menu
-	mMenu[kMainMenu] = Menu(kMainMenu, "Ninja (working title)");
+	mMenu[kMainMenu] = Menu(kMainMenu, "\x86" + (string)"Ninja \n(working title)");
+	mMenu[kMainMenu].addButton("Play", kRestartZone, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainMenu].addButton("Options", kSetMainOptions, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainMenu].addButton("Quit", kSetQuit, { 24, 168 }, (string)"\x82\x8E", (string)"\x86");
 
 	//Main Options
-	mMenu[kMainOptions] = Menu(kMainOptions, "Ninja (working title)");
+	mMenu[kMainOptions] = Menu(kMainOptions, "Options");
+	mMenu[kMainOptions].addButton("Back", kSetMainMenu, { 200 , 200 }, (string)"\x82\x8E", (string)"\x86");
+
 
 	//Pause Menu
-	mMenu[kPauseMenu] = Menu(kPauseMenu, "Ninja (working title)");
+	mMenu[kPauseMenu] = Menu(kPauseMenu, "Paused");
+	mMenu[kPauseMenu].addButton("Continue", kUnPause, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kPauseMenu].addButton("Options", kSetPauseOption, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kPauseMenu].addButton("Quit", kSetMainMenu, {24, 168}, (string)"\x82\x8E", (string)"\x86");
 
 	//Pause Options
-	mMenu[kPauseOptions] = Menu(kPauseOptions, "Ninja (working title)");
+	mMenu[kPauseOptions] = Menu(kPauseOptions, "Options");
+	mMenu[kPauseOptions].addButton("Back", kSetPauseMenu, { 200 , 200 }, (string)"\x82\x8E", (string)"\x86");
 
 	//Game Over Screen
 	mMenu[kGameOver] = Menu(kGameOver, "\x89\x80"+(string)"GAME OVER", {56,16});
 	mMenu[kGameOver].addButton("Continue", kRestartZone, { 64, 160 }, (string)"\x82\x8E", (string)"\x80");
-	mMenu[kGameOver].addButton("Quit", kSetQuit, {144, 160}, (string)"\x82\x8E", (string)"\x80");
+	mMenu[kGameOver].addButton("Quit", kSetMainMenu, { 144, 160 }, (string)"\x82\x8E", (string)"\x80");
 }
 
 void Game::mMenuLoop()
@@ -756,13 +766,13 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 	case kSetZone6: break;
 	case kSetZone7:	break;
 	case kSetZone8: break;
-	case kSetMainMenu: break;
-	case kSetMainOptions: break;
+	case kSetMainMenu: mCurrentMenu = kMainMenu; break;
+	case kSetMainOptions: mCurrentMenu = kMainOptions; break;
 
 	case kSetQuit: mQuit = true; break;
 
-	case kSetPauseMenu: break;
-	case kSetPauseOption: break;
+	case kSetPauseMenu: mCurrentMenu = kPauseMenu; break;
+	case kSetPauseOption: mCurrentMenu = kPauseOptions; break;
 
 	case kRestartZone:
 		mPlayer.getHealth() = mPlayer.getMaxHealth();
@@ -774,7 +784,7 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 		mCurrentMenu = kInGame;
 		break;
 
-	case kUnPause: break;
+	case kUnPause: mCurrentMenu = kInGame; break;
 	case kMusicDecrease: break;
 	case kMusicIncrease: break;
 	case kSFXDecrease: break;

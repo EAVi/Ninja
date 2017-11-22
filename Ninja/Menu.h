@@ -12,6 +12,7 @@ enum MenuType : Uint8
 	kGameOver,
 	kCutscene,
 	kInGame,
+	kStageSelect,
 	kTotalMenus = kCutscene, //cutscene and ingame don't really count as menus
 };
 
