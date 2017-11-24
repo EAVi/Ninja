@@ -274,6 +274,7 @@ bool Game::loadAssets()
 void Game::prepare()
 {
 	//load zone
+	/*
 	mZone.setZoneID(255);
 	mZone.setPrefix("data/debug");
 	mZone.setSuffix(".txt");
@@ -281,9 +282,10 @@ void Game::prepare()
 	mZone.setPlayer(&mPlayer);
 	mZone.setBGTextures(mBackgroundTextures);
 	mZone.setDoorTextures(mDoorTextures);
-	//(&mCamera, &mPlayer, "data/debug", ".txt", mBackgroundTextures);
 	mZone.init();
 	mZone.setSpawn();
+	*/
+	prepareZone(0);
 	screenAttrs();
 	mSetCutscene();
 	mSetMenu();
@@ -302,6 +304,61 @@ bool Game::fullInit()
 		mQuit = true;
 		return false;
 	}
+}
+
+void Game::prepareZone(Uint8 a)
+{
+	mZone.release();
+	//load zone
+	
+	switch (a)
+	{
+	case 1:
+		mZone.setZoneID(1);
+		mZone.setPrefix("data/01");
+		mZone.setSuffix(".txt");
+	case 2:
+		mZone.setZoneID(2);
+		mZone.setPrefix("data/02");
+		mZone.setSuffix(".txt");
+	case 3:
+		mZone.setZoneID(3);
+		mZone.setPrefix("data/03");
+		mZone.setSuffix(".txt");
+	case 4:
+		mZone.setZoneID(4);
+		mZone.setPrefix("data/04");
+		mZone.setSuffix(".txt");
+	case 5:
+		mZone.setZoneID(5);
+		mZone.setPrefix("data/05");
+		mZone.setSuffix(".txt");
+	case 6:
+		mZone.setZoneID(6);
+		mZone.setPrefix("data/06");
+		mZone.setSuffix(".txt");
+	case 7:
+		mZone.setZoneID(7);
+		mZone.setPrefix("data/07");
+		mZone.setSuffix(".txt");
+	case 8:
+		mZone.setZoneID(8);
+		mZone.setPrefix("data/08");
+		mZone.setSuffix(".txt");
+	default:
+		mZone.setZoneID(255);
+		mZone.setPrefix("data/debug");
+		mZone.setSuffix(".txt");
+		break;
+	}
+
+	mZone.setCamera(&mCamera);
+	mZone.setPlayer(&mPlayer);
+	mZone.setBGTextures(mBackgroundTextures);
+	mZone.setDoorTextures(mDoorTextures);
+	//(&mCamera, &mPlayer, "data/debug", ".txt", mBackgroundTextures);
+	mZone.init();
+	mZone.setSpawn();
 }
 
 void Game::introSequence()
@@ -753,14 +810,14 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 {
 	switch (a)
 	{
-	case kSetZone1: break;
-	case kSetZone2: break;
-	case kSetZone3: break;
-	case kSetZone4: break;
-	case kSetZone5: break;
-	case kSetZone6: break;
-	case kSetZone7:	break;
-	case kSetZone8: break;
+	case kSetZone1: prepareZone(1); break;
+	case kSetZone2: prepareZone(2); break;
+	case kSetZone3: prepareZone(3); break;
+	case kSetZone4: prepareZone(4); break;
+	case kSetZone5: prepareZone(5); break;
+	case kSetZone6: prepareZone(6); break;
+	case kSetZone7:	prepareZone(7); break;
+	case kSetZone8: prepareZone(8); break;
 	case kSetMainMenu: mCurrentMenu = kMainMenu; break;
 	case kSetMainOptions: mCurrentMenu = kMainOptions; break;
 

@@ -50,6 +50,9 @@ public:
 	//Init and load assets and other preparations
 	bool fullInit();
 
+	//sets the prefix and loads the zone of given number
+	void prepareZone(Uint8 a);
+
 	void introSequence();
 
 	//deallocate assets, window and renderer
