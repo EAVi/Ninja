@@ -360,13 +360,17 @@ void Game::prepareZone(Uint8 a)
 		mZone.setSuffix(".txt");
 		break;
 	}
-
 	mZone.setCamera(&mCamera);
 	mZone.setPlayer(&mPlayer);
 	mZone.setBGTextures(mBackgroundTextures);
 	mZone.setDoorTextures(mDoorTextures);
 	//(&mCamera, &mPlayer, "data/debug", ".txt", mBackgroundTextures);
 	mZone.init();
+	if (mZone.getLevelSize() <= 0)
+	{
+		mQuit = true;
+		return;
+	}
 	mZone.setSpawn();
 }
 
@@ -806,9 +810,10 @@ void Game::mSetMenu()
 	
 	//Main Menu
 	mMenu[kMainMenu] = Menu(kMainMenu, "\x86" + (string)"Ninja \n(working title)");
-	mMenu[kMainMenu].addButton("Play", kRestartZone, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
-	mMenu[kMainMenu].addButton("Options", kSetMainOptions, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
-	mMenu[kMainMenu].addButton("Quit", kSetQuit, { 24, 168 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainMenu].addButton("New Game", kRestartZone, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainMenu].addButton("Continue", kSetStageSelect, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainMenu].addButton("Options", kSetMainOptions, { 24, 168 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainMenu].addButton("Quit", kSetQuit, { 32, 176 }, (string)"\x82\x8E", (string)"\x86");
 
 	//Main Options
 	mMenu[kMainOptions] = Menu(kMainOptions, "Options");
@@ -829,6 +834,19 @@ void Game::mSetMenu()
 	mMenu[kGameOver] = Menu(kGameOver, "\x89\x80"+(string)"GAME OVER", {56,16});
 	mMenu[kGameOver].addButton("Continue", kRestartZone, { 64, 160 }, (string)"\x82\x8E", (string)"\x80");
 	mMenu[kGameOver].addButton("Quit", kSetMainMenu, { 144, 160 }, (string)"\x82\x8E", (string)"\x80");
+
+	//Main Options
+	mMenu[kStageSelect] = Menu(kStageSelect, "Stage Select");
+	mMenu[kStageSelect].addButton("Debug", kSetZoneDebug, { 8 , 56 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].addButton("Zone 1", kSetZone1, { 8 , 64 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].addButton("Zone 2", kSetZone2, { 8 , 72 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].addButton("Zone 3", kSetZone3, { 8 , 80 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].addButton("Zone 4", kSetZone4, { 8 , 88 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].addButton("Zone 5", kSetZone5, { 8 , 96 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].addButton("Zone 6", kSetZone6, { 8 , 104 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].addButton("Zone 7", kSetZone7, { 8 , 112 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].addButton("Zone 8", kSetZone8, { 8 , 120 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].addButton("Back", kSetMainMenu, { 200 , 200 }, (string)"\x82\x8E", (string)"\x86");
 }
 
 void Game::mMenuLoop()
@@ -864,22 +882,21 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 {
 	switch (a)
 	{
-	case kSetZone1: prepareZone(1); break;
-	case kSetZone2: prepareZone(2); break;
-	case kSetZone3: prepareZone(3); break;
-	case kSetZone4: prepareZone(4); break;
-	case kSetZone5: prepareZone(5); break;
-	case kSetZone6: prepareZone(6); break;
-	case kSetZone7:	prepareZone(7); break;
-	case kSetZone8: prepareZone(8); break;
+	case kSetZoneDebug: prepareZone(255); mCurrentMenu = kInGame; break;
+	case kSetZone1: prepareZone(1); mCurrentMenu = kInGame; break;
+	case kSetZone2: prepareZone(2); mCurrentMenu = kInGame; break;
+	case kSetZone3: prepareZone(3); mCurrentMenu = kInGame; break;
+	case kSetZone4: prepareZone(4); mCurrentMenu = kInGame; break;
+	case kSetZone5: prepareZone(5); mCurrentMenu = kInGame; break;
+	case kSetZone6: prepareZone(6); mCurrentMenu = kInGame; break;
+	case kSetZone7:	prepareZone(7); mCurrentMenu = kInGame; break;
+	case kSetZone8: prepareZone(8); mCurrentMenu = kInGame; break;
 	case kSetMainMenu: mCurrentMenu = kMainMenu; break;
 	case kSetMainOptions: mCurrentMenu = kMainOptions; break;
-
 	case kSetQuit: mQuit = true; break;
-
 	case kSetPauseMenu: mCurrentMenu = kPauseMenu; break;
 	case kSetPauseOption: mCurrentMenu = kPauseOptions; break;
-
+	case kSetStageSelect: mCurrentMenu = kStageSelect; break;
 	case kRestartZone:
 		mPlayer.getHealth() = mPlayer.getMaxHealth();
 		mPlayer.resetLives();
@@ -895,9 +912,7 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 	case kMusicIncrease: break;
 	case kSFXDecrease: break;
 	case kSFXIncrease: break;
-
 	case kToggleFullscreen: mToggleFullScreen(); break;
-
 	}
 }
 

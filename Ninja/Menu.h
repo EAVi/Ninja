@@ -10,9 +10,9 @@ enum MenuType : Uint8
 	kPauseMenu,
 	kPauseOptions,
 	kGameOver,
+	kStageSelect,
 	kCutscene,
 	kInGame,
-	kStageSelect,
 	kTotalMenus = kCutscene, //cutscene and ingame don't really count as menus
 };
 
@@ -22,6 +22,7 @@ enum ButtonOption : Uint8
 	//Might give or take Zones by the time the game is complete,
 	//therefore I didn't hardcode these numbers
 	kNoOption = 0,
+	kSetZoneDebug,//warp to debug zone
 	kSetZone1,//warp to Zone 1
 	kSetZone2,//warp to Zone 2
 	kSetZone3,//warp to Zone 3
@@ -31,10 +32,11 @@ enum ButtonOption : Uint8
 	kSetZone7,//warp to Zone 7
 	kSetZone8,//warp to Zone 8
 	kSetMainMenu,//go to main menu
-	kSetMainOptions,//go to options menu (from pause)
+	kSetMainOptions,//go to options menu (from main options)
 	kSetQuit,//quit the game
 	kSetPauseMenu,//go to pause menu
 	kSetPauseOption,//go to options menu (from pause)
+	kSetStageSelect,//go to stage select menu
 	kRestartZone,//go to the beginning of the zone (used in Game Over screen)
 	kUnPause,//unpause the game
 	kMusicDecrease,//decrease the music volume
