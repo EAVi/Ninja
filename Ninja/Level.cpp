@@ -11,26 +11,8 @@ std::vector<LTexture*> Level::mDoorTextures = vector<LTexture*>();
 LTexture* Level::mBlockTextures = NULL;
 
 Level::Level()
-{
-	mLevelWidth = 0;
-	mLevelHeight = 0;
-	mCamera = NULL;
-	mDeathBarrier = false;
-	mBlocks.clear();
-	mDoors.clear();
-	mUpDoors.clear();
-	mBGTextures.clear();
-	mBackgrounds.clear();
-	mRects.clear();
-	mPlayerHitboxes.clear();
-	mPlayerHurtboxes.clear();
-	mEnemyHitboxes.clear();
-	mEnemyHurtboxes.clear();
-	initEnemyArray();
-	mSpawnX = 0;
-	mSpawnY = 0;
-	mSong = 255;
-}
+	:Level(0, 0, NULL)
+{}
 
 Level::Level(int width, int height, SDL_Rect* camera)
 {
@@ -127,6 +109,23 @@ void Level::boundCamera()
 void Level::setDeathBarrier(bool barrier)
 {
 	mDeathBarrier = barrier;
+}
+
+void Level::setLevelID(LevelID l)
+{
+	mLevelID = l;
+}
+
+LevelID Level::getLevelID()
+{
+	return mLevelID;
+}
+
+void Level::createDoor(Door d)
+{
+	if (d.texturenum == 255)
+		mDoors.push_back(d);
+	else mUpDoors.push_back(d);
 }
 
 bool Level::getDeathBarrier()
@@ -349,6 +348,13 @@ SDL_Point Level::getPlayerPosition()
 	a.x = mPlayerHurtboxes[0].hitbox.x + mPlayerHurtboxes[0].hitbox.w / 2;
 	a.y = mPlayerHurtboxes[0].hitbox.y + mPlayerHurtboxes[0].hitbox.h / 2;
 	return a;
+}
+
+bool Level::checkPlayerDead()
+{
+	if (mPlayerHurtboxes.size() == 0) return false;
+	return ((mPlayerHurtboxes[0].damage == 0)
+		&& (mPlayerHurtboxes[0].hitstun == 1));
 }
 
 void Level::mDeleteEnemy(Uint8 slot)

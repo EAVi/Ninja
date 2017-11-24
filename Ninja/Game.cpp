@@ -190,7 +190,7 @@ bool Game::loadAssets()
 	}
 
 	//UI texture loader
-	Uint8 cutTexNum = 7;
+	Uint8 cutTexNum = 9;
 	string cutTexS[] =
 	{
 		"GFX/CUT/ninjaclose.png",
@@ -309,6 +309,7 @@ bool Game::fullInit()
 void Game::prepareZone(Uint8 a)
 {
 	mZone.release();
+	mZone = Zone();
 	//load zone
 	
 	switch (a)
@@ -317,34 +318,42 @@ void Game::prepareZone(Uint8 a)
 		mZone.setZoneID(1);
 		mZone.setPrefix("data/01");
 		mZone.setSuffix(".txt");
+		break;
 	case 2:
 		mZone.setZoneID(2);
 		mZone.setPrefix("data/02");
 		mZone.setSuffix(".txt");
+		break;
 	case 3:
 		mZone.setZoneID(3);
 		mZone.setPrefix("data/03");
 		mZone.setSuffix(".txt");
+		break;
 	case 4:
 		mZone.setZoneID(4);
 		mZone.setPrefix("data/04");
 		mZone.setSuffix(".txt");
+		break;
 	case 5:
 		mZone.setZoneID(5);
 		mZone.setPrefix("data/05");
 		mZone.setSuffix(".txt");
+		break;
 	case 6:
 		mZone.setZoneID(6);
 		mZone.setPrefix("data/06");
 		mZone.setSuffix(".txt");
+		break;
 	case 7:
 		mZone.setZoneID(7);
 		mZone.setPrefix("data/07");
 		mZone.setSuffix(".txt");
+		break;
 	case 8:
 		mZone.setZoneID(8);
 		mZone.setPrefix("data/08");
 		mZone.setSuffix(".txt");
+		break;
 	default:
 		mZone.setZoneID(255);
 		mZone.setPrefix("data/debug");
@@ -423,7 +432,7 @@ void Game::introSequence()
 		}
 		else tempLogo.setAlpha(0);
 
-		if (i >= thanksframes)
+		if (i >= thanksframes && (i < introframes - 20))
 			gWriter(textbuffers::Debug) << txt::White << thanks;
 
 		tempLogo.renderTexture(logox, logoy);
@@ -720,16 +729,41 @@ void Game::mSetCutscene()
 	temp.setTrigger({ 6,255 });
 	temp.addSlide(5, "BEWARE!!!, there be a baddy\nup ahead\n\n!!!\n!!!");
 	mCutscene.push_back(temp);
+
+	temp.clearCutscene();
+	temp.setTrigger({ 8,255 });
+	temp.addSlide(8, "Damn...");
+	temp.addSlide(8, "Looks like that nerd\ndefeated me...");
+	temp.addSlide(4, "Such a bright light...\nAm I dead?");
+	temp.addSlide(4, "Looks like it. \nLet's follow this tunnel");
+	mCutscene.push_back(temp);
 }
 
 void Game::mCutSceneLoop()
 {
-	if (mCurrentCutScene == 255) mCurrentMenu = kInGame;
-
+	if (mCurrentCutScene == 255)
+		if (!mZone.checkComplete())//if the zone has not been completed
+			mCurrentMenu = kInGame;
+		else if (mZone.getLevelID().ZoneNo < kFinalZone)//zone complete
+		{
+			prepareZone(mZone.getLevelID().ZoneNo + 1);
+			mCurrentMenu = kInGame;
+		}
+		else if (mZone.getLevelID().ZoneNo == 255)//debug zone
+		{
+			prepareZone(1);
+			mCurrentMenu = kInGame;
+		}
+		else if (mZone.getLevelID().ZoneNo == kFinalZone)//zone complete, final zone
+		{
+			//if you beat kfinalzone, then the game is complete!
+			//call credits or whatever here
+		}
+	
 	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xFF);
 	SDL_RenderClear(mRenderer);
 	//event handler
-	while (SDL_PollEvent(&mEvent))
+	while (SDL_PollEvent(&mEvent) && !mCutscene[mCurrentCutScene].checkComplete())
 	{
 		handleGeneralEvents();
 		mPlayer.handleEvent(mEvent, true);//because the player could release the movement key/button and it would otherwise not register.
@@ -737,8 +771,28 @@ void Game::mCutSceneLoop()
 
 		if (mCutscene[mCurrentCutScene].checkComplete())//no need to poll if done
 		{
-			mCurrentMenu = kInGame;
-			return;
+			if (!mZone.checkComplete())//zone not completed
+			{
+				mCurrentMenu = kInGame;
+				return;
+			}
+			else if (mZone.getLevelID().ZoneNo == 255)//debug zone
+			{
+				prepareZone(1);
+				mCurrentMenu = kInGame;
+				return;
+			}
+			else if (mZone.getLevelID().ZoneNo < kFinalZone)//completed zone
+			{
+				prepareZone(mZone.getLevelID().ZoneNo + 1);
+				mCurrentMenu = kInGame;
+				return;
+			}
+			else if (mZone.getLevelID().ZoneNo == kFinalZone)//completed zone, final zone
+			{
+				//if you beat kfinalzone, then the game is complete!
+				//call credits or whatever here
+			}
 		}
 	}
 
@@ -849,13 +903,40 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 
 void Game::mGetCutSceneCurrentLevel()
 {
-	LevelID id = mZone.getLevelID();
+	LevelID id;
+	if (!mZone.checkComplete())
+		id = mZone.getLevelID();
+	else//zone complete
+	{
+		Uint8 ZoneID = mZone.getLevelID().ZoneNo;
+		id = { (Uint8)mZone.getLevelSize(), ZoneID };
+	}
+
 	for (int i = 0, j = mCutscene.size(); i < j; ++i)
-		if (mCutscene[i].checkTrigger(mZone.getLevelID()))
+		if (mCutscene[i].checkTrigger(id))
 		{
 			if (mCutscene[i].checkComplete()) return; //would result in black flicker when switching to a completed cutscene
 			mCurrentCutScene = i;
 			mCurrentMenu = kCutscene;
 			gWriter.ClearTicks();
+			return;
 		}
+
+	//returning a cutscene will skip this logic
+	//putting this condition after the loop prevents the music from the next level from playing over these cutscenes
+	if (mZone.checkComplete())
+	{
+		Uint8 ZoneID = mZone.getLevelID().ZoneNo;
+
+		if (ZoneID == 255)
+			prepareZone(1);
+		else if (ZoneID < kFinalZone)
+			prepareZone(ZoneID + 1);
+		else
+		{
+			//you just beat the final zone
+			//call a credits function here
+			//if there is nothing here, you'll just end up stuck on the last zone
+		}
+	}
 }

@@ -36,6 +36,7 @@ Demon::Demon(Uint8 x, Uint8 y, bool right, Level * level)
 void Demon::step(std::vector<SDL_Rect>& colliders)
 {
 	if (!checkActive()) return; //if you want the enemy to only start "existing" when it collides with the camera, have this line of code
+	mPlayerDeathGimmick();
 	if (mHitStun <= 0 && mHealth > 0)//cant move if you're stunned
 	{
 		mCheckStyle();
@@ -85,6 +86,12 @@ void Demon::step(std::vector<SDL_Rect>& colliders)
 
 	if (mHealth > 0 || mHitStun <= 0)
 		handleAnimation();
+
+	//on death, create a door to the next level
+	if (mHealth <= 0 && mAnimationFrame == kDeathEnd - 1)
+	{
+		mLevel->createDoor({ {mX,mY, 16,32},255,255,255,1});
+	}
 }
 
 void Demon::step()
@@ -321,4 +328,16 @@ void Demon::mCheckStyle()
 	if ((mHealth / 10 % 2) == 0)
 		mStyle = kRun;
 	else mStyle = kFly;
+}
+
+void Demon::mPlayerDeathGimmick()
+{
+
+	if (mLevel->checkPlayerDead()
+		&& mLevel->getLevelID().ZoneNo == 255)
+	{
+		//notice that the door lead to level 255, 
+		//when a level above the zone mlevel.size is given, it counts as a zone completed (victory)
+		mLevel->createDoor({ {0,0,1023,1023}, 255, 255, 255, 255 });
+	}
 }

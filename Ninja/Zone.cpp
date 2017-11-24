@@ -15,6 +15,7 @@ Zone::Zone()
 	mLevelCount = 0;
 	mCurrentLevel = 0;
 	mZoneID = 0;
+	mZoneComplete = false;
 }
 
 Zone::Zone(SDL_Rect* camera, Player* player, string prefix, string suffix, std::vector<LTexture*>& textures)
@@ -29,6 +30,7 @@ Zone::Zone(SDL_Rect* camera, Player* player, string prefix, string suffix, std::
 	mLevelCount = 0;
 	mCurrentLevel = 0;
 	mZoneID = 0;
+	mZoneComplete = false;
 }
 
 Zone::~Zone()
@@ -69,7 +71,7 @@ void Zone::loadLevel()
 	s.str(string());//empty the stream
 	s << mPrefix << '_' << (int)mCurrentLevel << mSuffix;//make the string that will read the map
 	mLevels[mCurrentLevel].Loadmap(s.str().c_str());
-	
+	mLevels[mCurrentLevel].setLevelID({ mCurrentLevel, mZoneID });
 }
 
 void Zone::loadLevel(int i)
@@ -84,14 +86,15 @@ void Zone::loadLevel(int i)
 	s.str(string());//empty the stream
 	s << mPrefix << '_' << i << mSuffix;//make the string that will read the map
 	mLevels[i].Loadmap(s.str().c_str());
+	mLevels[i].setLevelID({(Uint8)i, mZoneID });
 }
 
 void Zone::setLevel(int i)
 {
 	if (i >= mLevelCount)
 	{
-		cout << "ERROR: Level Number out of bounds\n";
-		cout << "Requested: " << i << " Size: " << (int)mLevelCount << endl;
+		//if you give a door level number larger than the level count, it will count as beating the zone
+		mZoneComplete = true;
 	}
 	else if (mPlayer == NULL)
 		cout << "ERROR: Current Zone has NULL Player\n";
@@ -110,7 +113,8 @@ Uint8 Zone::getCurrentLevel()
 bool Zone::stepEnemiesCurrentLevel()
 {
 	bool a = mCheckDoors();//returns true if door touched
-	mLevels[mCurrentLevel].stepEnemies();
+	if (mCurrentLevel < mLevels.size())
+		mLevels[mCurrentLevel].stepEnemies();
 	return a;
 
 }
@@ -163,6 +167,7 @@ void Zone::loadZone()
 		mLevels[i].setBGTextures(mBGTextures);
 		mLevels[i].setDoorTextures(mDoorTextures);
 		mLevels[i].Loadmap(ss.str().c_str());
+		mLevels[i].setLevelID({(Uint8)i, mZoneID});
 	}
 }
 
@@ -237,6 +242,11 @@ bool Zone::mCheckDoors()
 	return false;
 }
 
+bool Zone::checkComplete()
+{
+	return mZoneComplete;
+}
+
 Uint8 Zone::getSongCurrentLevel()
 {
 	return mLevels[mCurrentLevel].getSong();
@@ -273,10 +283,4 @@ void Zone::countFiles()
 		ifile.close();
 	}
 	mLevelCount = tcount;
-}
-
-bool operator==(LevelID& a, LevelID& b)
-{
-	return ( (a.LevelNo == b.LevelNo) &&
-		(a.ZoneNo == b.ZoneNo));
 }

@@ -54,7 +54,7 @@ public:
 	};
 
 	//health
-	static const int kDemon_MaxHealth = 120;
+	static const int kDemon_MaxHealth = 110;
 	
 	//texture
 	static LTexture* kDemon_Texture;
@@ -68,7 +68,7 @@ public:
 	//the projectile speed of the demon's fireball
 	static const Uint8 kDemon_ProjectileSpeed = 2;
 
-	static const Uint8 kDemon_ProjectileCooldown = 80;
+	static const Uint8 kDemon_ProjectileCooldown = 100;
 
 	static const Uint8 kDemon_PowerupTime = 120;
 
@@ -84,6 +84,10 @@ private:
 	void mCheckStyle();
 
 	bool mFlyWall;//demon will fly along the ground until 
+
+	//when the player fights the boss the first time, losing against the boss results storyline progression
+	//this is done by creating a door when the player dies
+	void mPlayerDeathGimmick();
 
 };
 

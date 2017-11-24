@@ -427,7 +427,8 @@ void Player::mRightPress()
 void Player::mAddHurtbox()
 {
 	//Makes a hurtbox and throws it into the level's hurtbox vector
-	Hitbox hurtbox = { mCollisionBox , 0, 0 };
+	//note that the 2nd and 3rd argument are pointless in a hurtbox, but are instead used to represent the player's current state
+	Hitbox hurtbox = { mCollisionBox , mHealth, mInvincibilityFrames };
 	hurtbox.hitbox.x += mX;
 	hurtbox.hitbox.y += mY;
 	mLevel->addHitbox(hurtbox, true, false, true);

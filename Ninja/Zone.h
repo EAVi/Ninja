@@ -18,18 +18,7 @@
 #include "Robot.h"
 #include "Player.h"
 #include "MagMatrix.h"
-
-/*
-this structure will return the current level number and zone number
-zone 7, level 1 will be represented as {1,7}
-*/
-struct LevelID
-{
-	Uint8 LevelNo;
-	Uint8 ZoneNo;//255 will represent debug
-};
-
-bool operator== (LevelID& a, LevelID& b);
+#include "LevelID.h"
 
 class Zone
 {
@@ -120,6 +109,9 @@ public:
 	/* Checks if the player has collided with any door, and if the player has, warp them to another dimension*/
 	bool mCheckDoors();
 
+	/* Checks to see if the player has hit the finish line*/
+	bool checkComplete();
+
 	/* Returns the curren level's song*/
 	Uint8 getSongCurrentLevel();
 
@@ -133,6 +125,7 @@ private:
 	std::vector<Level> mLevels;
 	int mSize;
 	bool mInit;
+	bool mZoneComplete;
 	Uint8 mCurrentLevel;
 	Uint8 mZoneID;
 	std::string mPrefix;

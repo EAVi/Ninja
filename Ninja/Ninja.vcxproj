@@ -18,6 +18,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="LAudio.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelID.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="LTexture.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Demon.h" />
     <ClInclude Include="LAudio.h" />
+    <ClInclude Include="LevelID.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Robot.h" />

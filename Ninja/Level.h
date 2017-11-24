@@ -16,6 +16,7 @@
 #include "Robot.h"
 #include "Demon.h"
 #include "MagMatrix.h"
+#include "LevelID.h"
 
 
 struct Background
@@ -117,6 +118,15 @@ public:
 	//sets the death barrier
 	void setDeathBarrier(bool barrier);
 
+	//set mLevelID
+	void setLevelID(LevelID l);
+
+	//return mLevelID
+	LevelID getLevelID();
+
+	//create a door at the following position
+	void createDoor(Door d);
+
 	//checks for death barrier
 	bool getDeathBarrier();
 
@@ -173,6 +183,8 @@ public:
 	Uint8 getSong();
 
 	SDL_Point getPlayerPosition();
+
+	bool checkPlayerDead();
 private:
 	Matrix<Uint8> mBlocks;
 	Uint8 mSong;//the song index that should be playing
@@ -197,6 +209,7 @@ private:
 	Enemy* mEnemies[kMaxEnemies];//pointer for polymorphism
 	void mDeleteEnemy(Uint8 slot);//deletes an enemy if the slot given has an enemy
 	void mClearEnemies();//deletes all enemies in the level
+	LevelID mLevelID;
 
 	void mBGGoodEdge(int & ax, int & bx, int & aw);//modifies ax, finds topmost or leftmost edge
 	void mBGTileRender(Uint8& bgnum, SDL_Rect& c, bool & tX, bool & tY);//renders the background for X tiling only

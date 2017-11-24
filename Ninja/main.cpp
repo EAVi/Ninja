@@ -54,7 +54,9 @@ int main(int argc, char* args[])
 		return 1;
 	}
 
+#if defined NDEBUG ||  defined __APPLE__ && __MACH__ || defined Macintosh || defined macintosh || defined __linux__ //if on windows debug build, skip the intro
 	theGame.introSequence();
+#endif
 
 	while (!theGame.getQuit())
 	{
