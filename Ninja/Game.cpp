@@ -737,9 +737,9 @@ void Game::mSetCutscene()
 	temp.clearCutscene();
 	temp.setTrigger({ 8,255 });
 	temp.addSlide(8, "Damn...");
-	temp.addSlide(8, "Looks like that nerd\ndefeated me...");
-	temp.addSlide(4, "Such a bright light...\nAm I dead?");
-	temp.addSlide(4, "Looks like it. \nLet's follow this tunnel");
+	temp.addSlide(4, "Looks like that nerd\ndefeated me...");
+	temp.addSlide(8, "Such a bright light...");
+	temp.addSlide(4, "Looks like I'm dead.");
 	mCutscene.push_back(temp);
 }
 
@@ -810,14 +810,19 @@ void Game::mSetMenu()
 	
 	//Main Menu
 	mMenu[kMainMenu] = Menu(kMainMenu, "\x86" + (string)"Ninja \n(working title)");
-	mMenu[kMainMenu].addButton("New Game", kRestartZone, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainMenu].addButton("New Game", kSetZoneDebug, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Continue", kSetStageSelect, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Options", kSetMainOptions, { 24, 168 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Quit", kSetQuit, { 32, 176 }, (string)"\x82\x8E", (string)"\x86");
 
 	//Main Options
 	mMenu[kMainOptions] = Menu(kMainOptions, "Options");
+	mMenu[kMainOptions].addButton("+", kMusicIncrease, { 160 , 128 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainOptions].addButton("-", kMusicDecrease, { 198 , 128 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainOptions].addButton("+", kSFXIncrease, { 160 , 136 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainOptions].addButton("-", kSFXDecrease, { 198 , 136 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainOptions].addButton("Back", kSetMainMenu, { 200 , 200 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainOptions].setBackButtonOption(kSetMainMenu);
 
 
 	//Pause Menu
@@ -825,10 +830,16 @@ void Game::mSetMenu()
 	mMenu[kPauseMenu].addButton("Continue", kUnPause, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kPauseMenu].addButton("Options", kSetPauseOption, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kPauseMenu].addButton("Quit", kSetMainMenu, {24, 168}, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kPauseMenu].setBackButtonOption(kUnPause);
 
 	//Pause Options
 	mMenu[kPauseOptions] = Menu(kPauseOptions, "Options");
+	mMenu[kPauseOptions].addButton("+", kMusicIncrease, { 160 , 128 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kPauseOptions].addButton("-", kMusicDecrease, { 198 , 128 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kPauseOptions].addButton("+", kSFXIncrease, { 160 , 136 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kPauseOptions].addButton("-", kSFXDecrease, { 198 , 136 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kPauseOptions].addButton("Back", kSetPauseMenu, { 200 , 200 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kPauseOptions].setBackButtonOption(kSetPauseMenu);
 
 	//Game Over Screen
 	mMenu[kGameOver] = Menu(kGameOver, "\x89\x80"+(string)"GAME OVER", {56,16});
@@ -880,6 +891,9 @@ void Game::mMenuLoop()
 
 void Game::mButtonOptionHandler(ButtonOption & a)
 {
+	int mVolume = Mix_VolumeMusic(-1);//get music volume
+	int sVolume = Mix_Volume(-1, -1);//get sound volume
+
 	switch (a)
 	{
 	case kSetZoneDebug: prepareZone(255); mCurrentMenu = kInGame; break;
@@ -908,10 +922,28 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 		break;
 
 	case kUnPause: mCurrentMenu = kInGame; break;
-	case kMusicDecrease: break;
-	case kMusicIncrease: break;
-	case kSFXDecrease: break;
-	case kSFXIncrease: break;
+	case kMusicDecrease:
+		mVolume -= 10;
+		if (mVolume < 0) mVolume = 0;
+		Mix_VolumeMusic(mVolume);
+		break;
+	case kMusicIncrease:
+		mVolume += 10;
+		if (mVolume > 100) mVolume = 100;
+		Mix_VolumeMusic(mVolume);
+		break;
+	case kSFXDecrease:
+		sVolume -= 10;
+		if (sVolume < 0) sVolume = 0;
+		Mix_Volume(-1, sVolume);
+		LAudio::playSound(0);
+		break;
+	case kSFXIncrease: 
+		sVolume += 10;
+		if (sVolume > 100) sVolume = 100;
+		Mix_Volume(-1, sVolume);
+		LAudio::playSound(0);
+		break;
 	case kToggleFullscreen: mToggleFullScreen(); break;
 	}
 }

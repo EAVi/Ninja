@@ -76,6 +76,8 @@ public:
 	static std::vector<LTexture> mBackground;
 	void renderMenu();
 	ButtonOption handleEvent(SDL_Event & e);
+
+	void setBackButtonOption(ButtonOption a);
 private:
 	MenuType mMenuType;
 	Uint8 mCurrentButton;
@@ -86,6 +88,7 @@ private:
 	//void mPressReturn();
 	ButtonOption mPressNext();
 	ButtonOption mPressPrev();
+	ButtonOption mButtonOptionBack;
 
 };
 

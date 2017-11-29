@@ -14,6 +14,7 @@ Menu::Menu(MenuType m, std::string s, SDL_Point p)
 	mTitle = s;
 	mTitlePosition = p;
 	mCurrentButton = 0;
+	mButtonOptionBack = kNoOption;
 }
 
 
@@ -58,7 +59,8 @@ ButtonOption Menu::handleEvent(SDL_Event & e)
 		case SDLK_a: return mPressPrev();  break;
 		case SDLK_SPACE: return mPressYes(); break;
 		case SDLK_m: return mPressYes(); break;
-		case SDLK_n: return mPressYes(); break;
+		case SDLK_ESCAPE: return mButtonOptionBack; break;
+		case SDLK_n: return mButtonOptionBack; break;
 		}
 	}
 	
@@ -68,12 +70,19 @@ ButtonOption Menu::handleEvent(SDL_Event & e)
 		{
 		case SDL_CONTROLLER_BUTTON_A: return mPressYes(); break;
 		case SDL_CONTROLLER_BUTTON_X: return mPressYes(); break;
-		case SDL_CONTROLLER_BUTTON_B: return mPressYes(); break;
+		case SDL_CONTROLLER_BUTTON_B: return mButtonOptionBack; break;
+		case SDL_CONTROLLER_BUTTON_BACK: return mButtonOptionBack; break;
+		case SDL_CONTROLLER_BUTTON_START: return mButtonOptionBack; break;
 		case SDL_CONTROLLER_BUTTON_DPAD_LEFT: return mPressPrev(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: return mPressNext(); break;
 		}
 	}
 	return kNoOption;
+}
+
+void Menu::setBackButtonOption(ButtonOption a)
+{
+	mButtonOptionBack = a;
 }
 
 ButtonOption Menu::mPressYes()
