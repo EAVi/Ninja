@@ -4,6 +4,9 @@ extern TextWriter gWriter;
 
 using namespace std;
 
+std::vector<LTexture*> Menu::mMenuTextures = std::vector<LTexture*>();
+
+
 Menu::Menu()
 	: Menu(kMainMenu, std::string(), {0,0})//call the overloaded constructor, initialize with empty string
 {}
@@ -15,6 +18,8 @@ Menu::Menu(MenuType m, std::string s, SDL_Point p)
 	mTitlePosition = p;
 	mCurrentButton = 0;
 	mButtonOptionBack = kNoOption;
+	mTextureNum = 0;
+	mMusic = 254;
 }
 
 
@@ -30,6 +35,9 @@ void Menu::addButton(std::string s, ButtonOption o, SDL_Point p, std::string pre
 
 void Menu::renderMenu()
 {
+	if (mTextureNum < (Uint8)mMenuTextures.size())
+		mMenuTextures[mTextureNum]->renderTexture(0,0);
+
 	gWriter(Large, mTitlePosition.x, mTitlePosition.y) << mTitle;
 	gWriter.ClearBuffer();
 
@@ -55,8 +63,14 @@ ButtonOption Menu::handleEvent(SDL_Event & e)
 	{
 		switch (e.key.keysym.sym)
 		{
+		case SDLK_s: return mPressNext(); break;
 		case SDLK_d: return mPressNext(); break;
+		case SDLK_DOWN: return mPressNext(); break;
+		case SDLK_RIGHT: return mPressNext(); break;
+		case SDLK_w: return mPressPrev();  break;
 		case SDLK_a: return mPressPrev();  break;
+		case SDLK_UP: return mPressPrev();  break;
+		case SDLK_LEFT: return mPressPrev();  break;
 		case SDLK_SPACE: return mPressYes(); break;
 		case SDLK_m: return mPressYes(); break;
 		case SDLK_ESCAPE: return mButtonOptionBack; break;
@@ -73,8 +87,10 @@ ButtonOption Menu::handleEvent(SDL_Event & e)
 		case SDL_CONTROLLER_BUTTON_B: return mButtonOptionBack; break;
 		case SDL_CONTROLLER_BUTTON_BACK: return mButtonOptionBack; break;
 		case SDL_CONTROLLER_BUTTON_START: return mButtonOptionBack; break;
+		case SDL_CONTROLLER_BUTTON_DPAD_UP: return mPressPrev(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_LEFT: return mPressPrev(); break;
 		case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: return mPressNext(); break;
+		case SDL_CONTROLLER_BUTTON_DPAD_DOWN: return mPressNext(); break;
 		}
 	}
 	return kNoOption;
@@ -83,6 +99,21 @@ ButtonOption Menu::handleEvent(SDL_Event & e)
 void Menu::setBackButtonOption(ButtonOption a)
 {
 	mButtonOptionBack = a;
+}
+
+void Menu::setTextureNum(Uint8 a)
+{
+	mTextureNum = a;
+}
+
+void Menu::setMusic(Uint8 a)
+{
+	mMusic = a;
+}
+
+Uint8 Menu::getMusic()
+{
+	return mMusic;
 }
 
 ButtonOption Menu::mPressYes()

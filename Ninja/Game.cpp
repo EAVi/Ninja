@@ -169,6 +169,26 @@ bool Game::loadAssets()
 		mDoorTextures.push_back(tempptr);
 	}
 
+	//background texture loader
+	Uint8 menuTexNum = 2;
+	string menuTexS[] =
+	{
+		"GFX/MENU/rect.png",
+		"GFX/MENU/dirt.png",
+	};
+
+	for (Uint8 i = 0; i < menuTexNum; ++i)
+	{
+		LTexture* tempptr = new LTexture;
+		//tempptr->setRenderer(gRenderer);
+		if (!tempptr->loadTextureFile(menuTexS[i], &mColorKey))
+		{
+			cout << SDL_GetError() << endl;
+			return false;
+		}
+		Menu::mMenuTextures.push_back(tempptr);
+	}
+
 	//UI texture loader
 	Uint8 uiTexNum = 3;
 	string uiTexS[] =
@@ -487,6 +507,13 @@ void Game::destroyAssets()
 	{
 		Cutscene::mSlideTextures[i]->freeTexture();
 		delete Cutscene::mSlideTextures[i];//'new' memory was allocated for these textures
+	}
+
+	//Menu textures
+	for (Uint8 i = 0, j = Menu::mMenuTextures.size(); i < j; ++i)
+	{
+		Menu::mMenuTextures[i]->freeTexture();
+		delete Menu::mMenuTextures[i];//'new' memory was allocated for these textures
 	}
 
 	//close the controller
@@ -813,15 +840,17 @@ void Game::mSetMenu()
 	mMenu[kMainMenu].addButton("New Game", kSetZoneDebug, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Continue", kSetStageSelect, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Options", kSetMainOptions, { 24, 168 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainMenu].setMusic(1);
 	mMenu[kMainMenu].addButton("Quit", kSetQuit, { 32, 176 }, (string)"\x82\x8E", (string)"\x86");
 
 	//Main Options
-	mMenu[kMainOptions] = Menu(kMainOptions, "Options");
+	mMenu[kMainOptions] = Menu(kMainOptions, "\x87" + (string)"\x8E" + (string)"Options", {64,32});
 	mMenu[kMainOptions].addButton("+", kMusicIncrease, { 160 , 128 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainOptions].addButton("-", kMusicDecrease, { 198 , 128 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainOptions].addButton("+", kSFXIncrease, { 160 , 136 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainOptions].addButton("-", kSFXDecrease, { 198 , 136 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainOptions].addButton("Back", kSetMainMenu, { 200 , 200 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainOptions].setTextureNum(1);
 	mMenu[kMainOptions].setBackButtonOption(kSetMainMenu);
 
 
@@ -833,20 +862,23 @@ void Game::mSetMenu()
 	mMenu[kPauseMenu].setBackButtonOption(kUnPause);
 
 	//Pause Options
-	mMenu[kPauseOptions] = Menu(kPauseOptions, "Options");
+	mMenu[kPauseOptions] = Menu(kPauseOptions, "\x87" + (string)"\x8E" + (string)"Options", { 64,32 });
 	mMenu[kPauseOptions].addButton("+", kMusicIncrease, { 160 , 128 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kPauseOptions].addButton("-", kMusicDecrease, { 198 , 128 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kPauseOptions].addButton("+", kSFXIncrease, { 160 , 136 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kPauseOptions].addButton("-", kSFXDecrease, { 198 , 136 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kPauseOptions].addButton("Back", kSetPauseMenu, { 200 , 200 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kPauseOptions].setTextureNum(1);
 	mMenu[kPauseOptions].setBackButtonOption(kSetPauseMenu);
 
 	//Game Over Screen
 	mMenu[kGameOver] = Menu(kGameOver, "\x89\x80"+(string)"GAME OVER", {56,16});
 	mMenu[kGameOver].addButton("Continue", kRestartZone, { 64, 160 }, (string)"\x82\x8E", (string)"\x80");
 	mMenu[kGameOver].addButton("Quit", kSetMainMenu, { 144, 160 }, (string)"\x82\x8E", (string)"\x80");
+	mMenu[kGameOver].setMusic(255);
+	mMenu[kGameOver].setTextureNum(0);
 
-	//Main Options
+	//Stage Select
 	mMenu[kStageSelect] = Menu(kStageSelect, "Stage Select");
 	mMenu[kStageSelect].addButton("Debug", kSetZoneDebug, { 8 , 56 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kStageSelect].addButton("Zone 1", kSetZone1, { 8 , 64 }, (string)"\x82\x8E", (string)"\x86");
@@ -858,6 +890,7 @@ void Game::mSetMenu()
 	mMenu[kStageSelect].addButton("Zone 7", kSetZone7, { 8 , 112 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kStageSelect].addButton("Zone 8", kSetZone8, { 8 , 120 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kStageSelect].addButton("Back", kSetMainMenu, { 200 , 200 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kStageSelect].setBackButtonOption(kSetMainMenu);
 }
 
 void Game::mMenuLoop()
@@ -878,14 +911,27 @@ void Game::mMenuLoop()
 		ButtonOption a = mMenu[mCurrentMenu].handleEvent(mEvent);
 		handleGeneralEvents();
 		mButtonOptionHandler(a);
-		mPlayer.handleEvent(mEvent,true);
+		mPlayer.handleEvent(mEvent,true);//handles only the player movement
 
 	}
 
 	//render the player's corpse
 	//mPlayer.render(mCamera.x, mCamera.y);
 
-	mMenu[mCurrentMenu].renderMenu();
+	if (mCurrentMenu < kTotalMenus)//the event handler may change the menu type to a non-menu suck as kInGame
+	{
+		mMenu[mCurrentMenu].renderMenu();
+		LAudio::playMusic(mMenu[mCurrentMenu].getMusic());
+	}
+
+	//shows the volume on the options menus
+	if (mCurrentMenu == kMainOptions || mCurrentMenu == kPauseOptions)
+	{
+		gWriter(textbuffers::Small, 96, 128) << txt::White << "MUS Volume   " << txt::Blue << Mix_VolumeMusic(-1);
+		gWriter << txt::White << "\nSFX Volume   " << txt::Blue << Mix_Volume(-1, -1);
+		gWriter.ClearBuffer();
+	}
+
 	SDL_RenderPresent(mRenderer);
 }
 

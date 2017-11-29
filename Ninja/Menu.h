@@ -60,6 +60,8 @@ struct Button
 class Menu
 {
 public:
+	static std::vector<LTexture*> mMenuTextures;
+
 	//default constructor
 	Menu();
 
@@ -77,10 +79,23 @@ public:
 	void renderMenu();
 	ButtonOption handleEvent(SDL_Event & e);
 
+	//set the mBackButtonOption (eg if you press the b button, what will happen?)
 	void setBackButtonOption(ButtonOption a);
+
+	//set the background for the current menu
+	void setTextureNum(Uint8 a);
+
+
+	//set the music of the menu
+	void setMusic(Uint8 a);
+
+	//return the music of the current menu (intended to be passed into LAudio
+	Uint8 getMusic();
 private:
 	MenuType mMenuType;
 	Uint8 mCurrentButton;
+	Uint8 mMusic;
+	Uint8 mTextureNum;
 	std::string mTitle;
 	SDL_Point mTitlePosition;
 	std::vector<Button> mButton;

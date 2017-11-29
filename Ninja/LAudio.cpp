@@ -19,6 +19,15 @@ void LAudio::playMusic(Uint8 a, int loop)
 	if (mCurrentSong == a)//if song is already playing
 		return;
 
+	if (a == 254)//if 254, do not change the current music
+		return;
+
+	if (a == 255)//if 255, stop the music
+	{
+		Mix_HaltMusic();
+		return;
+	}
+
 	//check index to prevent segfault
 	if (a >= mMusic.size())
 	{
