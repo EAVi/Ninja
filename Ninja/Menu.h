@@ -2,6 +2,7 @@
 #define MENU_H
 
 #include "TextWriter.h"
+#include "LAudio.h"
 
 enum MenuType : Uint8
 {

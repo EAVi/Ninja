@@ -286,6 +286,9 @@ bool Game::loadAssets()
 	mSoundBox.loadSFX("SFX/00.wav");
 	mSoundBox.loadSFX("SFX/01.wav");
 	mSoundBox.loadSFX("SFX/02.wav");
+	mSoundBox.loadSFX("SFX/03.wav");
+	mSoundBox.loadSFX("SFX/04.wav");
+	mSoundBox.loadSFX("SFX/05.wav");
 	Mix_Volume(-1, MIX_MAX_VOLUME / 4);
 
 	return true;
@@ -891,6 +894,7 @@ void Game::mSetMenu()
 	mMenu[kStageSelect].addButton("Zone 8", kSetZone8, { 8 , 120 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kStageSelect].addButton("Back", kSetMainMenu, { 200 , 200 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kStageSelect].setBackButtonOption(kSetMainMenu);
+	mMenu[kStageSelect].setTextureNum(255);
 }
 
 void Game::mMenuLoop()
@@ -951,17 +955,23 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 	case kSetZone6: prepareZone(6); mCurrentMenu = kInGame; break;
 	case kSetZone7:	prepareZone(7); mCurrentMenu = kInGame; break;
 	case kSetZone8: prepareZone(8); mCurrentMenu = kInGame; break;
-	case kSetMainMenu: mCurrentMenu = kMainMenu; break;
+	case kSetMainMenu: 
+		mCurrentMenu = kMainMenu; 
+		LAudio::playSound(4);//play the "doo do doo" sound
+		break;
 	case kSetMainOptions: mCurrentMenu = kMainOptions; break;
 	case kSetQuit: mQuit = true; break;
-	case kSetPauseMenu: mCurrentMenu = kPauseMenu; break;
+	case kSetPauseMenu: 
+		mCurrentMenu = kPauseMenu; 
+		LAudio::playSound(4);//play the "doo do doo" sound
+		break;
 	case kSetPauseOption: mCurrentMenu = kPauseOptions; break;
 	case kSetStageSelect: mCurrentMenu = kStageSelect; break;
 	case kRestartZone:
 		mPlayer.getHealth() = mPlayer.getMaxHealth();
 		mPlayer.resetLives();
 		mZone.reloadZone();
-		mSetCutscene();//reload the cutscenes every game over
+		mSetCutscene();//reload the cutscenes every restart
 		mZone.setLevel(0);
 		mPlayer.respawn();
 		mCurrentMenu = kInGame;
@@ -972,11 +982,13 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 		mVolume -= 10;
 		if (mVolume < 0) mVolume = 0;
 		Mix_VolumeMusic(mVolume);
+		LAudio::playSound(5);//play the "ding" sound
 		break;
 	case kMusicIncrease:
 		mVolume += 10;
 		if (mVolume > 100) mVolume = 100;
 		Mix_VolumeMusic(mVolume);
+		LAudio::playSound(5);//play the "ding" sound
 		break;
 	case kSFXDecrease:
 		sVolume -= 10;

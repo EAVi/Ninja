@@ -131,6 +131,7 @@ ButtonOption Menu::mPressNext()
 	++mCurrentButton;
 	if (mCurrentButton >= mButton.size())
 		mCurrentButton = 0;
+	LAudio::playSound(3);//play the "dingding" sound
 	return kNoOption;
 }
 
@@ -139,7 +140,7 @@ ButtonOption Menu::mPressPrev()
 	//since Uint8 cannot be below 0, need to check for this first
 	if (mCurrentButton == 0)
 		mCurrentButton = (Uint8)mButton.size();
-
+	LAudio::playSound(3);//play the "dingding" sound
 	--mCurrentButton;
 	return kNoOption;
 }
