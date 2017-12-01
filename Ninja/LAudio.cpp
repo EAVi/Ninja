@@ -24,6 +24,7 @@ void LAudio::playMusic(Uint8 a, int loop)
 
 	if (a == 255)//if 255, stop the music
 	{
+		mCurrentSong = 255;
 		Mix_HaltMusic();
 		return;
 	}

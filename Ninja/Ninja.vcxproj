@@ -31,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithms.h" />
+    <ClInclude Include="Cannon.h" />
     <ClInclude Include="Cutscene.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
