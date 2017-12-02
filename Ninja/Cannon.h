@@ -13,8 +13,9 @@
 #include "Enemy.h"
 #include "Level.h"
 
-class Cannon public Enemy
+class Cannon: public Enemy
 {
+public:
 	Cannon();
 	~Cannon();
 	Cannon(Uint8 x, Uint8 y, bool right = false, Level* level = NULL);
@@ -35,8 +36,10 @@ class Cannon public Enemy
 													   //static const Uint8 kDefault_HitStunFrames = 5;
 	enum CannonAnimationFrames
 	{
-		kCannonBody = 0,
-		kCannonBall = 1
+		kCannonStand = 0,
+		kCannonFireStart = 1,
+		kCannonFireEnd = 4,
+		kCannonBall = 5
 	};
 
 	void step(std::vector<SDL_Rect>& colliders);//virtual function that will be called for every object for every frame
@@ -47,6 +50,12 @@ class Cannon public Enemy
 	void handleAnimation();
 	void setTexture(LTexture* texture);//sets texture for all default enemy
 	bool checkLiving();//for the level to know when to delete an enemy
+	static const Uint8 kProjectileCooldown = 90;
+	static const int kCannon_ProjectileSpeed = 3;
+	static Hitbox kCannon_ProjectileCollision;
+private:
+	Uint8 mProjectileCooldown;
+	std::vector<SDL_Rect> mProjectile;
 };
 
 #endif

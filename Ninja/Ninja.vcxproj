@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Algorithms.cpp" />
+    <ClCompile Include="Cannon.cpp" />
     <ClCompile Include="Cutscene.cpp" />
     <ClCompile Include="Demon.cpp" />
     <ClCompile Include="Enemy.cpp" />

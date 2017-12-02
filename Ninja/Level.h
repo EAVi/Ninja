@@ -15,6 +15,7 @@
 #include "Enemy.h"
 #include "Robot.h"
 #include "Demon.h"
+#include "Cannon.h"
 #include "MagMatrix.h"
 #include "LevelID.h"
 

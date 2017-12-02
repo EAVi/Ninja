@@ -129,7 +129,7 @@ void Demon::attack()
 
 		//checking destruction conditions
 		if (checkCollision(hitbox.hitbox, mLevel->getRects())
-			|| !checkCollision(hitbox.hitbox, mLevel->getLevelDimensions()))
+			|| !checkCollision(hitbox.hitbox, mLevel->getCamera()))
 		{
 			//destroy the fireball if touching a collision box, or outside the map
 

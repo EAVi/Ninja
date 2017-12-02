@@ -66,6 +66,9 @@
     <ClCompile Include="LevelID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Cannon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LTexture.h">

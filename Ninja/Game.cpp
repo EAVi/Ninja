@@ -274,6 +274,14 @@ bool Game::loadAssets()
 	}
 	tempDemon.setTexture(&mDemonTexture);
 
+	Cannon tempCannon;
+	if (!mCannonTexture.loadTextureFile("GFX/AllCannon.png", &mColorKey))
+	{
+		cout << SDL_GetError() << endl;
+		return false;
+	}
+	tempCannon.setTexture(&mCannonTexture);
+
 	//Load all the sounds and music
 	//Music
 	mSoundBox.loadSFX("SFX/MUS/00.wav", true);
@@ -480,6 +488,7 @@ void Game::destroyAssets()
 	mEnemyTexture.freeTexture();
 	mRobotTexture.freeTexture();
 	mDemonTexture.freeTexture();
+	mCannonTexture.freeTexture();
 	mBlockTexture.freeTexture();
 	mFontTexture.freeTexture();
 	mLargeFontTexture.freeTexture();
@@ -879,7 +888,7 @@ void Game::mSetMenu()
 	mMenu[kGameOver].addButton("Continue", kRestartZone, { 64, 160 }, (string)"\x82\x8E", (string)"\x80");
 	mMenu[kGameOver].addButton("Quit", kSetMainMenu, { 144, 160 }, (string)"\x82\x8E", (string)"\x80");
 	mMenu[kGameOver].setMusic(255);
-	mMenu[kGameOver].setTextureNum(0);
+	mMenu[kGameOver].setTextureNum(255);
 
 	//Stage Select
 	mMenu[kStageSelect] = Menu(kStageSelect, "Stage Select");

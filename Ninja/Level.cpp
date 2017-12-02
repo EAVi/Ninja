@@ -253,6 +253,8 @@ void Level::addEnemy(Uint8 eType, Uint8 x, Uint8 y)
 		mEnemies[slot] = new Robot(x, y, false, this);	break;
 	case 2:
 		mEnemies[slot] = new Demon(x, y, false, this);	break;
+	case 3:
+		mEnemies[slot] = new Cannon(x, y, false, this);	break;
 	default://0 
 		mEnemies[slot] = new Enemy(x, y, false, this);	break;
 	}

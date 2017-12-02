@@ -89,6 +89,7 @@ private:
 	LTexture mEnemyTexture;
 	LTexture mRobotTexture;
 	LTexture mDemonTexture;
+	LTexture mCannonTexture;
 	UIDrawer mUIDrawer;//draws healthbar, lives, and other UI
 	std::vector<LTexture*> mBackgroundTextures;
 	std::vector<LTexture*> mDoorTextures;
