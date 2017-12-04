@@ -211,7 +211,7 @@ bool Game::loadAssets()
 	}
 
 	//UI texture loader
-	Uint8 cutTexNum = 9;
+	Uint8 cutTexNum = 10;
 	string cutTexS[] =
 	{
 		"GFX/CUT/ninjaclose.png",
@@ -223,6 +223,7 @@ bool Game::loadAssets()
 		"GFX/CUT/paper.png",
 		"GFX/CUT/macho.png",
 		"GFX/CUT/ninjadying.png",
+		"GFX/CUT/caveexit.png",
 	};
 	for (Uint8 i = 0; i < cutTexNum; ++i)
 	{
