@@ -170,11 +170,12 @@ bool Game::loadAssets()
 	}
 
 	//background texture loader
-	Uint8 menuTexNum = 2;
+	Uint8 menuTexNum = 3;
 	string menuTexS[] =
 	{
 		"GFX/MENU/rect.png",
 		"GFX/MENU/dirt.png",
+		"GFX/MENU/ninjapractice.png",
 	};
 
 	for (Uint8 i = 0; i < menuTexNum; ++i)
@@ -289,6 +290,7 @@ bool Game::loadAssets()
 	mSoundBox.loadSFX("SFX/MUS/02.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/03.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/04.wav", true);
+	mSoundBox.loadSFX("SFX/MUS/05.wav", true);
 	Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
 	//Sounds
 	mSoundBox.loadSFX("SFX/00.wav");
@@ -339,6 +341,8 @@ bool Game::fullInit()
 
 void Game::prepareZone(Uint8 a)
 {
+	mPlayer.getHealth() = mPlayer.getMaxHealth();
+	mPlayer.resetLives();
 	mZone.release();
 	mZone = Zone();
 	//load zone
@@ -852,7 +856,8 @@ void Game::mSetMenu()
 	mMenu[kMainMenu].addButton("New Game", kSetZoneDebug, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Continue", kSetStageSelect, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Options", kSetMainOptions, { 24, 168 }, (string)"\x82\x8E", (string)"\x86");
-	mMenu[kMainMenu].setMusic(1);
+	mMenu[kMainMenu].setMusic(5);
+	mMenu[kMainMenu].setTextureNum(2);
 	mMenu[kMainMenu].addButton("Quit", kSetQuit, { 32, 176 }, (string)"\x82\x8E", (string)"\x86");
 
 	//Main Options
@@ -887,7 +892,6 @@ void Game::mSetMenu()
 	mMenu[kGameOver] = Menu(kGameOver, "\x89\x80"+(string)"GAME OVER", {56,16});
 	mMenu[kGameOver].addButton("Continue", kRestartZone, { 64, 160 }, (string)"\x82\x8E", (string)"\x80");
 	mMenu[kGameOver].addButton("Quit", kSetMainMenu, { 144, 160 }, (string)"\x82\x8E", (string)"\x80");
-	mMenu[kGameOver].setMusic(255);
 	mMenu[kGameOver].setTextureNum(255);
 
 	//Stage Select
