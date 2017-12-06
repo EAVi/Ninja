@@ -1135,7 +1135,7 @@ void Game::mLevelIntroSequence(Uint8 a)
 	switch (a)
 	{
 	case 1:
-		s = "Eplilogue";
+		s = "Epilogue";
 		break;
 	case 2:
 		s = txt::Red + (string)"To the Light";
