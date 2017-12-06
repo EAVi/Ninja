@@ -809,7 +809,7 @@ void Game::mSetCutscene()
 	//The secret area
 	temp.clearCutscene();
 	temp.setTrigger({ 3,1 });
-	temp.addSlide(1, "This is the secret armory!\nI shouldn't be here,\it's getting late");
+	temp.addSlide(1, "This is the secret armory!\nI shouldn't be here,\nit's getting late");
 	mCutscene.push_back(temp);
 
 	//seige realization
