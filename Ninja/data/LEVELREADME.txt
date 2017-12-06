@@ -10,6 +10,7 @@ Creating a level has 5 parts:
 	3) Blocks
 	4) Enemies
 	5) Doors
+	6) UpDoors
 
 	You'll probably notice that in the text files, there 
 are a bunch of numbers in there from 0-255. That's 8 bits. 
@@ -20,7 +21,7 @@ constructed with 8-bit numbers.
 text files, the computer will either poop itself or will 
 truncate some bits. Just don't do it, kay?
 
-Separating the 5 parts:
+Separating the 6 parts:
 		When you want to signal the level loader 
 	that you want to go on to the next part, put a 255
 	as a signal, and the next part will begin, and also
@@ -70,6 +71,8 @@ Parsing/Separating your numbers:
 		13 - "GFX/BG/seasky.png",
 		14 - "GFX/BG/castlesky.png",
 		15 - "GFX/BG/beanstalk.png",
+		16 - "GFX/BG/houses.png",
+		17 - "GFX/BG/templeinterior.png",
 	X position - is 16 bits, takes 2 bytes of memory
 		   - first part of X position is Coarse.
 		   - second part is fine position.
@@ -113,6 +116,8 @@ Parsing/Separating your numbers:
 	Enemy Type - there are currently two types of enemy:
 			0 - Robo Pirate
 			1 - Space Ghost
+			2 - Demon boss
+			3 - Cannon
 	X Position - as usual, multiplied by tilesize
 	Y Position - ""
 -----------------------------
@@ -133,6 +138,9 @@ Parsing/Separating your numbers:
 
 	*For Destination X or Y, if you don't want to specify a 
 	 position, just put 255.
+-----------------------------
+6) UpDoor (8 arguments, 8 bytes)
+	same as the door, but has an extra byte at the end for a texture
 -----------------------------
 CLOSING NOTES:
 -Every level you make should start with debug_

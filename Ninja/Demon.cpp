@@ -226,7 +226,7 @@ void Demon::checkHurt()
 			{
 				mFlyWall = false;
 				//Destroy the fireball and hurt the Demon
-				mProjectiles.clear();
+				mProjectiles.erase(mProjectiles.begin() + i);
 				--i;//decrement since the vector was reduced by 1
 				mHealth -= kDemon_ProjectileCollision.damage;
 				mHitStun += kDemon_PowerupTime;
@@ -334,7 +334,7 @@ void Demon::mPlayerDeathGimmick()
 {
 
 	if (mLevel->checkPlayerDead()
-		&& mLevel->getLevelID().ZoneNo == 255)
+		&& (mLevel->getLevelID().ZoneNo != 8))
 	{
 		//notice that the door lead to level 255, 
 		//when a level above the zone mlevel.size is given, it counts as a zone completed (victory)

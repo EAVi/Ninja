@@ -14,6 +14,8 @@ Cannon::Cannon()
 	mHealth = mMaxHealth;
 	mProjectileCooldown = kProjectileCooldown;
 	mProjectile = vector<SDL_Rect>();
+	//the cannon will always be active, this will make all cannons synchronized
+	mActive = true;
 }
 
 Cannon::Cannon(Uint8 x, Uint8 y, bool right, Level* level)
@@ -22,6 +24,8 @@ Cannon::Cannon(Uint8 x, Uint8 y, bool right, Level* level)
 	mMaxHealth = 0;//the cannon shall not take damage
 	mHealth = mMaxHealth;
 	mProjectileCooldown = kProjectileCooldown;
+	//the cannon will always be active, this will make all cannons synchronized
+	mActive = true;
 }
 
 Cannon::~Cannon()
@@ -29,7 +33,6 @@ Cannon::~Cannon()
 
 void Cannon::step(std::vector<SDL_Rect>& colliders)
 {
-	if (!checkActive()) return;
 	attack();
 	moveEdge(colliders, kDefault_OffsetCollisionBox);
 	//Change direction when a wall is touched

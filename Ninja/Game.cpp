@@ -115,7 +115,7 @@ bool Game::loadAssets()
 	tempLevel.setBlockTextures(&mBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 16;
+	Uint8 bgTexNum = 18;
 	string bgTexS[] =
 	{
 		"GFX/BG/bluesky.png",
@@ -134,6 +134,8 @@ bool Game::loadAssets()
 		"GFX/BG/seasky.png",
 		"GFX/BG/castlesky.png",
 		"GFX/BG/beanstalk.png",
+		"GFX/BG/houses.png",
+		"GFX/BG/templeinterior.png",
 
 	};
 
@@ -211,7 +213,7 @@ bool Game::loadAssets()
 	}
 
 	//UI texture loader
-	Uint8 cutTexNum = 10;
+	Uint8 cutTexNum = 11;
 	string cutTexS[] =
 	{
 		"GFX/CUT/ninjaclose.png",
@@ -224,6 +226,7 @@ bool Game::loadAssets()
 		"GFX/CUT/macho.png",
 		"GFX/CUT/ninjadying.png",
 		"GFX/CUT/caveexit.png",
+		"GFX/CUT/goldfishjail.png",
 	};
 	for (Uint8 i = 0; i < cutTexNum; ++i)
 	{
@@ -319,7 +322,7 @@ void Game::prepare()
 	mZone.init();
 	mZone.setSpawn();
 	*/
-	prepareZone(0);
+	prepareZone(1);
 	screenAttrs();
 	mSetCutscene();
 	mSetMenu();
@@ -400,6 +403,7 @@ void Game::prepareZone(Uint8 a)
 	mZone.setPlayer(&mPlayer);
 	mZone.setBGTextures(mBackgroundTextures);
 	mZone.setDoorTextures(mDoorTextures);
+	mSetCutscene();
 	//(&mCamera, &mPlayer, "data/debug", ".txt", mBackgroundTextures);
 	mZone.init();
 	if (mZone.getLevelSize() <= 0)
@@ -631,7 +635,9 @@ void Game::handleGeneralEvents()
 
 	if (mCurrentMenu == kInGame)
 	{
-		if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//on keypress ESC
+		if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0//on keypress ESC
+			|| mEvent.type == SDL_CONTROLLERBUTTONDOWN && mEvent.cbutton.button == SDL_CONTROLLER_BUTTON_START //start button on controller
+			)
 		{
 			mCurrentMenu = kPauseMenu;
 		}
@@ -779,11 +785,61 @@ void Game::mSetCutscene()
 	mCutscene.push_back(temp);
 
 	temp.clearCutscene();
-	temp.setTrigger({ 8,255 });
+	temp.setTrigger({ 0,1 });
+	temp.addSlide(1, "Hello, I'm Ninja, and this\nis my story.");
+	temp.addSlide(1, "I was born under the \nOrange Ninja lineage where I'm\ncurrently being trained\nto be a Ninja");
+	temp.addSlide(3, "I was ruled by king goldfish, \nwith whom our village was sworn\nto protect");
+	temp.addSlide(6, "It was a regular day, more regular\nthan usual.");
+	temp.addSlide(1, "I was at my favorite diner \nhaving brinner");
+	temp.addSlide(1, "It was pretty late, so\nI decided to head back\nto the village");
+	mCutscene.push_back(temp);
+
+	//The secret area
+	temp.clearCutscene();
+	temp.setTrigger({ 3,1 });
+	temp.addSlide(1, "This is the secret armory!\nI shouldn't be here,\nthe king needs me");
+	mCutscene.push_back(temp);
+
+	//seige realization
+	temp.clearCutscene();
+	temp.setTrigger({ 4,1 });
+	temp.addSlide(0, "Oh no! The village is \nunder siege!");
+	mCutscene.push_back(temp);
+
+	//small talk with volcanus
+	temp.clearCutscene();
+	temp.setTrigger({ 6,1 });
+	temp.addSlide(5, "Hello, my name is Volcanus\nyou might have heard of me\nI'm here to talk to your king...");
+	temp.addSlide(10, "HELP!");
+	temp.addSlide(0, "The King!\n\nI'll Save you!");
+	mCutscene.push_back(temp);
+
+	//dying
+	temp.clearCutscene();
+	temp.setTrigger({ 7,1 });
 	temp.addSlide(8, "Damn...");
 	temp.addSlide(4, "Looks like that nerd\ndefeated me...");
-	temp.addSlide(8, "Such a bright light...");
-	temp.addSlide(4, "Looks like I'm dead.");
+	temp.addSlide(9, "Dont go towards the light?\nKnock Knock!");
+	mCutscene.push_back(temp);
+
+	//first glance at heaven
+	temp.clearCutscene();
+	temp.setTrigger({ 1,2 });
+	temp.addSlide(1, "Nice place they've got here");
+	mCutscene.push_back(temp);
+
+	//talk with god himself
+	temp.clearCutscene();
+	temp.setTrigger({ 3,2 });
+	temp.addSlide(0, "HEY!\nWho's in charge here?");
+	temp.addSlide(2, "I am");
+	temp.addSlide(0, "Karl Marx, what are \nyou doing here?");
+	temp.addSlide(2, "It was...");
+	temp.addSlide(1, "Oh I remember!\nit was in this morning's paper!");
+	temp.addSlide(6, "\"Elderly man runs for GOV, \nElected GOD due to typo\"");
+	temp.addSlide(2, "Elderly? \nI'm still in my prime!");
+	temp.addSlide(1, "Anyways, I died and \nI'd like a refund");
+	temp.addSlide(2, "Yeah sure, It seems\nyou went through the wrong \nlight anyways");
 	mCutscene.push_back(temp);
 }
 
@@ -804,6 +860,7 @@ void Game::mCutSceneLoop()
 		}
 		else if (mZone.getLevelID().ZoneNo == kFinalZone)//zone complete, final zone
 		{
+			mCurrentMenu = kInGame;
 			//if you beat kfinalzone, then the game is complete!
 			//call credits or whatever here
 		}
@@ -838,6 +895,7 @@ void Game::mCutSceneLoop()
 			}
 			else if (mZone.getLevelID().ZoneNo == kFinalZone)//completed zone, final zone
 			{
+				mCurrentMenu = kInGame;
 				//if you beat kfinalzone, then the game is complete!
 				//call credits or whatever here
 			}
@@ -854,7 +912,7 @@ void Game::mSetMenu()
 	
 	//Main Menu
 	mMenu[kMainMenu] = Menu(kMainMenu, "\x86" + (string)"Ninja \n(working title)");
-	mMenu[kMainMenu].addButton("New Game", kSetZoneDebug, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
+	mMenu[kMainMenu].addButton("New Game", kSetZone1, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Continue", kSetStageSelect, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Options", kSetMainOptions, { 24, 168 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].setMusic(5);
@@ -960,15 +1018,15 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 
 	switch (a)
 	{
-	case kSetZoneDebug: prepareZone(255); mCurrentMenu = kInGame; break;
-	case kSetZone1: prepareZone(1); mCurrentMenu = kInGame; break;
-	case kSetZone2: prepareZone(2); mCurrentMenu = kInGame; break;
-	case kSetZone3: prepareZone(3); mCurrentMenu = kInGame; break;
-	case kSetZone4: prepareZone(4); mCurrentMenu = kInGame; break;
-	case kSetZone5: prepareZone(5); mCurrentMenu = kInGame; break;
-	case kSetZone6: prepareZone(6); mCurrentMenu = kInGame; break;
-	case kSetZone7:	prepareZone(7); mCurrentMenu = kInGame; break;
-	case kSetZone8: prepareZone(8); mCurrentMenu = kInGame; break;
+	case kSetZoneDebug: prepareZone(255); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
+	case kSetZone1: prepareZone(1); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
+	case kSetZone2: prepareZone(2); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
+	case kSetZone3: prepareZone(3); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
+	case kSetZone4: prepareZone(4); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
+	case kSetZone5: prepareZone(5); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
+	case kSetZone6: prepareZone(6); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
+	case kSetZone7:	prepareZone(7); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
+	case kSetZone8: prepareZone(8); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
 	case kSetMainMenu: 
 		mCurrentMenu = kMainMenu; 
 		LAudio::playSound(4);//play the "doo do doo" sound
@@ -1034,12 +1092,13 @@ void Game::mGetCutSceneCurrentLevel()
 	for (int i = 0, j = mCutscene.size(); i < j; ++i)
 		if (mCutscene[i].checkTrigger(id))
 		{
-			if (mCutscene[i].checkComplete()) return; //would result in black flicker when switching to a completed cutscene
+			if (mCutscene[i].checkComplete()) break; //would result in black flicker when switching to a completed cutscene
 			mCurrentCutScene = i;
 			mCurrentMenu = kCutscene;
 			gWriter.ClearTicks();
 			return;
 		}
+
 
 	//returning a cutscene will skip this logic
 	//putting this condition after the loop prevents the music from the next level from playing over these cutscenes
