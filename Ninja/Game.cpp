@@ -439,50 +439,62 @@ void Game::introSequence()
 
 	for (int i = 0; i < introframes; ++i)
 	{
-		SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xFF);
-		SDL_RenderClear(mRenderer);
-		while (SDL_PollEvent(&mEvent))//simple event polling
+		if (mSub60 && mOddFrame //odd frame of a 30Hz monitor 
+			|| !mSub60)//or regular frame of a 60Hz(or more) monitor
 		{
-			handleGeneralEvents();
-		}
-		switch (i)//modify the text based on the frame number
-		{
-		case 0: s = txt::Rainbow + (string)"MAGNAR"; break;
-		case 16: s = (string)"M" + txt::Rainbow + (string)"AGNAR"; break;//first note at .2712s = 16.2 frames
-		case 79: s = (string)"MA" + txt::Rainbow + (string)"GNAR"; break;//second note at 1.328s = 79.6 frames
-		case 104: s = (string)"MAG" + txt::Rainbow + (string)"NAR"; break;//third note at 1.7420s = 104.5 frames
-		case 132: s = (string)"MAGN" + txt::Rainbow + (string)"AR"; break;//fourth note at 2.211S = 132.7 frames
-		case 167: s = (string)"MAGNA" + txt::Rainbow + (string)"R"; break;//fifth note at 2.785s = 167.1 frames
-		case 191: s = "MAGNAR"; break;//sixth note at 3.195s = 191.7 frames
-		case 230: s = ""; break;//the logo is fully visible at 211, and disapears at 235
-		}
+			SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 0xFF);
+			SDL_RenderClear(mRenderer);
+			while (SDL_PollEvent(&mEvent))//simple event polling
+			{
+				handleGeneralEvents();
+			}
+			switch (i)//modify the text based on the frame number
+			{
+			case 0: s = txt::Rainbow + (string)"MAGNAR"; break;
+			case 16: s = (string)"M" + txt::Rainbow + (string)"AGNAR"; break;//first note at .2712s = 16.2 frames
+			case 79: s = (string)"MA" + txt::Rainbow + (string)"GNAR"; break;//second note at 1.328s = 79.6 frames
+			case 104: s = (string)"MAG" + txt::Rainbow + (string)"NAR"; break;//third note at 1.7420s = 104.5 frames
+			case 132: s = (string)"MAGN" + txt::Rainbow + (string)"AR"; break;//fourth note at 2.211S = 132.7 frames
+			case 167: s = (string)"MAGNA" + txt::Rainbow + (string)"R"; break;//fifth note at 2.785s = 167.1 frames
+			case 191: s = "MAGNAR"; break;//sixth note at 3.195s = 191.7 frames
+			case 230: s = ""; break;//the logo is fully visible at 211, and disapears at 235
+			}
 
-		/* fading logic for the magnar logo*/
-		if (i > fadein
-			&& i < fadein + fade)//if the logo is fading in
-		{
-			Uint8 A;
-			A = (255 * (i - fadein) / (fade));
-			tempLogo.setAlpha(A);
-		}
-		else if (i >= fadein + fade && i <= fadeout)//in the middle where the logo is visible 
-			tempLogo.setAlpha(255);
-		else if (i > fadeout
-			&& i < fadeout + fade)//if the logo is fading out
-		{
-			Uint8 A;
-			A = (255 * (fadeout - i) / (fade));
-			tempLogo.setAlpha(A);
-		}
-		else tempLogo.setAlpha(0);
+			/* fading logic for the magnar logo*/
+			if (i > fadein
+				&& i < fadein + fade)//if the logo is fading in
+			{
+				Uint8 A;
+				A = (255 * (i - fadein) / (fade));
+				tempLogo.setAlpha(A);
+			}
+			else if (i >= fadein + fade && i <= fadeout)//in the middle where the logo is visible 
+				tempLogo.setAlpha(255);
+			else if (i > fadeout
+				&& i < fadeout + fade)//if the logo is fading out
+			{
+				Uint8 A;
+				A = (255 * (fadeout - i) / (fade));
+				tempLogo.setAlpha(A);
+			}
+			else tempLogo.setAlpha(0);
 
-		if (i >= thanksframes && (i < introframes - 20))
-			gWriter(textbuffers::Debug) << txt::White << thanks;
+			if (i >= thanksframes && (i < introframes - 20))
+				gWriter(textbuffers::Debug) << txt::White << thanks;
 
-		tempLogo.renderTexture(logox, logoy);
-		gWriter(textbuffers::Large, 78, 82) << txt::White << s;
-		gWriter.ClearBuffer();
-		SDL_RenderPresent(mRenderer);
+			tempLogo.renderTexture(logox, logoy);
+			gWriter(textbuffers::Large, 78, 82) << txt::White << s;
+			gWriter.ClearBuffer();
+		
+			mTimer.vtick();
+			if (mSuper60)
+			{
+				mTimer.delayRender();
+			}
+
+			SDL_RenderPresent(mRenderer);
+			mTimer.tick();
+		}
 
 		if (mQuit) break;
 	}
@@ -851,13 +863,11 @@ void Game::mCutSceneLoop()
 			mCurrentMenu = kInGame;
 		else if (mZone.getLevelID().ZoneNo < kFinalZone)//zone complete
 		{
-			prepareZone(mZone.getLevelID().ZoneNo + 1);
-			mCurrentMenu = kInGame;
+			mLevelIntroSequence(mZone.getLevelID().ZoneNo + 1);
 		}
 		else if (mZone.getLevelID().ZoneNo == 255)//debug zone
 		{
-			prepareZone(1);
-			mCurrentMenu = kInGame;
+			mLevelIntroSequence(1);
 		}
 		else if (mZone.getLevelID().ZoneNo == kFinalZone)//zone complete, final zone
 		{
@@ -884,14 +894,12 @@ void Game::mCutSceneLoop()
 			}
 			else if (mZone.getLevelID().ZoneNo == 255)//debug zone
 			{
-				prepareZone(1);
-				mCurrentMenu = kInGame;
+				mLevelIntroSequence(1);
 				return;
 			}
 			else if (mZone.getLevelID().ZoneNo < kFinalZone)//completed zone
 			{
-				prepareZone(mZone.getLevelID().ZoneNo + 1);
-				mCurrentMenu = kInGame;
+				mLevelIntroSequence(mZone.getLevelID().ZoneNo + 1);
 				return;
 			}
 			else if (mZone.getLevelID().ZoneNo == kFinalZone)//completed zone, final zone
@@ -1019,15 +1027,15 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 
 	switch (a)
 	{
-	case kSetZoneDebug: prepareZone(255); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
-	case kSetZone1: prepareZone(1); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
-	case kSetZone2: prepareZone(2); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
-	case kSetZone3: prepareZone(3); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
-	case kSetZone4: prepareZone(4); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
-	case kSetZone5: prepareZone(5); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
-	case kSetZone6: prepareZone(6); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
-	case kSetZone7:	prepareZone(7); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
-	case kSetZone8: prepareZone(8); mCurrentMenu = kInGame; mGetCutSceneCurrentLevel(); break;
+	case kSetZoneDebug: mLevelIntroSequence(255); break;
+	case kSetZone1: mLevelIntroSequence(1); break;
+	case kSetZone2: mLevelIntroSequence(2); break;
+	case kSetZone3: mLevelIntroSequence(3); break;
+	case kSetZone4: mLevelIntroSequence(4); break;
+	case kSetZone5: mLevelIntroSequence(5); break;
+	case kSetZone6: mLevelIntroSequence(6); break;
+	case kSetZone7:	mLevelIntroSequence(7); break;
+	case kSetZone8: mLevelIntroSequence(8); break;
 	case kSetMainMenu: 
 		mCurrentMenu = kMainMenu; 
 		LAudio::playSound(4);//play the "doo do doo" sound
@@ -1108,9 +1116,9 @@ void Game::mGetCutSceneCurrentLevel()
 		Uint8 ZoneID = mZone.getLevelID().ZoneNo;
 
 		if (ZoneID == 255)
-			prepareZone(1);
+			mLevelIntroSequence(1);
 		else if (ZoneID < kFinalZone)
-			prepareZone(ZoneID + 1);
+			mLevelIntroSequence(ZoneID + 1);
 		else
 		{
 			//you just beat the final zone
@@ -1118,4 +1126,68 @@ void Game::mGetCutSceneCurrentLevel()
 			//if there is nothing here, you'll just end up stuck on the last zone
 		}
 	}
+}
+
+void Game::mLevelIntroSequence(Uint8 a)
+{
+	string s = "";
+
+	switch (a)
+	{
+	case 1:
+		s = "Eplilogue";
+		break;
+	case 2:
+		s = txt::Red + (string)"To the Light";
+		break;
+	case 3:
+		s = txt::Blue + (string)"Ninja Vacation";
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 8:
+		break;
+	default:
+		break;
+	}
+
+	LAudio::playMusic(254);
+
+	for (int i = 0, noframes = 240; i < noframes; ++i)
+	{
+		//print the string for a number of frames
+		//
+		if (mSub60 && mOddFrame //odd frame of a 30Hz monitor 
+			|| !mSub60)//or regular frame of a 60Hz(or more) monitor
+		{
+
+			gWriter(textbuffers::Large) << txt::White << "Zone " << (int)a << '\n' << s;
+			gWriter.ClearBuffer();
+			mTimer.vtick();
+			if (mSuper60)
+			{
+				mTimer.delayRender();
+			}
+
+			SDL_RenderPresent(mRenderer);
+			mTimer.tick();
+		}
+		
+	}
+	while (SDL_PollEvent(&mEvent))
+	{
+		//do nothing
+	}
+
+	//all the preparations for the level
+	prepareZone(a);
+	mSoundBox.playMusic(mZone.getSongCurrentLevel());
+	mCurrentMenu = kInGame;
+	mGetCutSceneCurrentLevel();
 }

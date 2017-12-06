@@ -154,4 +154,6 @@ private:
 	//sets the mCurrentCutScene according to current level if there is any
 	void mGetCutSceneCurrentLevel();
 
+	void mLevelIntroSequence(Uint8 a);
+
 };
