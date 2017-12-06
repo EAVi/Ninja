@@ -797,13 +797,13 @@ void Game::mSetCutscene()
 	//The secret area
 	temp.clearCutscene();
 	temp.setTrigger({ 3,1 });
-	temp.addSlide(1, "This is the secret armory!\nI shouldn't be here,\nthe king needs me");
+	temp.addSlide(1, "This is the secret armory!\nI shouldn't be here,\it's getting late");
 	mCutscene.push_back(temp);
 
 	//seige realization
 	temp.clearCutscene();
 	temp.setTrigger({ 4,1 });
-	temp.addSlide(0, "Oh no! The village is \nunder siege!");
+	temp.addSlide(0, "Oh no! The village is \nunder attack!");
 	mCutscene.push_back(temp);
 
 	//small talk with volcanus
@@ -819,7 +819,9 @@ void Game::mSetCutscene()
 	temp.setTrigger({ 7,1 });
 	temp.addSlide(8, "Damn...");
 	temp.addSlide(4, "Looks like that nerd\ndefeated me...");
-	temp.addSlide(9, "Dont go towards the light?\nKnock Knock!");
+	temp.addSlide(8, "The king...\nI couldn't save him");
+	temp.addSlide(4, "I know!\nI'll turn into a ghost \nand haunt that bad guy!");
+	temp.addSlide(9, "Dont go towards the light?\nKnock Knock!\nHere I come!");
 	mCutscene.push_back(temp);
 
 	//first glance at heaven
@@ -834,7 +836,6 @@ void Game::mSetCutscene()
 	temp.addSlide(0, "HEY!\nWho's in charge here?");
 	temp.addSlide(2, "I am");
 	temp.addSlide(0, "Karl Marx, what are \nyou doing here?");
-	temp.addSlide(2, "It was...");
 	temp.addSlide(1, "Oh I remember!\nit was in this morning's paper!");
 	temp.addSlide(6, "\"Elderly man runs for GOV, \nElected GOD due to typo\"");
 	temp.addSlide(2, "Elderly? \nI'm still in my prime!");
