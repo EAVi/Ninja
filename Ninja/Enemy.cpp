@@ -124,7 +124,8 @@ bool Enemy::checkActive()
 	if (mActive) return true;
 	else
 	{
-		mActive = checkCollision(mCollisionBox,mLevel->getCamera());
+		SDL_Rect cam = mLevel->getCamera();
+		mActive = checkCollision(mCollisionBox, cam);
 		return mActive;
 	}
 }

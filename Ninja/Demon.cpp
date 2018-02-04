@@ -123,13 +123,14 @@ void Demon::attack()
 		mProjectiles[i].y += mProjectiles[i].h;
 		hitbox.hitbox.x += mProjectiles[i].x;
 		hitbox.hitbox.y += mProjectiles[i].y;
+		SDL_Rect cam = mLevel->getCamera();//The level's camera
 
 		//whether to continue processing the current star or not
 		bool finish = true;
 
 		//checking destruction conditions
 		if (checkCollision(hitbox.hitbox, mLevel->getRects())
-			|| !checkCollision(hitbox.hitbox, mLevel->getCamera()))
+			|| !checkCollision(hitbox.hitbox, cam))
 		{
 			//destroy the fireball if touching a collision box, or outside the map
 

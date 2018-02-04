@@ -511,10 +511,11 @@ void Player::mAttack()
 		mStarPositions[i].y += mStarPositions[i].h;
 		tempr.hitbox.x += mStarPositions[i].x;
 		tempr.hitbox.y += mStarPositions[i].y;
+		SDL_Rect cam = mLevel->getCamera();
 
 		//checking destruction conditions
 		if (checkCollision(tempr.hitbox, mLevel->getRects())
-			|| !checkCollision(tempr.hitbox, mLevel->getLevelDimensions()))
+			|| !checkCollision(tempr.hitbox, cam))
 		{
 
 		//destroy the shuriken if touching a collision box, or outside the map
