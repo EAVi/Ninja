@@ -1166,7 +1166,7 @@ void Game::mLevelIntroSequence(Uint8 a)
 		if (mSub60 && mOddFrame //odd frame of a 30Hz monitor 
 			|| !mSub60)//or regular frame of a 60Hz(or more) monitor
 		{
-
+			SDL_RenderClear(mRenderer);
 			gWriter(textbuffers::Large) << txt::White << "Zone " << (int)a << '\n' << s;
 			gWriter.ClearBuffer();
 			mTimer.vtick();
