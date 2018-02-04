@@ -26,6 +26,7 @@ Player::Player()
 	mStarHitbox = { { 13,14,6,4 }, 3, 7 };
 	mMaxHealth = kMaxHealth;
 	mHealth = mMaxHealth;
+	mHitstun = 0;
 	resetLives();
 	mInvincibilityFrames = 0;
 }
