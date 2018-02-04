@@ -1167,6 +1167,10 @@ void Game::mLevelIntroSequence(Uint8 a)
 			|| !mSub60)//or regular frame of a 60Hz(or more) monitor
 		{
 			SDL_RenderClear(mRenderer);
+			while (SDL_PollEvent(&mEvent))//simple event polling
+			{
+				handleGeneralEvents();
+			}
 			gWriter(textbuffers::Large) << txt::White << "Zone " << (int)a << '\n' << s;
 			gWriter.ClearBuffer();
 			mTimer.vtick();
