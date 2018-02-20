@@ -17,6 +17,7 @@ Player::Player()
 	mYVelocityF = 0.0;
 	mLeftKeyDown = false;
 	mRightKeyDown = false;
+	mUpPressed = false;
 	mYVelocity = mYVelocityF;
 	mFlipType = SDL_FLIP_NONE;
 	mAnimationFrame = 0;
