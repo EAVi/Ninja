@@ -1,3 +1,5 @@
+    ![Screenshot](https://i.imgur.com/fWZ5QQg.png "A screenshot of the game")
+
     Controls:
     A - move left
     D - move right
