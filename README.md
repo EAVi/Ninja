@@ -1,4 +1,4 @@
-    ![Screenshot](https://i.imgur.com/fWZ5QQg.png "A screenshot of the game")
+![Screenshot](https://i.imgur.com/fWZ5QQg.png)
 
     Controls:
     A - move left
