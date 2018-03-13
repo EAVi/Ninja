@@ -87,5 +87,8 @@ void stretchBox(SDL_Rect & a, int & xV, int & yV);
 //undoes the stretchBox operation, assuming the same parameters are given
 void stretchBoxUndo(SDL_Rect & a, int & xV, int & yV);
 
+//takes a screenshot of the current frame of the renderer,
+//saves to path and filename given by string fname
+bool screenShot(SDL_Window * w, SDL_Renderer * r, std::string fname);
 
 #endif

@@ -17,6 +17,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <ctime>
 #include "LTexture.h"
 #include "Player.h"
 #include "Algorithms.h"
@@ -66,6 +67,8 @@ public:
 
 	//returns if a quit event has happened
 	bool getQuit();
+
+	void takeScreenShot();
 
 	const int kScreenWidth = 256;
 	const int kScreenHeight = 240;

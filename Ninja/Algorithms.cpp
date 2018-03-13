@@ -433,3 +433,45 @@ void stretchBoxUndo(SDL_Rect & a, int & xV, int & yV)
 	if (yV < 0)
 		a.y -= yV;
 }
+ 
+bool screenShot(SDL_Window * w, SDL_Renderer * r, string fname)
+{
+	if (w == NULL || r == NULL)
+	{
+		cout << "NULL renderer or window passed into screenShot\n";
+		return false;
+	}
+
+	int tempx = 0;//window dimensions
+	int tempy = 0;
+
+	SDL_GetWindowSize(w, &tempx, &tempy);
+	SDL_Surface *screen = NULL;
+
+	//initialize screen surface
+	screen = SDL_CreateRGBSurface(0,
+		tempx,
+		tempy,
+		32, 
+		0x00ff0000,
+		0x0000ff00,
+		0x000000ff,
+		0xff000000);
+
+	if (screen == NULL)
+	{
+	cout << "screenshot RGB surface failed to initialize:\n\t" << SDL_GetError() << endl;
+	return false;
+	}
+	
+	//attempt screenshot
+	if (SDL_RenderReadPixels(r, NULL, SDL_PIXELFORMAT_ARGB8888, screen->pixels, screen->pitch) != 0)
+	{
+	cout << "RenderReadPixels failed:\n\t" << SDL_GetError() << endl;
+	return false;
+	}
+	
+	SDL_SaveBMP(screen, fname.c_str());
+	SDL_FreeSurface(screen);
+	return true;
+}

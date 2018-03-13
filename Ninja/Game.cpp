@@ -618,6 +618,23 @@ bool Game::getQuit()
 	return mQuit;
 }
 
+void Game::takeScreenShot()
+{
+	stringstream filename;
+	time_t timestamp = time(0);
+	struct tm * now = localtime (&timestamp);
+
+	filename << "./Screenshots/NINJA_" //the path and prefix
+		<< now->tm_year + 1900 << '_'
+		<< now->tm_mon + 1 << '_'
+		<< now->tm_mday << '-'
+		<< now->tm_min << '_' << now->tm_sec << '-'
+		<< mTimer.getFrameCount()
+		<< ".bmp";
+	string a = "lame";
+	screenShot(mWindow, mRenderer,filename.str());
+}
+
 void Game::screenAttrs()
 {
 	SDL_DisplayMode monitor;
@@ -720,7 +737,7 @@ void Game::render()
 		{
 			mTimer.delayRender();
 		}
-
+		//takeScreenShot(); // uncomment to take a screenshot every frame
 		SDL_RenderPresent(mRenderer);
 		mTimer.tick();
 	}
