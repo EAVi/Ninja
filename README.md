@@ -1,4 +1,4 @@
-![Screenshot](https://i.imgur.com/fWZ5QQg.png)
+![Screenshot](https://i.imgur.com/DkQQhI2.gif)
 
     Controls:
     A - move left
