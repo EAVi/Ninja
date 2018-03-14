@@ -622,13 +622,19 @@ void Game::takeScreenShot()
 {
 	stringstream filename;
 	time_t timestamp = time(0);
-	struct tm * now = localtime (&timestamp);
+	struct tm now;
+#if defined _WIN32 || _WIN64
+	localtime_s(&now, &timestamp);
+#elif defined __APPLE__ && __MACH__ || defined Macintosh || defined macintosh || defined __linux__
+	localtime_r(&timestamp, &now);
+#endif
+
 
 	filename << "./Screenshots/NINJA_" //the path and prefix
-		<< now->tm_year + 1900 << '_'
-		<< now->tm_mon + 1 << '_'
-		<< now->tm_mday << '-'
-		<< now->tm_min << '_' << now->tm_sec << '-'
+		<< now.tm_year + 1900 << '_'
+		<< now.tm_mon + 1 << '_'
+		<< now.tm_mday << '-'
+		<< now.tm_min << '_' << now.tm_sec << '-'
 		<< mTimer.getFrameCount()
 		<< ".bmp";
 	string a = "lame";
