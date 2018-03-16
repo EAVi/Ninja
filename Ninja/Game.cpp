@@ -11,6 +11,7 @@ Game::Game()
 	mQuit = false;
 	mCamera = { 0, 0, kScreenWidth, kScreenHeight };
 	mDebug = false;
+	mRecording = false;
 	mTimer.setFrameDelay(kFramePeriod);
 	mCurrentMenu = kMainMenu;	
 	mBackgroundTextures.clear();
@@ -668,6 +669,9 @@ void Game::handleGeneralEvents()
 		|| mEvent.key.keysym.sym == SDLK_BACKQUOTE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//or press tilde key
 		mDebug = !mDebug;//toggle debug
 
+	if (mEvent.key.keysym.sym == SDLK_r && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0)//R key press toggles recording
+		mRecording = !mRecording;//toggle recording
+
 	if (mCurrentMenu == kInGame)
 	{
 		if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0//on keypress ESC
@@ -743,7 +747,12 @@ void Game::render()
 		{
 			mTimer.delayRender();
 		}
-		//takeScreenShot(); // uncomment to take a screenshot every frame
+
+		if (mRecording)
+		{
+			takeScreenShot();
+			gWriter(textbuffers::Debug) << txt::Black << txt::HLightOn << "Currently Recording, press R to stop";
+		}
 		SDL_RenderPresent(mRenderer);
 		mTimer.tick();
 	}

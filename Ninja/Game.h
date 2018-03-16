@@ -80,6 +80,7 @@ private:
 	bool mOddFrame;//keeps of odd frames for 30-ish Hz monitors.
 	const int kFramePeriod = 1000 / 60; // 16.667 ms between  each frame
 	const int kFinalZone = 3;
+	bool mRecording;
 
 	SDL_Renderer* mRenderer;
 	SDL_Window* mWindow;
