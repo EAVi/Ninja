@@ -618,11 +618,13 @@ void Player::mProjectilePress()
 
 	if (mFlipType == SDL_FLIP_NONE)//if facing right, spawn a ninja star with a rightward trajectory
 	{
+		LAudio::playSound(6);//star sound effect
 		mStarPositions.push_back({ mX,mY,mStarSpeed,0 });
 		mStarCooldown = kStarLag;
 	}
 	else if (mFlipType == SDL_FLIP_HORIZONTAL)//if facing left, spawn a ninja star with a leftward trajectory
 	{
+		LAudio::playSound(6);//star sound effect
 		mStarPositions.push_back({ mX,mY,-mStarSpeed,0 });
 		mStarCooldown = kStarLag;
 	}
