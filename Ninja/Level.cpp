@@ -467,28 +467,19 @@ bool Level::Loadmap(string filename)
 {
 	//file reading segment
 	ifstream ifile;
-	ifile.open(filename.c_str());
+	ifile.open(filename.c_str(), std::ifstream::in | std::ifstream::binary);
 	if (!ifile.is_open())
 	{ 
 		cout << "Error opening file: " << filename << endl;
 		return false; 
 	}	
-	char cdata = ifile.get();
-	string sdata;
+	Uint8 cdata = (Uint8)ifile.get();
 	vector<int> idata;
-	while (ifile.good())
+	while (ifile.good())//read the binary file
 	{
-		if (cdata != ' ' && cdata != '\n')
-		sdata += cdata;
-		cdata = ifile.get();
-		if ((cdata == ' ' || cdata == '\n') && sdata != "")
-		{
-			idata.push_back(stoi(sdata, nullptr, 10));
-			sdata = "";
-		}
+		idata.push_back(cdata);
+		cdata = (Uint8)ifile.get();
 	}
-	if (sdata != "")//gets the last data entry if it exists
-		idata.push_back(stoi(sdata, nullptr, 10));
 	ifile.close();
 
 	//the part that actually makes the map

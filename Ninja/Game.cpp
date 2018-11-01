@@ -357,47 +357,47 @@ void Game::prepareZone(Uint8 a)
 	case 1:
 		mZone.setZoneID(1);
 		mZone.setPrefix("data/01");
-		mZone.setSuffix(".txt");
+		mZone.setSuffix(".bin");
 		break;
 	case 2:
 		mZone.setZoneID(2);
 		mZone.setPrefix("data/02");
-		mZone.setSuffix(".txt");
+		mZone.setSuffix(".bin");
 		break;
 	case 3:
 		mZone.setZoneID(3);
 		mZone.setPrefix("data/03");
-		mZone.setSuffix(".txt");
+		mZone.setSuffix(".bin");
 		break;
 	case 4:
 		mZone.setZoneID(4);
 		mZone.setPrefix("data/04");
-		mZone.setSuffix(".txt");
+		mZone.setSuffix(".bin");
 		break;
 	case 5:
 		mZone.setZoneID(5);
 		mZone.setPrefix("data/05");
-		mZone.setSuffix(".txt");
+		mZone.setSuffix(".bin");
 		break;
 	case 6:
 		mZone.setZoneID(6);
 		mZone.setPrefix("data/06");
-		mZone.setSuffix(".txt");
+		mZone.setSuffix(".bin");
 		break;
 	case 7:
 		mZone.setZoneID(7);
 		mZone.setPrefix("data/07");
-		mZone.setSuffix(".txt");
+		mZone.setSuffix(".bin");
 		break;
 	case 8:
 		mZone.setZoneID(8);
 		mZone.setPrefix("data/08");
-		mZone.setSuffix(".txt");
+		mZone.setSuffix(".bin");
 		break;
 	default:
 		mZone.setZoneID(255);
 		mZone.setPrefix("data/debug");
-		mZone.setSuffix(".txt");
+		mZone.setSuffix(".bin");
 		break;
 	}
 	mZone.setCamera(&mCamera);
