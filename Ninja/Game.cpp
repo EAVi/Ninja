@@ -93,24 +93,25 @@ bool Game::init()
 	return true;
 }
 
+#define BOOL_ASSET_LOAD(loadcmd)\
+{\
+	if (!loadcmd)\
+	{\
+		cout << SDL_GetError() << endl;\
+		return false;\
+	}\
+}
+
 bool Game::loadAssets()
 {
 	LTexture::mRenderer = mRenderer;
 
 	//gNinjaTexture.setRenderer(gRenderer);
-	if (!mNinjaTexture.loadTextureFile("GFX/AllNinja.png", &mColorKey))
-	{
-		cout << SDL_GetError() << endl;
-		return false;
-	}
+	BOOL_ASSET_LOAD(mNinjaTexture.loadTextureFile("GFX/AllNinja.png", &mColorKey));
 	mPlayer.setTexture(&mNinjaTexture);
 
 	//gBlockTexture.setRenderer(gRenderer);
-	if (!mBlockTexture.loadTextureFile("GFX/BlockSheet.png", &mColorKey))
-	{
-		cout << SDL_GetError() << endl;
-		return false;
-	}
+	BOOL_ASSET_LOAD(mBlockTexture.loadTextureFile("GFX/BlockSheet.png", &mColorKey));
 
 	Level tempLevel;//creates a temporary level, just to set the static texture
 	tempLevel.setBlockTextures(&mBlockTexture);
@@ -144,11 +145,7 @@ bool Game::loadAssets()
 	{
 		LTexture* tempptr = new LTexture;
 		//tempptr->setRenderer(gRenderer);
-		if (!tempptr->loadTextureFile(bgTexS[i], &mColorKey))
-		{
-			cout << SDL_GetError() << endl;
-			return false;
-		}
+		BOOL_ASSET_LOAD(tempptr->loadTextureFile(bgTexS[i], &mColorKey));
 		mBackgroundTextures.push_back(tempptr);
 	}
 
@@ -164,11 +161,7 @@ bool Game::loadAssets()
 	{
 		LTexture* tempptr = new LTexture;
 		//tempptr->setRenderer(gRenderer);
-		if (!tempptr->loadTextureFile(doorTexS[i], &mColorKey))
-		{
-			cout << SDL_GetError() << endl;
-			return false;
-		}
+		BOOL_ASSET_LOAD(tempptr->loadTextureFile(doorTexS[i], &mColorKey));
 		mDoorTextures.push_back(tempptr);
 	}
 
@@ -185,11 +178,7 @@ bool Game::loadAssets()
 	{
 		LTexture* tempptr = new LTexture;
 		//tempptr->setRenderer(gRenderer);
-		if (!tempptr->loadTextureFile(menuTexS[i], &mColorKey))
-		{
-			cout << SDL_GetError() << endl;
-			return false;
-		}
+		BOOL_ASSET_LOAD(tempptr->loadTextureFile(menuTexS[i], &mColorKey));
 		Menu::mMenuTextures.push_back(tempptr);
 	}
 
@@ -205,16 +194,12 @@ bool Game::loadAssets()
 	{
 		LTexture* tempptr = new LTexture;
 		//tempptr->setRenderer(gRenderer);
-		if (!tempptr->loadTextureFile(uiTexS[i], &mColorKey))
-		{
-			cout << SDL_GetError() << endl;
-			return false;
-		}
+		BOOL_ASSET_LOAD(tempptr->loadTextureFile(uiTexS[i], &mColorKey));
 		UIDrawer::gUITextures.push_back(tempptr);
 	}
 
 	//UI texture loader
-	Uint8 cutTexNum = 11;
+	Uint8 cutTexNum = 13;
 	string cutTexS[] =
 	{
 		"GFX/CUT/ninjaclose.png",
@@ -228,64 +213,39 @@ bool Game::loadAssets()
 		"GFX/CUT/ninjadying.png",
 		"GFX/CUT/caveexit.png",
 		"GFX/CUT/goldfishjail.png",
+		"GFX/CUT/machoback.png",
+		"GFX/CUT/machosun.png",
 	};
 	for (Uint8 i = 0; i < cutTexNum; ++i)
 	{
 		LTexture* tempptr = new LTexture;
 		//tempptr->setRenderer(gRenderer);
-		if (!tempptr->loadTextureFile(cutTexS[i], &mColorKey))
-		{
-			cout << SDL_GetError() << endl;
-			return false;
-		}
+		BOOL_ASSET_LOAD(tempptr->loadTextureFile(cutTexS[i], &mColorKey));
 		Cutscene::mSlideTextures.push_back(tempptr);
 	}
 
 
 	//gFontTexture.setRenderer(gRenderer);
-	if (!mFontTexture.loadTextureFile("GFX/font.png", &mColorKey))
-	{
-		cout << SDL_GetError() << endl;
-		return false;
-	}
-	if (!mLargeFontTexture.loadTextureFile("GFX/largefont.png", &mColorKey))
-	{
-		cout << SDL_GetError() << endl;
-		return false;
-	}
+	BOOL_ASSET_LOAD(mFontTexture.loadTextureFile("GFX/font.png", &mColorKey));
+	BOOL_ASSET_LOAD(mLargeFontTexture.loadTextureFile("GFX/largefont.png", &mColorKey));
+	
 	gWriter = TextWriter(&mFontTexture, 6, 8, &mLargeFontTexture, 16, 24);
 
-	//Set the default enemy texture
+	//Set the static enemy textures
 	Enemy tempEnemy;
-	if (!mEnemyTexture.loadTextureFile("GFX/AllGhost.png", &mColorKey))
-	{
-		cout << SDL_GetError() << endl;
-		return false;
-	}
+	BOOL_ASSET_LOAD(mEnemyTexture.loadTextureFile("GFX/AllGhost.png", &mColorKey));
 	tempEnemy.setTexture(&mEnemyTexture);
 
 	Robot tempRobot;
-	if (!mRobotTexture.loadTextureFile("GFX/AllRoboPirate.png", &mColorKey))
-	{
-		cout << SDL_GetError() << endl;
-		return false;
-	}
+	BOOL_ASSET_LOAD(mRobotTexture.loadTextureFile("GFX/AllRoboPirate.png", &mColorKey));
 	tempRobot.setTexture(&mRobotTexture);
 
 	Demon tempDemon;
-	if (!mDemonTexture.loadTextureFile("GFX/AllDemon.png", &mColorKey))
-	{
-		cout << SDL_GetError() << endl;
-		return false;
-	}
+	BOOL_ASSET_LOAD(mDemonTexture.loadTextureFile("GFX/AllDemon.png", &mColorKey));
 	tempDemon.setTexture(&mDemonTexture);
 
 	Cannon tempCannon;
-	if (!mCannonTexture.loadTextureFile("GFX/AllCannon.png", &mColorKey))
-	{
-		cout << SDL_GetError() << endl;
-		return false;
-	}
+	BOOL_ASSET_LOAD(mCannonTexture.loadTextureFile("GFX/AllCannon.png", &mColorKey));
 	tempCannon.setTexture(&mCannonTexture);
 
 	//Load all the sounds and music
@@ -753,6 +713,7 @@ void Game::render()
 		{
 			takeScreenShot();
 			gWriter(textbuffers::Debug) << txt::Black << txt::HLightOn << "Currently Recording, press R to stop";
+			gWriter.ClearBuffer();
 		}
 		SDL_RenderPresent(mRenderer);
 		mTimer.tick();
