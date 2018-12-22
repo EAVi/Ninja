@@ -50,6 +50,7 @@ artifacts/
 *.ilk
 *.meta
 *.obj
+*.o
 *.pch
 *.pdb
 *.pgc
@@ -244,3 +245,6 @@ ModelManifest.xml
 /Ninja/Ninja.rc
 /Ninja/resource.h
 /Ninja/Screenshots/*.bmp
+
+#Linux Executable
+/Ninja/Ninja
