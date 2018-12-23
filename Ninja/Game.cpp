@@ -409,6 +409,11 @@ void Game::introSequence()
 			while (SDL_PollEvent(&mEvent))//simple event polling
 			{
 				handleGeneralEvents();
+
+				//on ENTER or START button, skip sequence
+				if (mEvent.key.keysym.sym == SDLK_ESCAPE && mEvent.type == SDL_KEYDOWN && mEvent.key.repeat == 0// on ENTER
+					|| mEvent.type == SDL_CONTROLLERBUTTONDOWN && mEvent.cbutton.button == SDL_CONTROLLER_BUTTON_START)// or START button
+					i = introframes;//change i, exiting the while loop
 			}
 			switch (i)//modify the text based on the frame number
 			{

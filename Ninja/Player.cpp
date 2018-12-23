@@ -152,9 +152,9 @@ void Player::endstep()
 		mCheckHurt();
 	else //stun animation overrides all
 	{
-		if (mAttackCoolDown <= 0 && mTouchIndex && kTouchingTop)
+		if (mAttackCoolDown <= 0 && mTouchIndex & kTouchingTop)
 			mAnimationFrame = kStandStun;
-		else if (!(mTouchIndex && kTouchingTop))
+		else if (!(mTouchIndex & kTouchingTop))
 			mAnimationFrame = kAirStun;
 		else mAnimationFrame = kStandStunSword;
 	}
