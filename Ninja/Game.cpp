@@ -215,6 +215,7 @@ bool Game::loadAssets()
 		"GFX/CUT/goldfishjail.png",
 		"GFX/CUT/machoback.png",
 		"GFX/CUT/machosun.png",
+		"GFX/CUT/danu.png",
 	};
 	for (Uint8 i = 0; i < cutTexNum; ++i)
 	{
@@ -379,8 +380,11 @@ void Game::prepareZone(Uint8 a)
 void Game::introSequence()
 {
 	LTexture tempLogo;//the logo for magnar games
+	LTexture tempSpecialThanks;//the special thanks image, Open Source software rules!
 
 	tempLogo.loadTextureFile("GFX/magnarlogo.png", &mColorKey);//load the texture
+	tempSpecialThanks.loadTextureFile("GFX/specialthanks.png", &mColorKey);//load the texture
+
 
 	int logox = 64, logoy = 64;//x and y position of the logo
 	int fade = 20;//number of frames it takes for the logo to fade in and out
@@ -391,8 +395,8 @@ void Game::introSequence()
 	mSoundBox.playMusic(0, 0);
 
 	string thanks = "Thank you:\n\n";
-	thanks += "Dr. Turner\n";
 	thanks += "Old Man Jackson\n\n";
+	thanks += "My Professors\n";
 	thanks += "My Friends\n\n\n";
 	thanks += "   & you\nThank You <3\n\n";
 
@@ -447,7 +451,11 @@ void Game::introSequence()
 			else tempLogo.setAlpha(0);
 
 			if (i >= thanksframes && (i < introframes - 20))
+			{
 				gWriter(textbuffers::Debug) << txt::White << thanks;
+				tempSpecialThanks.renderTexture(128, 0);
+			}
+				
 
 			tempLogo.renderTexture(logox, logoy);
 			gWriter(textbuffers::Large, 78, 82) << txt::White << s;
@@ -467,6 +475,7 @@ void Game::introSequence()
 	}
 	
 	tempLogo.freeTexture();
+	tempSpecialThanks.freeTexture();
 }
 
 void Game::destroyAssets()
