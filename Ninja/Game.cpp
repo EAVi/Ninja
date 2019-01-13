@@ -928,7 +928,7 @@ void Game::mSetMenu()
 {
 	
 	//Main Menu
-	mMenu[kMainMenu] = Menu(kMainMenu, "\x86" + (string)"Ninja \n(working title)");
+	mMenu[kMainMenu] = Menu(kMainMenu, "\0");
 	mMenu[kMainMenu].addButton("New Game", kSetZone1, { 8, 152 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Continue", kSetStageSelect, { 16, 160 }, (string)"\x82\x8E", (string)"\x86");
 	mMenu[kMainMenu].addButton("Options", kSetMainOptions, { 24, 168 }, (string)"\x82\x8E", (string)"\x86");
