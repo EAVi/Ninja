@@ -91,4 +91,9 @@ void stretchBoxUndo(SDL_Rect & a, int & xV, int & yV);
 //saves to path and filename given by string fname
 bool screenShot(SDL_Window * w, SDL_Renderer * r, std::string fname);
 
+//move with subpixel logic
+//the subpixel is a binary fraction as low as 1/256, with not very much precision, 
+//but acceptable on movement such as backgrounds and enemies
+Sint16 subPixelMove(Sint16 x, Sint8 xvel, Uint8 & x_sp, Uint8 xvel_sp);
+
 #endif

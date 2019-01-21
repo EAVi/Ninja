@@ -117,7 +117,7 @@ bool Game::loadAssets()
 	tempLevel.setBlockTextures(&mBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 18;
+	Uint8 bgTexNum = 19;
 	string bgTexS[] =
 	{
 		"GFX/BG/bluesky.png",
@@ -138,7 +138,7 @@ bool Game::loadAssets()
 		"GFX/BG/beanstalk.png",
 		"GFX/BG/houses.png",
 		"GFX/BG/templeinterior.png",
-
+		"GFX/BG/wavetex.png",
 	};
 
 	for (Uint8 i = 0; i < bgTexNum; ++i)

@@ -502,7 +502,7 @@ bool Level::Loadmap(string filename)
 
 	
 	//background loader
-	attrs = 9;//(8, 16, 16, 8, 1,< 1, 8, 8) //there's leftover 6 bits
+	attrs = 11;//(8, 16, 16, 8, 1,< 1, 8, 8) //there's leftover 6 bits
 	for (Uint32 i = loadPoint, j = idata.size(); i < (j - attrs + 1); loadPoint = i = i + attrs)
 	{
 		//gotta stop making backgrounds eventually, if the texture number is at maximum, go to next part
@@ -517,10 +517,12 @@ bool Level::Loadmap(string filename)
 			idata[i + 1] * 256 + idata[i + 2],//initx
 			idata[i + 3] * 256 + idata[i + 4],//inity
 			idata[i + 5],//depth
-			(Sint8)idata[i + 6],//XV
-			(Sint8)idata[i + 7],//YV
-			idata[i + 8] & 2,//tilex
-			idata[i + 8] & 1//tiley
+			idata[i + 6],//XV
+			(Sint8)idata[i + 7],//XV_subp
+			idata[i + 8],//YV
+			(Sint8)idata[i + 9],//YV_subp
+			idata[i + 10] & 2,//tilex
+			idata[i + 10] & 1//tiley
 			);
 	}//end background loader
 	
@@ -668,7 +670,7 @@ bool Level::createBg(Background bg, Sint16 insert)
 	if (mBGTextures.size() == 0)
 		return false;
 
-	if (insert < 0)//a 
+	if (insert < 0)//cannot insert into a negative index
 		return false;
 
 	bg.TextNum = bg.TextNum % mBGTextures.size();//if tnum given is too big, it just wraps around
@@ -687,17 +689,26 @@ bool Level::createBg(Background bg, Sint16 insert)
 	return !exists;
 }
 
-bool Level::createBg(Uint8 TextNum, Sint16 initX, Sint16 initY, Uint8 depth, Sint8 XV, Sint8 YV, bool tileX, bool tileY, Sint16 insert)
+bool Level::createBg(Uint8 TextNum, Sint16 initX, Sint16 initY, Uint8 depth, Sint8 XV, Uint8 XV_subp, Sint8 YV, Uint8 YV_subp, bool tileX, bool tileY, Sint16 insert)
 {
-	return (createBg({ TextNum, initX, initY, depth, XV, YV, tileX, tileY }, insert));
+	return (createBg({ TextNum, initX, initY, 0, 0, depth, XV, XV_subp, YV, YV_subp, tileX, tileY }, insert));
 }
 
 void Level::renderBg()
 {
 	for (Uint8 i = 0; i < (Uint8)mBackgrounds.size(); ++i)
 	{
-		mBackgrounds[i].initX += mBackgrounds[i].XV;//moves the background if XV or YV are nonzero
-		mBackgrounds[i].initY += mBackgrounds[i].YV;
+		mBackgrounds[i].initX = //Move on the X axis using subpixel movement
+			subPixelMove(mBackgrounds[i].initX,
+			mBackgrounds[i].XV,
+			mBackgrounds[i].X_subp,
+			mBackgrounds[i].XV_subp);
+		
+		mBackgrounds[i].initY = //Y axis
+			subPixelMove(mBackgrounds[i].initY,
+			mBackgrounds[i].YV,
+			mBackgrounds[i].Y_subp,
+			mBackgrounds[i].YV_subp);
 
 		SDL_Rect coll
 		{

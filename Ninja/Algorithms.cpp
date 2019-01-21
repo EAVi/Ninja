@@ -475,3 +475,13 @@ bool screenShot(SDL_Window * w, SDL_Renderer * r, string fname)
 	SDL_FreeSurface(screen);
 	return true;
 }
+
+Sint16 subPixelMove(Sint16 x, Sint8 xvel, Uint8 & x_sp,  Uint8 xvel_sp)
+{
+	Uint16 sp_carry = x_sp + xvel_sp;
+	x_sp = (Uint8)sp_carry;//put the result back into the subpixel
+	if (sp_carry & 0x100) x += 1;//the sum of the fractions can at most add 1 to the whole number(eg 0.999 + 0.999 = 1.998)
+
+	x += xvel;
+	return x;
+}
