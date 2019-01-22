@@ -20,7 +20,7 @@ UIDrawer::UIDrawer()
 {
 }
 
-void UIDrawer::drawHealthbar(int & health, int & maxhealth, int & lives) const
+void UIDrawer::drawHealthbar(int health, int maxhealth, int lives) const
 {
 	gUITextures[kHealthbar]->renderTexture(0, 0);
 	int width = Healthbar::dims.w;

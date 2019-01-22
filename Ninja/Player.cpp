@@ -330,20 +330,31 @@ int& Player::getY()
 	return this->mY;
 }
 
-int& Player::getHealth()
+int Player::getHealth()
 {
 	return mHealth;
 }
 
-int& Player::getMaxHealth()
+int Player::getMaxHealth()
 {
 	return mMaxHealth;
 }
 
-int & Player::getLives()
+int Player::getLives()
 {
 	return mLives;
 }
+
+void Player::removeLife()
+{
+	mLives--;
+}
+
+void Player::refillHealth()
+{
+	mHealth = kMaxHealth;
+}
+
 
 SDL_Rect & Player::getCollisionBox()
 {
@@ -359,6 +370,7 @@ bool Player::checkDead()
 void Player::resetLives()
 {
 	mLives = kStartingLives;
+	refillHealth();
 }
 
 void Player::respawn()

@@ -57,9 +57,16 @@ public:
 	int& getY();
 
 	//returns player health
-	int& getHealth();
-	int& getMaxHealth();
-	int& getLives();
+	int getHealth();
+	int getMaxHealth();
+	int getLives();
+
+	//reduce life count by 1
+	void removeLife();
+
+	//refill health to max
+	void refillHealth();
+
 
 	SDL_Rect& getCollisionBox();
 
@@ -160,7 +167,6 @@ enum NinjaAnimationFrames
 	kWalkSlashEnd = 60,
 	kWallCling = 61,
 	kStandStun = 62,
-	kLookUp = 62,
 	kStandStunSword = 63,
 	kLogDeathStart = 64,
 	kLogDeathEnd = 79,
@@ -168,6 +174,7 @@ enum NinjaAnimationFrames
 	kStarEffectStart = 80,//A SHURIKEN of DOOM
 	kStarEffectEnd = 83,
 	kStandingThrow = 84,
+	kLookUp = 85,
 };
 
 #endif

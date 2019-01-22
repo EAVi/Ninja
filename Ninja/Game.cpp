@@ -199,7 +199,7 @@ bool Game::loadAssets()
 	}
 
 	//UI texture loader
-	Uint8 cutTexNum = 13;
+	Uint8 cutTexNum = 14;
 	string cutTexS[] =
 	{
 		"GFX/CUT/ninjaclose.png",
@@ -216,6 +216,7 @@ bool Game::loadAssets()
 		"GFX/CUT/machoback.png",
 		"GFX/CUT/machosun.png",
 		"GFX/CUT/danu.png",
+		"GFX/CUT/packet.png",
 	};
 	for (Uint8 i = 0; i < cutTexNum; ++i)
 	{
@@ -251,13 +252,14 @@ bool Game::loadAssets()
 
 	//Load all the sounds and music
 	//Music
+	const int defvolume = 30;
 	mSoundBox.loadSFX("SFX/MUS/00.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/01.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/02.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/03.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/04.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/05.wav", true);
-	Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
+	Mix_VolumeMusic(defvolume);
 	//Sounds
 	mSoundBox.loadSFX("SFX/00.wav");
 	mSoundBox.loadSFX("SFX/01.wav");
@@ -266,7 +268,7 @@ bool Game::loadAssets()
 	mSoundBox.loadSFX("SFX/04.wav");
 	mSoundBox.loadSFX("SFX/05.wav");
 	mSoundBox.loadSFX("SFX/06.wav");
-	Mix_Volume(-1, MIX_MAX_VOLUME / 4);
+	Mix_Volume(-1, defvolume);
 
 	return true;
 }
@@ -308,7 +310,6 @@ bool Game::fullInit()
 
 void Game::prepareZone(Uint8 a)
 {
-	mPlayer.getHealth() = mPlayer.getMaxHealth();
 	mPlayer.resetLives();
 	mZone.release();
 	mZone = Zone();
@@ -680,8 +681,8 @@ void Game::beginstep()
 	{
 		if (mPlayer.getLives() != 0)
 		{
-		mPlayer.getLives()--;
-		mPlayer.getHealth() = mPlayer.getMaxHealth();
+		mPlayer.removeLife();
+		mPlayer.refillHealth();
 		}
 		else
 		{
@@ -1057,7 +1058,6 @@ void Game::mButtonOptionHandler(ButtonOption & a)
 	case kSetPauseOption: mCurrentMenu = kPauseOptions; break;
 	case kSetStageSelect: mCurrentMenu = kStageSelect; break;
 	case kRestartZone:
-		mPlayer.getHealth() = mPlayer.getMaxHealth();
 		mPlayer.resetLives();
 		mZone.reloadZone();
 		mSetCutscene();//reload the cutscenes every restart

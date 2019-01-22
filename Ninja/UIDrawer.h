@@ -24,7 +24,7 @@ class UIDrawer
 {
 public:
 	UIDrawer();
-	void drawHealthbar(int& health, int& maxhealth, int& lives)const;
+	void drawHealthbar(int health, int maxhealth, int lives)const;
 	static std::vector<LTexture*> gUITextures; //global textures defined in Game.cpp init()
 private:
 
