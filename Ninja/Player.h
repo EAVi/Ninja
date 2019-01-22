@@ -167,7 +167,7 @@ enum NinjaAnimationFrames
 	kAirStun = 16,
 	kStarEffectStart = 80,//A SHURIKEN of DOOM
 	kStarEffectEnd = 83,
-
+	kStandingThrow = 84,
 };
 
 #endif

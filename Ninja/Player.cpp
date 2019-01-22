@@ -290,13 +290,14 @@ void Player::handleAnimation()
 				else mAnimationFrame = kWalkSlashStart;
 			}
 		}
-		else if (mAttackCoolDown == 0)
+		else if (mAttackCoolDown == 0 && mStarCooldown <= 0)
 		{
 			if (mUpPressed)//if looking up
 				mAnimationFrame = kLookUp;
 			else mAnimationFrame = kStanding;//else, standing
 		}
-		else mAnimationFrame = kStandSlash;
+		else if(mAttackCoolDown != 0) mAnimationFrame = kStandSlash;//standing slash takes priority over the standing throw
+		else mAnimationFrame = kStandingThrow;//ninja star throw
 	}
 	else if (mWallClinging)
 		mAnimationFrame = kWallCling;
