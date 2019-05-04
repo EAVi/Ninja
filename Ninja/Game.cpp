@@ -117,7 +117,7 @@ bool Game::loadAssets()
 	tempLevel.setBlockTextures(&mBlockTexture);
 
 	//background texture loader
-	Uint8 bgTexNum = 19;
+	Uint8 bgTexNum = 21;
 	string bgTexS[] =
 	{
 		"GFX/BG/bluesky.png",
@@ -139,6 +139,8 @@ bool Game::loadAssets()
 		"GFX/BG/houses.png",
 		"GFX/BG/templeinterior.png",
 		"GFX/BG/wavetex.png",
+		"GFX/BG/traininterior.png",
+		"GFX/BG/tunnel.png",
 	};
 
 	for (Uint8 i = 0; i < bgTexNum; ++i)
@@ -149,7 +151,7 @@ bool Game::loadAssets()
 		mBackgroundTextures.push_back(tempptr);
 	}
 
-	//background texture loader
+	//door texture loader
 	Uint8 doorTexNum = 2;
 	string doorTexS[] =
 	{
@@ -165,7 +167,7 @@ bool Game::loadAssets()
 		mDoorTextures.push_back(tempptr);
 	}
 
-	//background texture loader
+	//menu texture loader
 	Uint8 menuTexNum = 3;
 	string menuTexS[] =
 	{
@@ -198,8 +200,8 @@ bool Game::loadAssets()
 		UIDrawer::gUITextures.push_back(tempptr);
 	}
 
-	//UI texture loader
-	Uint8 cutTexNum = 15;
+	//cutscene texture loader
+	Uint8 cutTexNum = 16;
 	string cutTexS[] =
 	{
 		"GFX/CUT/ninjaclose.png",
@@ -218,6 +220,7 @@ bool Game::loadAssets()
 		"GFX/CUT/danu.png",
 		"GFX/CUT/packet.png",
 		"GFX/CUT/sartre.png",
+		"GFX/CUT/vinointro.png",
 	};
 	for (Uint8 i = 0; i < cutTexNum; ++i)
 	{
@@ -260,6 +263,7 @@ bool Game::loadAssets()
 	mSoundBox.loadSFX("SFX/MUS/03.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/04.wav", true);
 	mSoundBox.loadSFX("SFX/MUS/05.wav", true);
+	mSoundBox.loadSFX("SFX/MUS/06.wav", true);
 	Mix_VolumeMusic(defvolume);
 	//Sounds
 	mSoundBox.loadSFX("SFX/00.wav");
