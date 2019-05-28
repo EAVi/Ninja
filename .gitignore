@@ -248,3 +248,4 @@ ModelManifest.xml
 
 #Linux Executable
 /Ninja/Ninja
+*.nin

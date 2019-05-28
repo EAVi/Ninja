@@ -18,9 +18,9 @@ void Cutscene::addSlide(Slide a)
 	mSlides.push_back(a);
 }
 
-void Cutscene::addSlide(Uint8 texture, std::string text)
+void Cutscene::addSlide(Uint8 texture, std::string text, Uint8 songnum)
 {
-	addSlide({ texture,text });
+	addSlide({ texture,text,songnum });
 }
 
 void Cutscene::renderCurrentSlide()
@@ -32,6 +32,7 @@ void Cutscene::renderCurrentSlide()
 
 	gWriter(textbuffers::Small, 6, 168) << txt::White << txt::OptionsOff << txt::TypeOn;//set position of buffer and the default color and options
 	gWriter << mSlides[mCurrentSlide].text;//write the text
+	LAudio::playMusic(mSlides[mCurrentSlide].songnum);//play the music
 	gWriter.ClearBuffer();
 }
 

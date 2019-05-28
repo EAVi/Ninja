@@ -26,6 +26,8 @@
 #include "Demon.h"
 #include "Enemy.h"
 #include "Robot.h"
+#include "Cannon.h"
+#include "Samurai.h"
 #include "MagMatrix.h"
 #include "UIDrawer.h"
 #include "Timer.h"
@@ -94,6 +96,7 @@ private:
 	LTexture mRobotTexture;
 	LTexture mDemonTexture;
 	LTexture mCannonTexture;
+	LTexture mSamuraiTexture;
 	UIDrawer mUIDrawer;//draws healthbar, lives, and other UI
 	std::vector<LTexture*> mBackgroundTextures;
 	std::vector<LTexture*> mDoorTextures;

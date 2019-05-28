@@ -3,6 +3,7 @@
 
 #include "TextWriter.h"
 #include "Zone.h"//for LevelID
+#include "Laudio.h"
 
 /*
 A Cutscene will be made up of slides
@@ -13,6 +14,7 @@ struct Slide
 {
 	Uint8 texture; //the texture number for the image
 	std::string text; //the text, the speech, the words
+	Uint8 songnum;//optionally trigger a song
 };
 
 
@@ -28,7 +30,7 @@ public:
 	void addSlide(Slide a);
 
 	//Overload using member variables
-	void addSlide(Uint8 texture, std::string text);
+	void addSlide(Uint8 texture, std::string text, Uint8 songnum = 254);
 
 	//renders the texture and writes the text
 	void renderCurrentSlide();

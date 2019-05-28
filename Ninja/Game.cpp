@@ -202,7 +202,7 @@ bool Game::loadAssets()
 	}
 
 	//cutscene texture loader
-	Uint8 cutTexNum = 16;
+	Uint8 cutTexNum = 17;
 	string cutTexS[] =
 	{
 		"GFX/CUT/ninjaclose.png",
@@ -254,6 +254,10 @@ bool Game::loadAssets()
 	Cannon tempCannon;
 	BOOL_ASSET_LOAD(mCannonTexture.loadTextureFile("GFX/AllCannon.png", &mColorKey));
 	tempCannon.setTexture(&mCannonTexture);
+
+	Samurai tempSamurai;
+	BOOL_ASSET_LOAD(mSamuraiTexture.loadTextureFile("GFX/AllSamurai.png", &mColorKey));
+	tempSamurai.setTexture(&mSamuraiTexture);
 
 	//Load all the sounds and music
 	//Music
@@ -836,8 +840,9 @@ void Game::mSetCutscene()
 	//small talk with volcanus
 	temp.clearCutscene();
 	temp.setTrigger({ 6,1 });
-	temp.addSlide(5, "Hello, my name is Volcanus\nyou might have heard of me\nI'm here to talk to your king...");
+	temp.addSlide(15, "Hello, my name is Sartre;\nI'm here to talk to your king...");
 	temp.addSlide(10, "HELP!");
+	temp.addSlide(15, "Pardon, did I say \"Talk\"?\nI meant kidnap.");
 	temp.addSlide(0, "The King!\n\nI'll Save you!");
 	mCutscene.push_back(temp);
 
@@ -863,11 +868,10 @@ void Game::mSetCutscene()
 	temp.addSlide(0, "HEY!\nWho's in charge here?");
 	temp.addSlide(2, "I am");
 	temp.addSlide(0, "Karl Marx, what are \nyou doing here?");
-	temp.addSlide(1, "Oh I remember!\nit was in this morning's paper!");
-	temp.addSlide(6, "\"Elderly man runs for GOV, \nElected GOD due to typo\"");
-	temp.addSlide(2, "Elderly? \nI'm still in my prime!");
+	temp.addSlide(2, "Didn't you hear?\n\nI'm in charge in these parts");
+	temp.addSlide(0, "Neat");
 	temp.addSlide(1, "Anyways, I died and \nI'd like a refund");
-	temp.addSlide(2, "Yeah sure, It seems\nyou went through the wrong \nlight anyways");
+	temp.addSlide(2, "Sure, I can get you\nback down there;\nand while you're there\ncan you run some errands?");
 	mCutscene.push_back(temp);
 }
 

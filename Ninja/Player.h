@@ -142,7 +142,7 @@ private:
 	static const Uint8 mStarSpeed = 6;//the speed that a ninja star will travel
 	static const Uint8 kSwordFrames = 6;
 	static const Uint8 kHitStunFrames = 5;
-	static const Uint8 kInvincibilityFrames = 20;
+	static const Uint8 kInvincibilityFrames = 50;
 	static const Uint8 kBlinkingFrequency = 3;
 	static SDL_Rect kStandardCollisionBox;
 	static SDL_Rect kJumpingCollisionBox;

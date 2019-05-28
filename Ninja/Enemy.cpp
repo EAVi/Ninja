@@ -25,7 +25,7 @@ Enemy::Enemy()
 	mRewindAnimation = false;
 	//mOddFrame = false;
 	mLevel = NULL;
-	mHitStun = 0;
+	mHitStun = -1;
 }
 
 Enemy::~Enemy()

@@ -25,6 +25,7 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Robot.cpp" />
+    <ClCompile Include="Samurai.cpp" />
     <ClCompile Include="TextWriter.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="UIDrawer.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Demon.h" />
+    <ClInclude Include="Samurai.h" />
     <ClInclude Include="LAudio.h" />
     <ClInclude Include="LevelID.h" />
     <ClInclude Include="Menu.h" />
