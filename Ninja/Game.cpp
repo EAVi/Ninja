@@ -202,7 +202,7 @@ bool Game::loadAssets()
 	}
 
 	//cutscene texture loader
-	Uint8 cutTexNum = 17;
+	Uint8 cutTexNum = 20;
 	string cutTexS[] =
 	{
 		"GFX/CUT/ninjaclose.png",
@@ -222,6 +222,9 @@ bool Game::loadAssets()
 		"GFX/CUT/packet.png",
 		"GFX/CUT/sartre.png",
 		"GFX/CUT/vinointro.png",
+		"GFX/CUT/ninjainterrupt.png",
+		"GFX/CUT/vinointerrogate.png",
+		"GFX/CUT/bounty.png",
 	};
 	for (Uint8 i = 0; i < cutTexNum; ++i)
 	{
@@ -819,7 +822,7 @@ void Game::mSetCutscene()
 
 	temp.clearCutscene();
 	temp.setTrigger({ 0,1 });
-	temp.addSlide(1, "Hello, I'm Ninja, and this\nis my story.");
+	temp.addSlide(1, "Hello, I'm Ninja, and this\nis my story.", 8);
 	temp.addSlide(1, "I was born under the \nOrange Ninja lineage where I'm\ncurrently being trained\nto be a Ninja");
 	temp.addSlide(3, "I was ruled by king goldfish, \nwith whom our village was sworn\nto protect");
 	temp.addSlide(6, "It was a regular day, more regular\nthan usual.");
@@ -854,6 +857,14 @@ void Game::mSetCutscene()
 	temp.addSlide(8, "Damn...");
 	temp.addSlide(4, "Looks like that nerd\ndefeated me...");
 	temp.addSlide(8, "The king...\nI couldn't save him");
+	temp.addSlide(4, "Hold on!", 7);
+	temp.addSlide(17, "Sorry, I'm late");
+	temp.addSlide(4, "Who are you?\n    What's going on?");
+	temp.addSlide(17, "I'm you, from the future!");
+	temp.addSlide(15, "Impossible! how did you\nsurvive those injuries?\nyou're supposed to be dead!");
+	temp.addSlide(17, "It's a long story:\nIt wasa regular day; I started at my favorite\ndiner having brinner--");
+	temp.addSlide(8, "[Dies]");
+	temp.addSlide(8, "So this is what it feels\nlike to be dead");
 	temp.addSlide(4, "I know!\nI'll turn into a ghost \nand haunt that bad guy!");
 	temp.addSlide(9, "Dont go towards the light?\nKnock Knock!\nHere I come!");
 	mCutscene.push_back(temp);
@@ -874,6 +885,17 @@ void Game::mSetCutscene()
 	temp.addSlide(0, "Neat");
 	temp.addSlide(1, "Anyways, I died and \nI'd like a refund");
 	temp.addSlide(2, "Sure, I can get you\nback down there;\nand while you're there\ncan you run some errands?");
+	mCutscene.push_back(temp);
+
+	//reminiscing about a friend
+	temp.clearCutscene();
+	temp.setTrigger({ 0,3 });
+	temp.addSlide(1, "I remember the first\ntime I met Vino");
+	temp.addSlide(1, "He was a great dude,\ngave off a wild aura");
+	temp.addSlide(16, "I first met him on\nthis very train");
+	temp.addSlide(19, "Back then, he was a\nbounty hunter");
+	temp.addSlide(18, "and he was\nthe strongest person I know");
+	temp.addSlide(0, "I came here to become\nhis apprentice");
 	mCutscene.push_back(temp);
 }
 
@@ -1161,9 +1183,10 @@ void Game::mLevelIntroSequence(Uint8 a)
 		s = txt::Red + (string)"To the Light";
 		break;
 	case 3:
-		s = txt::Blue + (string)"Ninja Vacation";
+		s = txt::Yellow + (string)"Danger Express";
 		break;
 	case 4:
+		s = txt::Blue + (string)"Ninja Vacation";
 		break;
 	case 5:
 		break;
@@ -1173,6 +1196,8 @@ void Game::mLevelIntroSequence(Uint8 a)
 		break;
 	case 8:
 		break;
+	case 255:
+		s = txt::Rainbow + (string)"Debug\n!!!!!!!!";
 	default:
 		break;
 	}
